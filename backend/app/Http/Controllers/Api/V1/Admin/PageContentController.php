@@ -46,7 +46,7 @@ class PageContentController extends Controller
     {
         $this->authorize('update', $pageContent);
 
-        $data = $request->safe()->except(['image'])->all();
+        $data = $request->safe()->except(['image']);
         if ($request->exists('image')) {
             $data['image'] = $images->sync($pageContent->image, Media::payload($request->input('image')));
         }

@@ -47,7 +47,7 @@ class BannerController extends Controller
     {
         $this->authorize('update', $banner);
 
-        $data = $request->safe()->except(['image'])->all();
+        $data = $request->safe()->except(['image']);
         if ($request->exists('image')) {
             $data['image'] = $images->sync($banner->image, Media::payload($request->input('image')));
         }

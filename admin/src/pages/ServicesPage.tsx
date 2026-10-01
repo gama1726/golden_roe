@@ -1,0 +1,157 @@
+import { ChevronDown, ChevronUp, Plus } from 'lucide-react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { Button, Field, Notice, PageTitle, TextArea, controlClass } from '../components/ui'
+import { api, errorText } from '../lib/api'
+import type { Service } from '../lib/types'
+
+const empty = { title: '', price: '', format: '', audience: '', result: '', is_active: true }
+
+export function ServicesPage() {
+  const [items, setItems] = useState<Service[]>([])
+  const [form, setForm] = useState(empty)
+  const [editing, setEditing] = useState<number | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  async function load() {
+    const response = await api.get<{ data: Service[] }>('/api/v1/admin/services')
+    setItems(response.data.data)
+  }
+
+  useEffect(() => {
+    load().catch((reason: unknown) => setError(errorText(reason)))
+  }, [])
+
+  function notify(text: string) {
+    setNotice(text)
+    setError(null)
+  }
+
+  async function save(event: FormEvent) {
+    event.preventDefault()
+    const payload = {
+      title: form.title,
+      price: Number(form.price),
+      format: form.format,
+      audience: form.audience,
+      result: form.result,
+      is_active: form.is_active,
+    }
+    try {
+      if (editing) {
+        await api.patch(`/api/v1/admin/services/${editing}`, payload)
+      } else {
+        await api.post('/api/v1/admin/services', payload)
+      }
+      setForm(empty)
+      setEditing(null)
+      await load()
+      notify('Сохранено')
+    } catch (reason) {
+      setError(errorText(reason))
+    }
+  }
+
+  function edit(service: Service) {
+    setEditing(service.id)
+    setForm({
+      title: service.title,
+      price: String(service.price),
+      format: service.format,
+      audience: service.audience,
+      result: service.result,
+      is_active: service.is_active,
+    })
+  }
+
+  async function remove(service: Service) {
+    if (!window.confirm(`Удалить «${service.title}»?`)) return
+    await api.delete(`/api/v1/admin/services/${service.id}`)
+    await load()
+    notify('Удалено')
+  }
+
+  async function move(index: number, direction: -1 | 1) {
+    const next = [...items]
+    const target = index + direction
+    if (target < 0 || target >= next.length) return
+    const current = next[index]
+    const swap = next[target]
+    if (!current || !swap) return
+    next[index] = swap
+    next[target] = current
+    setItems(next)
+    await api.patch('/api/v1/admin/services/reorder', { ids: next.map((item) => item.id) })
+    notify('Порядок обновлён')
+  }
+
+  return (
+    <section className="space-y-6">
+      <PageTitle title="Услуги" />
+      <Notice text={notice} />
+      <Notice text={error} />
+      <div className="space-y-3">
+        {items.map((service, index) => (
+          <article key={service.id} className="rounded-3xl bg-white p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="font-serif text-2xl">{service.title}</h2>
+                <p className="text-sm text-muted">
+                  {service.price_display} · {service.format}
+                  {service.is_active ? '' : ' · скрыта'}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button type="button" variant="ghost" onClick={() => move(index, -1)} aria-label="Выше">
+                  <ChevronUp size={16} />
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => move(index, 1)} aria-label="Ниже">
+                  <ChevronDown size={16} />
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => edit(service)}>
+                  Изменить
+                </Button>
+                <Button type="button" variant="danger" onClick={() => remove(service)}>
+                  Удалить
+                </Button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <form onSubmit={save} className="space-y-3 rounded-3xl bg-white p-5">
+        <h2 className="font-serif text-2xl">{editing ? 'Редактирование' : 'Новая услуга'}</h2>
+        <Field label="Название">
+          <input className={controlClass} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
+        </Field>
+        <Field label="Цена, ₽">
+          <input className={controlClass} type="number" min={0} value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} required />
+        </Field>
+        <Field label="Формат">
+          <input className={controlClass} value={form.format} onChange={(event) => setForm({ ...form, format: event.target.value })} required />
+        </Field>
+        <Field label="Для кого">
+          <TextArea value={form.audience} onChange={(event) => setForm({ ...form, audience: event.target.value })} required />
+        </Field>
+        <Field label="Результат">
+          <TextArea value={form.result} onChange={(event) => setForm({ ...form, result: event.target.value })} required />
+        </Field>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={form.is_active} onChange={(event) => setForm({ ...form, is_active: event.target.checked })} />
+          Показывать на сайте
+        </label>
+        <div className="flex gap-2">
+          <Button type="submit">
+            <Plus size={16} />
+            Сохранить
+          </Button>
+          {editing && (
+            <Button type="button" variant="ghost" onClick={() => { setEditing(null); setForm(empty) }}>
+              Отмена
+            </Button>
+          )}
+        </div>
+      </form>
+    </section>
+  )
+}
