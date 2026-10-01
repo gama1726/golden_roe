@@ -145,7 +145,44 @@ php artisan db:seed --class=DemoReviewSeeder
 
 HTML статей очищается на сервере. Картинки проверяются по MIME и размеру, сохраняются со случайным именем, рядом пишутся WebP-версии. Оригинал не перерисовывается. PDF документов отдаются по постоянному адресу `/api/v1/documents/{type}`.
 
-## Что дальше
+## Сквозные проверки
 
-1. E2E сценарии из ТЗ.
-2. Выкладка: SSL, домен, резервные копии.
+Нужны запущенные API (`127.0.0.1:8000`), админка (`127.0.0.1:5173`) и сайт (`127.0.0.1:3000`).
+
+```bash
+cd frontend
+npm run test:e2e
+```
+
+Сценарии: главная → услуга → WhatsApp и Telegram; правка текста в админке появляется на сайте и затем убирается; отзыв скрыт, пока его не одобрят и не включат показ. Проверочные данные тесты удаляют.
+
+OpenAPI: `http://127.0.0.1:8000/docs/api`
+
+## Выкладка
+
+Прод не зависит от Docker. На сервере нужны PHP 8.3-FPM, MySQL 8, Node.js для сборки сайта и админки, nginx и сертификат.
+
+Пример nginx: `deploy/nginx/goldenroe.conf`. API слушает только `127.0.0.1:8080`. Сайт проксируется на Next.js. Админка отдаёт собранный `admin/dist` и проксирует `/api`, `/sanctum` и `/storage` на API, чтобы cookie сессии оставалась на домене админки.
+
+Перед запуском:
+
+- `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL` — адрес API, как его видит браузер админки через прокси
+- `SESSION_SECURE_COOKIE=true`
+- `SANCTUM_STATEFUL_DOMAINS` — только домен админки, без публичного сайта
+- `CORS_ALLOWED_ORIGINS` — адрес публичного сайта, с него уходит форма отзыва
+- `FRONTEND_REVALIDATE_URL` и `FRONTEND_REVALIDATE_SECRET` совпадают с `REVALIDATE_SECRET` сайта
+- `php artisan migrate --force`, `php artisan storage:link`, `php artisan config:cache`
+- `npm run build` в `frontend`, затем `npm run start`
+- `npm run build` в `admin`
+
+Сертификат: `certbot --nginx -d goldenroe.ru -d www.goldenroe.ru -d admin.goldenroe.ru`
+
+Резервная копия базы, картинок и PDF:
+
+```bash
+BACKEND_DIR=/var/www/goldenroe/backend BACKUP_DIR=/var/backups/goldenroe \
+DB_DATABASE=golden_roe DB_USERNAME=golden DB_PASSWORD=... \
+  sh deploy/backup.sh
+```
+
+Скрипт хранит архивы 14 дней. Каталог резервных копий не должен быть доступен из nginx.

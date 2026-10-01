@@ -17,6 +17,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
   }
 
-  revalidateTag('public', 'max')
+  revalidateTag('public', { expire: 0 })
   return NextResponse.json({ revalidated: true })
 }
