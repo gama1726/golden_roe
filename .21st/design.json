@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "project": {
+    "name": "golden_roe",
+    "productType": "personal editorial site",
+    "stack": ["next", "react", "tailwind"]
+  },
+  "sources": {
+    "tokens": ["admin/src/index.css"],
+    "components": [],
+    "assets": [],
+    "instructions": ["README.md"]
+  },
+  "design": {
+    "colorMode": "light",
+    "colors": {
+      "ivory": "#F4EFE6",
+      "ink": "#161616",
+      "gold": "#A68456",
+      "cream": "#EFE8DC",
+      "line": "#E4DCCF",
+      "muted": "#6F675E"
+    },
+    "typography": {
+      "heading": "Cormorant Garamond",
+      "ui": "Manrope"
+    },
+    "spacing": {},
+    "radius": {},
+    "shadows": {},
+    "motion": {},
+    "density": "comfortable"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": ["lucide-react"],
+    "patterns": ["editorial sections", "line icons"]
+  },
+  "constraints": {
+    "must": [
+      "Use only content returned by the API",
+      "Leave empty CMS fields empty",
+      "Ivory, ink, and muted gold",
+      "Serif headings and sans UI",
+      "Line icons"
+    ],
+    "avoid": [
+      "Emoji",
+      "Invented biography, reviews, addresses, and social networks",
+      "Article category filters",
+      "Decorative gradients and glass effects"
+    ]
+  },
+  "decisions": [
+    {
+      "date": "2026-10-01",
+      "choice": "Premium editorial layout locked to the approved mockup palette: ivory, ink, muted gold, Cormorant Garamond, Manrope."
+    }
+  ],
+  "evidence": [],
+  "generatedAt": "2026-10-01T11:18:14.243Z"
+}

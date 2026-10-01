@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-manrope), "Segoe UI", sans-serif;
+  --color-ivory: #f4efe6;
+  --color-ink: #161616;
+  --color-gold: #a68456;
+  --color-cream: #efe8dc;
+  --color-line: #e4dccf;
+  --color-muted: #6f675e;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+.article-body :where(p, ul, ol, blockquote, h2, h3, h4) {
+  margin: 1rem 0;
+}
+
+.article-body :where(h2, h3, h4) {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.article-body h2 {
+  font-size: 2rem;
+}
+
+.article-body h3 {
+  font-size: 1.5rem;
+}
+
+.article-body a {
+  color: var(--color-gold);
+  text-underline-offset: 3px;
+}
+
+.article-body img {
+  height: auto;
+  max-width: 100%;
+}
+
+.article-body blockquote {
+  border-left: 2px solid var(--color-gold);
+  padding-left: 1rem;
+  color: var(--color-muted);
+}

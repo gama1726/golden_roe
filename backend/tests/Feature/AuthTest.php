@@ -15,8 +15,8 @@ class AuthTest extends TestCase
     private function fromAdmin(): static
     {
         return $this->withCredentials()
-            ->withHeader('Origin', 'http://localhost:3000')
-            ->withHeader('Referer', 'http://localhost:3000/');
+            ->withHeader('Origin', 'http://localhost:5173')
+            ->withHeader('Referer', 'http://localhost:5173/');
     }
 
     private function withAuthCookies(TestResponse $response): static
