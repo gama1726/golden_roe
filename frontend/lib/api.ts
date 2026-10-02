@@ -8,6 +8,7 @@ import type {
   ContactChannel,
   DocumentItem,
   HomeData,
+  PageContent,
   PageMeta,
   ReviewItem,
   Seo,
@@ -87,7 +88,19 @@ export function getReviews() {
 }
 
 export function getContacts() {
-  return getJson<{ data: ContactChannel[]; banner: HomeData['banner']; seo: Seo }>('/api/v1/contacts')
+  return getJson<{
+    data: ContactChannel[]
+    banner: HomeData['banner']
+    blocks: {
+      greeting: Block | null
+      reach: Block | null
+      promise: Block | null
+      points: PageContent[]
+      scene: Block | null
+      consult: Block | null
+    }
+    seo: Seo
+  }>('/api/v1/contacts')
 }
 
 export function getDocuments() {

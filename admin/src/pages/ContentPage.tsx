@@ -3,7 +3,7 @@ import { Button, Field, Notice, PageTitle, TextArea, controlClass } from '../com
 import { api, errorText, uploadImage } from '../lib/api'
 import type { AuthorStat, Banner, PageContent, StoredImage } from '../lib/types'
 
-type Props = { page: 'home' | 'author' | 'services' | 'articles' | 'reviews'; title: string }
+type Props = { page: 'home' | 'author' | 'services' | 'articles' | 'reviews' | 'contacts'; title: string }
 
 const blockLabel: Record<string, string> = {
   quote: 'Цитата на баннере',
@@ -34,6 +34,15 @@ const blockLabel: Record<string, string> = {
   'manifesto.quote': 'Цитата манифеста',
   intro: 'Вступление к отзывам',
   'cta.note': 'Пояснение о проверке',
+  greeting: 'Приветствие под заголовком',
+  reach: 'Свяжитесь со мной',
+  promise: 'Цитата',
+  'point.reply': 'Быстро отвечаю',
+  'point.booking': 'Удобная запись',
+  'point.personal': 'Индивидуальный подход',
+  'point.privacy': 'Конфиденциальность',
+  scene: 'Фото внизу страницы',
+  consult: 'Записаться на консультацию',
 }
 
 export function ContentPage({ page, title }: Props) {

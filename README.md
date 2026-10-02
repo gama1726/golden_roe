@@ -136,6 +136,12 @@ php artisan db:seed --class=ArticlesVisualSeeder
 php artisan db:seed --class=ReviewsVisualSeeder
 ```
 
+Оформление страницы контактов — баннер, приветствие, цитата, четыре пункта и фото — тоже в базе. Телефон, почта и мессенджеры этот запуск не меняет. Город и карта не заполняются.
+
+```bash
+php artisan db:seed --class=ContactsVisualSeeder
+```
+
 Фиктивный отзыв:
 
 ```bash

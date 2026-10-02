@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Button, Field, Notice, PageTitle, controlClass } from '../components/ui'
+import { Button, Field, Notice, controlClass } from '../components/ui'
+import { ContentPage } from './ContentPage'
 import { api, errorText } from '../lib/api'
 import type { ContactChannel } from '../lib/types'
 
@@ -53,8 +54,10 @@ export function ContactsPage() {
   }
 
   return (
+    <div className="space-y-12">
+    <ContentPage page="contacts" title="Контакты" />
     <section className="space-y-4">
-      <PageTitle title="Контакты" />
+      <h2 className="font-serif text-4xl leading-none">Каналы связи</h2>
       <Notice text={notice} />
       <Notice text={error} />
       {items.map((channel) => (
@@ -96,5 +99,6 @@ export function ContactsPage() {
         <Button type="submit">Добавить</Button>
       </form>
     </section>
+    </div>
   )
 }
