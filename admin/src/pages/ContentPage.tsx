@@ -214,14 +214,14 @@ export function ContentPage({ page, title }: Props) {
       {page === 'author' && stats.map((stat) => (
         <form
           key={stat.id}
-          className="grid gap-3 rounded-3xl bg-white p-5 sm:grid-cols-[120px_1fr_auto]"
+          className="grid items-end gap-3 rounded-3xl bg-white p-5 sm:grid-cols-[minmax(14rem,1fr)_minmax(0,1.4fr)_auto]"
           onSubmit={(event) => {
             event.preventDefault()
             feedback.run(`stat-${stat.id}`, () => saveStat(stat)).catch((reason: unknown) => setError(errorText(reason)))
           }}
         >
-          <Field label="Число">
-            <input className={controlClass} value={stat.value ?? ''} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, value: event.target.value } : item))} />
+          <Field label="Основная часть">
+            <input className={controlClass} placeholder="34 года" value={stat.value ?? ''} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, value: event.target.value } : item))} />
           </Field>
           <Field label="Подпись">
             <input className={controlClass} value={stat.label} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, label: event.target.value } : item))} />

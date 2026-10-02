@@ -61,16 +61,18 @@ export function AuthorView({ author }: { author: AuthorData }) {
       {stats.length > 0 && (
         <section className="border-y border-line">
           <ul className="mx-auto grid w-full max-w-[80rem] grid-cols-2 gap-8 px-5 py-12 lg:grid-cols-4">
-            {stats.map((stat) => (
-              <li key={stat.id} className="text-center">
-                {stat.value ? (
-                  <p className="font-serif text-5xl">{stat.value}</p>
-                ) : (
-                  <ChartNoAxesColumn aria-hidden="true" className="mx-auto text-gold" size={36} strokeWidth={1.25} />
-                )}
-                <p className="mt-3 text-sm leading-relaxed">{stat.label}</p>
-              </li>
-            ))}
+            {stats.map((stat) => {
+              const long = (stat.value?.length ?? 0) > 12
+
+              return (
+                <li key={stat.id} className="text-center text-gold">
+                  {stat.value && (
+                    <p className={`font-serif leading-tight ${long ? 'text-2xl md:text-3xl' : 'text-4xl md:text-5xl'}`}>{stat.value}</p>
+                  )}
+                  <p className="mt-3 text-sm leading-relaxed">{stat.label}</p>
+                </li>
+              )
+            })}
           </ul>
         </section>
       )}

@@ -72,17 +72,21 @@ class ContentSeeder extends Seeder
         );
 
         $stats = [
-            ['34', 'года в индустрии красоты'],
-            ['3', 'детей'],
-            ['24', 'песни'],
-            [null, 'созданный и проданный бизнес'],
+            ['34 года', 'жизненного опыта и постоянного роста'],
+            ['3 детей', 'моя главная вдохновляющая сила'],
+            ['24 песни', 'творчество как часть моей души'],
+            ['Созданный и проданный бизнес', 'реальный опыт в предпринимательстве'],
         ];
 
-        foreach ($stats as $index => [$value, $label]) {
-            AuthorStat::query()->firstOrCreate(
-                ['label' => $label],
-                ['value' => $value, 'sort_order' => $index + 1, 'is_active' => true],
-            );
+        if (AuthorStat::query()->doesntExist()) {
+            foreach ($stats as $index => [$value, $label]) {
+                AuthorStat::query()->create([
+                    'value' => $value,
+                    'label' => $label,
+                    'sort_order' => $index + 1,
+                    'is_active' => true,
+                ]);
+            }
         }
 
         Service::query()->firstOrCreate(
