@@ -6,8 +6,6 @@ services:
       MYSQL_USER: golden
       MYSQL_PASSWORD: golden
       MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -18,8 +16,6 @@ services:
 
   redis:
     image: docker.io/library/redis:7-alpine
-    ports:
-      - "6379:6379"
 
   backend:
     build:
