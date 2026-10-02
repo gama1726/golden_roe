@@ -1,3 +1,5 @@
+FROM composer:2 AS composer_bin
+
 FROM php:8.3-cli
 
 RUN apt-get update \
@@ -15,7 +17,7 @@ RUN apt-get update \
 
 RUN printf 'upload_max_filesize=12M\npost_max_size=12M\nmemory_limit=512M\n' > /usr/local/etc/php/conf.d/uploads.ini
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer_bin /usr/bin/composer /usr/bin/composer
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
