@@ -8,7 +8,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: '/admin/',
   server: {
-    host: '127.0.0.1',
+    host: '0.0.0.0',
+    allowedHosts: true,
     port: 5173,
     proxy: {
       '/api': { target: apiTarget, changeOrigin: false },

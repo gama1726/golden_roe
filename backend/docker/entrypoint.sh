@@ -29,4 +29,4 @@ done
 
 php artisan migrate --seed --force --no-interaction
 
-exec php artisan serve --host=0.0.0.0 --port=8000
+exec php artisan serve --no-reload --host=0.0.0.0 --port=8000
