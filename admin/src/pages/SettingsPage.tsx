@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Field, Notice, PageTitle, controlClass } from '../components/ui'
+import { Field, Notice, PageTitle, SaveButton, controlClass, useSaveFeedback } from '../components/ui'
 import { api, errorText } from '../lib/api'
 import type { Settings } from '../lib/types'
 
@@ -14,8 +14,8 @@ const pages = [
 
 export function SettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null)
-  const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const feedback = useSaveFeedback()
 
   useEffect(() => {
     api
@@ -26,14 +26,9 @@ export function SettingsPage() {
 
   async function save() {
     if (!settings) return
-    try {
-      const response = await api.patch<{ data: Settings }>('/api/v1/admin/settings', settings)
-      setSettings(response.data.data)
-      setNotice('Сохранено')
-      setError(null)
-    } catch (reason) {
-      setError(errorText(reason))
-    }
+    const response = await api.patch<{ data: Settings }>('/api/v1/admin/settings', settings)
+    setSettings(response.data.data)
+    setError(null)
   }
 
   if (!settings) return <Notice text={error ?? 'Загрузка…'} />
@@ -41,7 +36,6 @@ export function SettingsPage() {
   return (
     <section className="space-y-4">
       <PageTitle title="Настройки" />
-      <Notice text={notice} />
       <Notice text={error} />
       <label className="flex items-center gap-2 rounded-3xl bg-white p-5 text-sm">
         <input
@@ -56,7 +50,7 @@ export function SettingsPage() {
         return (
           <div key={key} className="space-y-3 rounded-3xl bg-white p-5">
             <h2 className="font-serif text-2xl">{label}</h2>
-            <Field label="Title">
+            <Field label="Заголовок страницы">
               <input
                 className={controlClass}
                 value={entry.title ?? ''}
@@ -68,7 +62,7 @@ export function SettingsPage() {
                 }
               />
             </Field>
-            <Field label="Description">
+            <Field label="Описание">
               <input
                 className={controlClass}
                 value={entry.description ?? ''}
@@ -84,9 +78,7 @@ export function SettingsPage() {
           </div>
         )
       })}
-      <Button type="button" onClick={save}>
-        Сохранить
-      </Button>
+      <SaveButton type="button" idle="Сохранить" pending={feedback.pending('settings')} saved={feedback.saved('settings')} onClick={() => feedback.run('settings', save).catch((reason: unknown) => setError(errorText(reason)))} />
     </section>
   )
 }

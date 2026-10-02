@@ -1,6 +1,6 @@
-import { ChevronDown, ChevronUp, Plus } from 'lucide-react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
-import { Button, Field, Notice, TextArea, controlClass } from '../components/ui'
+import { Button, Field, Notice, SaveButton, TextArea, controlClass, useSaveFeedback } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
 import type { Service, StoredImage } from '../lib/types'
 import { ContentPage } from './ContentPage'
@@ -13,6 +13,7 @@ export function ServicesPage() {
   const [editing, setEditing] = useState<number | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const feedback = useSaveFeedback()
   const [image, setImage] = useState<StoredImage | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
 
@@ -41,21 +42,17 @@ export function ServicesPage() {
       is_active: form.is_active,
     }
     if (image) payload.image = image
-    try {
-      if (editing) {
-        await api.patch(`/api/v1/admin/services/${editing}`, payload)
-      } else {
-        await api.post('/api/v1/admin/services', payload)
-      }
-      setForm(empty)
-      setEditing(null)
-      setImage(null)
-      setPreview(null)
-      await load()
-      notify('Сохранено')
-    } catch (reason) {
-      setError(errorText(reason))
+    if (editing) {
+      await api.patch(`/api/v1/admin/services/${editing}`, payload)
+    } else {
+      await api.post('/api/v1/admin/services', payload)
     }
+    setForm(empty)
+    setEditing(null)
+    setImage(null)
+    setPreview(null)
+    await load()
+    setError(null)
   }
 
   function edit(service: Service) {
@@ -136,7 +133,13 @@ export function ServicesPage() {
           </article>
         ))}
       </div>
-      <form onSubmit={save} className="space-y-3 rounded-3xl bg-white p-5">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          feedback.run('service', () => save(event)).catch((reason: unknown) => setError(errorText(reason)))
+        }}
+        className="space-y-3 rounded-3xl bg-white p-5"
+      >
         <h2 className="font-serif text-2xl">{editing ? 'Редактирование' : 'Новая услуга'}</h2>
         <Field label="Название">
           <input className={controlClass} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
@@ -162,10 +165,7 @@ export function ServicesPage() {
           Показывать на сайте
         </label>
         <div className="flex gap-2">
-          <Button type="submit">
-            <Plus size={16} />
-            Сохранить
-          </Button>
+          <SaveButton pending={feedback.pending('service')} saved={feedback.saved('service')} />
           {editing && (
             <Button type="button" variant="ghost" onClick={() => { setEditing(null); setForm(empty); setImage(null); setPreview(null) }}>
               Отмена

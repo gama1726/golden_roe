@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Field, Notice, PageTitle, TextArea, controlClass } from '../components/ui'
+import { Field, Notice, PageTitle, SaveButton, TextArea, controlClass, useSaveFeedback } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
 import type { AuthorStat, Banner, PageContent, StoredImage } from '../lib/types'
 
@@ -33,6 +33,19 @@ const blockLabel: Record<string, string> = {
   manifesto: 'Манифест',
   'manifesto.quote': 'Цитата манифеста',
   intro: 'Вступление к отзывам',
+  approach: 'Обо мне',
+  results: 'Результаты',
+  choice: 'Финальный акцент',
+  'result.housing': 'Результат: жильё',
+  'result.income': 'Результат: рост доходов',
+  'result.businesses': 'Результат: новые бизнесы',
+  'result.family': 'Результат: семья',
+  'result.health': 'Результат: здоровье',
+  'result.children': 'Результат: рождение детей',
+  'anchor.beauty': 'Якорь: индустрия красоты',
+  'anchor.business': 'Якорь: предпринимательство',
+  'anchor.motherhood': 'Якорь: материнство',
+  'anchor.manifesto': 'Якорь: манифест',
   'cta.note': 'Пояснение о проверке',
   greeting: 'Приветствие под заголовком',
   reach: 'Свяжитесь со мной',
@@ -52,8 +65,8 @@ export function ContentPage({ page, title }: Props) {
   const [images, setImages] = useState<Record<string, StoredImage>>({})
   const [previews, setPreviews] = useState<Record<string, string>>({})
   const [removed, setRemoved] = useState<Record<string, boolean>>({})
-  const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const feedback = useSaveFeedback()
 
   async function load() {
     const [bannerResponse, contentResponse] = await Promise.all([
@@ -81,11 +94,10 @@ export function ContentPage({ page, title }: Props) {
     const key = `banner-${banner.id}`
     if (images[key]) payload.image = images[key]
     else if (removed[key]) payload.image = null
-    await api.patch(`/api/v1/admin/banners/${banner.id}`, payload)
+    const response = await api.patch<{ data: Banner }>(`/api/v1/admin/banners/${banner.id}`, payload)
     clearImageState(key)
-    await load()
+    setBanners((current) => current.map((item) => (item.id === banner.id ? response.data.data : item)))
     setError(null)
-    setNotice('Сохранено')
   }
 
   async function saveBlock(block: PageContent) {
@@ -97,11 +109,10 @@ export function ContentPage({ page, title }: Props) {
     const key = `block-${block.id}`
     if (images[key]) payload.image = images[key]
     else if (removed[key]) payload.image = null
-    await api.patch(`/api/v1/admin/page-contents/${block.id}`, payload)
+    const response = await api.patch<{ data: PageContent }>(`/api/v1/admin/page-contents/${block.id}`, payload)
     clearImageState(key)
-    await load()
+    setBlocks((current) => current.map((item) => (item.id === block.id ? response.data.data : item)))
     setError(null)
-    setNotice('Сохранено')
   }
 
   function clearImageState(key: string) {
@@ -123,14 +134,14 @@ export function ContentPage({ page, title }: Props) {
   }
 
   async function saveStat(stat: AuthorStat) {
-    await api.patch(`/api/v1/admin/author-stats/${stat.id}`, {
+    const response = await api.patch<{ data: AuthorStat }>(`/api/v1/admin/author-stats/${stat.id}`, {
       value: stat.value,
       label: stat.label,
       is_active: stat.is_active,
       sort_order: stat.sort_order,
     })
+    setStats((current) => current.map((item) => (item.id === stat.id ? response.data.data : item)))
     setError(null)
-    setNotice('Сохранено')
   }
 
   async function onFile(key: string, file: File | undefined) {
@@ -168,7 +179,6 @@ export function ContentPage({ page, title }: Props) {
     <section className="space-y-4">
       <PageTitle title={title} />
       <p className="text-sm text-muted">Тексты и фотографии этой страницы берутся отсюда. Чтобы заменить картинку, выберите файл и сохраните. Пустое поле на сайте остаётся пустым.</p>
-      <Notice text={notice} />
       <Notice text={error} />
       {banners.map((banner) => (
         <form
@@ -176,7 +186,7 @@ export function ContentPage({ page, title }: Props) {
           className="space-y-3 rounded-3xl bg-white p-5"
           onSubmit={(event) => {
             event.preventDefault()
-            saveBanner(banner).catch((reason: unknown) => setError(errorText(reason)))
+            feedback.run(`banner-${banner.id}`, () => saveBanner(banner)).catch((reason: unknown) => setError(errorText(reason)))
           }}
         >
           <h2 className="font-serif text-2xl">Баннер первого экрана</h2>
@@ -198,7 +208,7 @@ export function ContentPage({ page, title }: Props) {
             onPick={onFile}
             onRemove={removeImage}
           />
-          <Button type="submit">Сохранить баннер</Button>
+          <SaveButton idle="Сохранить баннер" pending={feedback.pending(`banner-${banner.id}`)} saved={feedback.saved(`banner-${banner.id}`)} />
         </form>
       ))}
       {page === 'author' && stats.map((stat) => (
@@ -207,7 +217,7 @@ export function ContentPage({ page, title }: Props) {
           className="grid gap-3 rounded-3xl bg-white p-5 sm:grid-cols-[120px_1fr_auto]"
           onSubmit={(event) => {
             event.preventDefault()
-            saveStat(stat).catch((reason: unknown) => setError(errorText(reason)))
+            feedback.run(`stat-${stat.id}`, () => saveStat(stat)).catch((reason: unknown) => setError(errorText(reason)))
           }}
         >
           <Field label="Число">
@@ -217,7 +227,7 @@ export function ContentPage({ page, title }: Props) {
             <input className={controlClass} value={stat.label} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, label: event.target.value } : item))} />
           </Field>
           <div className="flex items-end">
-            <Button type="submit">Сохранить</Button>
+            <SaveButton pending={feedback.pending(`stat-${stat.id}`)} saved={feedback.saved(`stat-${stat.id}`)} />
           </div>
         </form>
       ))}
@@ -227,7 +237,7 @@ export function ContentPage({ page, title }: Props) {
           className="space-y-3 rounded-3xl bg-white p-5"
           onSubmit={(event) => {
             event.preventDefault()
-            saveBlock(block).catch((reason: unknown) => setError(errorText(reason)))
+            feedback.run(`block-${block.id}`, () => saveBlock(block)).catch((reason: unknown) => setError(errorText(reason)))
           }}
         >
           <h2 className="font-serif text-2xl">{blockLabel[block.key] ?? block.key}</h2>
@@ -253,7 +263,7 @@ export function ContentPage({ page, title }: Props) {
             onPick={onFile}
             onRemove={removeImage}
           />
-          <Button type="submit">Сохранить блок</Button>
+          <SaveButton idle="Сохранить блок" pending={feedback.pending(`block-${block.id}`)} saved={feedback.saved(`block-${block.id}`)} />
         </form>
       ))}
     </section>

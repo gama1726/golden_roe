@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Button, Field, Notice, controlClass } from '../components/ui'
+import { Button, Field, Notice, SaveButton, controlClass, useSaveFeedback } from '../components/ui'
 import { ContentPage } from './ContentPage'
 import { api, errorText } from '../lib/api'
 import type { ContactChannel } from '../lib/types'
@@ -8,6 +8,7 @@ export function ContactsPage() {
   const [items, setItems] = useState<ContactChannel[]>([])
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const feedback = useSaveFeedback()
   const [draft, setDraft] = useState({ key: '', label: '', value: '' })
 
   async function load() {
@@ -20,21 +21,16 @@ export function ContactsPage() {
   }, [])
 
   async function save(channel: ContactChannel) {
-    try {
-      await api.patch(`/api/v1/admin/contacts/${channel.id}`, {
-        key: channel.key,
-        label: channel.label,
-        value: channel.value,
-        url: channel.url_override,
-        is_public: channel.is_public,
-        sort_order: channel.sort_order,
-      })
-      await load()
-      setNotice('Сохранено')
-      setError(null)
-    } catch (reason) {
-      setError(errorText(reason))
-    }
+    const response = await api.patch<{ data: { url: string | null } }>(`/api/v1/admin/contacts/${channel.id}`, {
+      key: channel.key,
+      label: channel.label,
+      value: channel.value,
+      url: channel.url_override,
+      is_public: channel.is_public,
+      sort_order: channel.sort_order,
+    })
+    setItems((current) => current.map((item) => (item.id === channel.id ? { ...item, url: response.data.data.url } : item)))
+    setError(null)
   }
 
   async function create(event: FormEvent) {
@@ -66,7 +62,7 @@ export function ContactsPage() {
           className="space-y-3 rounded-3xl bg-white p-5"
           onSubmit={(event) => {
             event.preventDefault()
-            void save(channel)
+            feedback.run(`channel-${channel.id}`, () => save(channel)).catch((reason: unknown) => setError(errorText(reason)))
           }}
         >
           <h2 className="font-serif text-2xl">{channel.label}</h2>
@@ -81,7 +77,7 @@ export function ContactsPage() {
             <input type="checkbox" checked={channel.is_public} onChange={(event) => update(channel.id, { is_public: event.target.checked })} />
             Показывать на сайте
           </label>
-          <Button type="submit">Сохранить</Button>
+          <SaveButton pending={feedback.pending(`channel-${channel.id}`)} saved={feedback.saved(`channel-${channel.id}`)} />
         </form>
       ))}
       <form onSubmit={create} className="space-y-3 rounded-3xl bg-white p-5">

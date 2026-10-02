@@ -1,7 +1,7 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { RichText } from '../components/Editor'
-import { Button, Field, Notice, PageTitle, controlClass } from '../components/ui'
+import { Field, Notice, PageTitle, SaveButton, controlClass, useSaveFeedback } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
 import type { Article, StoredImage } from '../lib/types'
 
@@ -16,8 +16,8 @@ export function ArticleEditorPage() {
   const [preview, setPreview] = useState<string | null>(null)
   const [image, setImage] = useState<StoredImage | null>(null)
   const [ready, setReady] = useState(isNew)
-  const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const feedback = useSaveFeedback()
 
   useEffect(() => {
     if (isNew || !params.id) return
@@ -42,8 +42,7 @@ export function ArticleEditorPage() {
     setPreview(uploaded.urls.original)
   }
 
-  async function save(event: FormEvent) {
-    event.preventDefault()
+  async function save() {
     const payload: Record<string, unknown> = {
       title,
       excerpt: excerpt || null,
@@ -51,18 +50,13 @@ export function ArticleEditorPage() {
       is_published: published,
     }
     if (image) payload.image = image
-    try {
-      if (isNew) {
-        const response = await api.post<{ data: Article }>('/api/v1/admin/articles', payload)
-        navigate(`/articles/${response.data.data.id}`, { replace: true })
-      } else {
-        await api.patch(`/api/v1/admin/articles/${params.id}`, payload)
-      }
-      setNotice('Сохранено')
-      setError(null)
-    } catch (reason) {
-      setError(errorText(reason))
+    if (isNew) {
+      const response = await api.post<{ data: Article }>('/api/v1/admin/articles', payload)
+      navigate(`/articles/${response.data.data.id}`, { replace: true })
+    } else {
+      await api.patch(`/api/v1/admin/articles/${params.id}`, payload)
     }
+    setError(null)
   }
 
   return (
@@ -72,10 +66,15 @@ export function ArticleEditorPage() {
           К списку
         </Link>
       </PageTitle>
-      <Notice text={notice} />
       <Notice text={error} />
       {ready && (
-        <form onSubmit={save} className="space-y-4">
+        <form
+          onSubmit={(event) => {
+            event.preventDefault()
+            feedback.run('article', save).catch((reason: unknown) => setError(errorText(reason)))
+          }}
+          className="space-y-4"
+        >
           <Field label="Название">
             <input className={controlClass} value={title} onChange={(event) => setTitle(event.target.value)} required />
           </Field>
@@ -91,7 +90,7 @@ export function ArticleEditorPage() {
             <input type="checkbox" checked={published} onChange={(event) => setPublished(event.target.checked)} />
             Опубликовать
           </label>
-          <Button type="submit">Сохранить</Button>
+          <SaveButton pending={feedback.pending('article')} saved={feedback.saved('article')} />
         </form>
       )}
     </section>

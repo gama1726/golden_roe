@@ -25,7 +25,7 @@ test('admin text appears on the public home and is removed again', async ({ page
   const marker = `E2E-${Date.now()}`
   await login(page)
   await page.goto(`${adminBase}/home`)
-  const form = page.locator('form').filter({ hasText: 'approach' })
+  const form = page.locator('form').filter({ hasText: 'Обо мне' })
   const field = form.getByLabel('Текст')
   const original = await field.inputValue()
 
@@ -40,9 +40,9 @@ test('admin text appears on the public home and is removed again', async ({ page
     }).toPass()
   } finally {
     await page.goto(`${adminBase}/home`)
-    const restore = page.locator('form').filter({ hasText: 'approach' }).getByLabel('Текст')
+    const restore = page.locator('form').filter({ hasText: 'Обо мне' }).getByLabel('Текст')
     await restore.fill(original)
-    await page.locator('form').filter({ hasText: 'approach' }).getByRole('button', { name: 'Сохранить блок' }).click()
+    await page.locator('form').filter({ hasText: 'Обо мне' }).getByRole('button', { name: 'Сохранить блок' }).click()
     await expect(page.getByText('Сохранено').first()).toBeVisible()
   }
 
