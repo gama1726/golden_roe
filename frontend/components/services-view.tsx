@@ -55,7 +55,7 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
       </section>
 
       {blocks.points.length > 0 && (
-        <section className="border-y border-line">
+        <section className="border-y border-line bg-cream">
           <ul className="mx-auto grid w-full max-w-[80rem] gap-8 px-5 py-10 sm:grid-cols-2 lg:grid-cols-4">
             {blocks.points.map((point) => (
               <li key={point.id} className="text-center">

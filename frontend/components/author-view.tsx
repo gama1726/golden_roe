@@ -59,7 +59,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {stats.length > 0 && (
-        <section className="border-y border-line">
+        <section className="border-y border-line bg-cream">
           <ul className="mx-auto grid w-full max-w-[80rem] grid-cols-2 gap-8 px-5 py-12 lg:grid-cols-4">
             {stats.map((stat) => {
               const long = (stat.value?.length ?? 0) > 12

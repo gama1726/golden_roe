@@ -77,7 +77,7 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
       )}
 
       {(results.title || results.items.length > 0) && (
-        <section className="border-y border-line">
+        <section className="border-y border-line bg-cream">
           <div className="mx-auto w-full max-w-[80rem] px-4 py-12 sm:px-5 sm:py-16 md:py-20">
             {results.eyebrow && <p className="text-center text-xs tracking-[0.22em] text-gold uppercase">{results.eyebrow}</p>}
             {results.title && <h2 className="mt-4 text-center font-serif text-3xl sm:text-4xl md:text-5xl">{results.title}</h2>}
