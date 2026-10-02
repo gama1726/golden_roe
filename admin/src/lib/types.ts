@@ -20,6 +20,7 @@ export type StoredImage = {
 export type Service = {
   id: number
   title: string
+  image: ImageUrls | null
   price: number
   price_display: string
   format: string

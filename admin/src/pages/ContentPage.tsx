@@ -3,13 +3,24 @@ import { Button, Field, Notice, PageTitle, TextArea, controlClass } from '../com
 import { api, errorText, uploadImage } from '../lib/api'
 import type { AuthorStat, Banner, PageContent, StoredImage } from '../lib/types'
 
-type Props = { page: 'home' | 'author'; title: string }
+type Props = { page: 'home' | 'author' | 'services'; title: string }
+
+const blockLabel: Record<string, string> = {
+  quote: 'Цитата на баннере',
+  'point.system': 'Принцип: системный подход',
+  'point.individual': 'Принцип: индивидуальные решения',
+  'point.trust': 'Принцип: конфиденциальность',
+  'point.results': 'Принцип: реальные изменения',
+  cta: 'Нижний экран',
+}
 
 export function ContentPage({ page, title }: Props) {
   const [banners, setBanners] = useState<Banner[]>([])
   const [blocks, setBlocks] = useState<PageContent[]>([])
   const [stats, setStats] = useState<AuthorStat[]>([])
   const [images, setImages] = useState<Record<string, StoredImage>>({})
+  const [previews, setPreviews] = useState<Record<string, string>>({})
+  const [removed, setRemoved] = useState<Record<string, boolean>>({})
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -36,9 +47,12 @@ export function ContentPage({ page, title }: Props) {
       subtitle: banner.subtitle,
       text: banner.text,
     }
-    const image = images[`banner-${banner.id}`]
-    if (image) payload.image = image
+    const key = `banner-${banner.id}`
+    if (images[key]) payload.image = images[key]
+    else if (removed[key]) payload.image = null
     await api.patch(`/api/v1/admin/banners/${banner.id}`, payload)
+    clearImageState(key)
+    await load()
     setError(null)
     setNotice('Сохранено')
   }
@@ -49,11 +63,32 @@ export function ContentPage({ page, title }: Props) {
       title: block.title,
       body: block.body,
     }
-    const image = images[`block-${block.id}`]
-    if (image) payload.image = image
+    const key = `block-${block.id}`
+    if (images[key]) payload.image = images[key]
+    else if (removed[key]) payload.image = null
     await api.patch(`/api/v1/admin/page-contents/${block.id}`, payload)
+    clearImageState(key)
+    await load()
     setError(null)
     setNotice('Сохранено')
+  }
+
+  function clearImageState(key: string) {
+    setImages((current) => {
+      const next = { ...current }
+      delete next[key]
+      return next
+    })
+    setPreviews((current) => {
+      const next = { ...current }
+      delete next[key]
+      return next
+    })
+    setRemoved((current) => {
+      const next = { ...current }
+      delete next[key]
+      return next
+    })
   }
 
   async function saveStat(stat: AuthorStat) {
@@ -74,12 +109,34 @@ export function ContentPage({ page, title }: Props) {
       ...current,
       [key]: { original: uploaded.original, webp: uploaded.webp, alt: uploaded.alt },
     }))
+    if (uploaded.urls.original) {
+      setPreviews((current) => ({ ...current, [key]: uploaded.urls.original as string }))
+    }
+    setRemoved((current) => {
+      const next = { ...current }
+      delete next[key]
+      return next
+    })
+  }
+
+  function removeImage(key: string) {
+    setRemoved((current) => ({ ...current, [key]: true }))
+    setImages((current) => {
+      const next = { ...current }
+      delete next[key]
+      return next
+    })
+    setPreviews((current) => {
+      const next = { ...current }
+      delete next[key]
+      return next
+    })
   }
 
   return (
     <section className="space-y-4">
       <PageTitle title={title} />
-      <p className="text-sm text-muted">Если текста нет, оставьте поле пустым. На сайте пустой блок не заполняется выдуманным текстом.</p>
+      <p className="text-sm text-muted">Тексты и фотографии этой страницы берутся отсюда. Чтобы заменить картинку, выберите файл и сохраните. Пустое поле на сайте остаётся пустым.</p>
       <Notice text={notice} />
       <Notice text={error} />
       {banners.map((banner) => (
@@ -91,7 +148,7 @@ export function ContentPage({ page, title }: Props) {
             saveBanner(banner).catch((reason: unknown) => setError(errorText(reason)))
           }}
         >
-          <h2 className="font-serif text-2xl">Баннер</h2>
+          <h2 className="font-serif text-2xl">Баннер первого экрана</h2>
           <Field label="Заголовок">
             <input className={controlClass} value={banner.title ?? ''} onChange={(event) => setBanners(banners.map((item) => item.id === banner.id ? { ...item, title: event.target.value } : item))} />
           </Field>
@@ -101,8 +158,15 @@ export function ContentPage({ page, title }: Props) {
           <Field label="Текст">
             <TextArea value={banner.text ?? ''} onChange={(event) => setBanners(banners.map((item) => item.id === banner.id ? { ...item, text: event.target.value } : item))} />
           </Field>
-          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onFile(`banner-${banner.id}`, event.target.files?.[0])} />
-          {banner.image?.original && <img src={banner.image.original} alt="" className="max-h-48 rounded-2xl object-cover" />}
+          <ImageEditor
+            label="Изображение баннера"
+            inputKey={`banner-${banner.id}`}
+            current={banner.image?.original ?? null}
+            preview={previews[`banner-${banner.id}`] ?? null}
+            removed={removed[`banner-${banner.id}`] ?? false}
+            onPick={onFile}
+            onRemove={removeImage}
+          />
           <Button type="submit">Сохранить баннер</Button>
         </form>
       ))}
@@ -135,7 +199,7 @@ export function ContentPage({ page, title }: Props) {
             saveBlock(block).catch((reason: unknown) => setError(errorText(reason)))
           }}
         >
-          <p className="text-xs tracking-wide text-muted uppercase">{block.key}</p>
+          <h2 className="font-serif text-2xl">{blockLabel[block.key] ?? block.key}</h2>
           <Field label="Надзаголовок">
             <input className={controlClass} value={block.eyebrow ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, eyebrow: event.target.value } : item))} />
           </Field>
@@ -149,10 +213,50 @@ export function ContentPage({ page, title }: Props) {
               onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, body: event.target.value } : item))}
             />
           </Field>
-          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onFile(`block-${block.id}`, event.target.files?.[0])} />
+          <ImageEditor
+            label="Изображение блока"
+            inputKey={`block-${block.id}`}
+            current={block.image?.original ?? null}
+            preview={previews[`block-${block.id}`] ?? null}
+            removed={removed[`block-${block.id}`] ?? false}
+            onPick={onFile}
+            onRemove={removeImage}
+          />
           <Button type="submit">Сохранить блок</Button>
         </form>
       ))}
     </section>
+  )
+}
+
+function ImageEditor({
+  label,
+  inputKey,
+  current,
+  preview,
+  removed,
+  onPick,
+  onRemove,
+}: {
+  label: string
+  inputKey: string
+  current: string | null
+  preview: string | null
+  removed: boolean
+  onPick: (key: string, file: File | undefined) => void
+  onRemove: (key: string) => void
+}) {
+  const shown = preview ?? (removed ? null : current)
+
+  return (
+    <Field label={label}>
+      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onPick(inputKey, event.target.files?.[0])} />
+      {shown && <img src={shown} alt="" className="mt-3 max-h-48 rounded-2xl object-cover" />}
+      {shown && (
+        <button type="button" className="mt-2 text-sm text-muted underline" onClick={() => onRemove(inputKey)}>
+          Убрать изображение
+        </button>
+      )}
+    </Field>
   )
 }

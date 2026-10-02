@@ -32,6 +32,7 @@ class HomeController extends Controller
                     'approach' => $this->block($blocks->get('approach')),
                     'choice' => $this->block($blocks->get('choice')),
                     'results' => [
+                        'eyebrow' => $blocks->get('results')?->eyebrow,
                         'title' => $blocks->get('results')?->title,
                         'body' => $blocks->get('results')?->body,
                         'items' => PageContentResource::collection($results)->resolve(),
@@ -51,7 +52,7 @@ class HomeController extends Controller
     }
 
     /**
-     * @return array{title: string|null, body: string|null, image: mixed}|null
+     * @return array{eyebrow: string|null, title: string|null, body: string|null, image: mixed}|null
      */
     private function block(?PageContent $block): ?array
     {
@@ -62,6 +63,7 @@ class HomeController extends Controller
         $resolved = (new PageContentResource($block))->resolve();
 
         return [
+            'eyebrow' => $resolved['eyebrow'],
             'title' => $resolved['title'],
             'body' => $resolved['body'],
             'image' => $resolved['image'],

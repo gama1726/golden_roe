@@ -1,5 +1,6 @@
 'use client'
 
+import { Logo } from '@/components/logo'
 import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -20,9 +21,9 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-ivory">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-4">
-        <Link href="/" className="font-serif text-2xl tracking-wide" onClick={() => setOpen(false)}>
-          Golden Roe
+      <div className="mx-auto flex w-full max-w-[80rem] items-center justify-between gap-4 px-5 py-4">
+        <Link href="/" className="shrink-0" aria-label="Golden Roe" onClick={() => setOpen(false)}>
+          <Logo />
         </Link>
         <nav className="hidden items-center gap-6 md:flex" aria-label="Разделы сайта">
           {links.map((link) => (
@@ -30,12 +31,12 @@ export function SiteHeader() {
               key={link.href}
               href={link.href}
               aria-current={pathname === link.href ? 'page' : undefined}
-              className={pathname === link.href ? 'text-ink' : 'text-muted hover:text-ink'}
+              className={pathname === link.href ? 'border-b border-gold pb-0.5 text-ink' : 'text-muted hover:text-ink'}
             >
               {link.label}
             </Link>
           ))}
-          <Link href="/kontakty" className="border border-ink px-4 py-2 text-sm">
+          <Link href="/kontakty" className="rounded-full bg-gold px-5 py-2 text-sm text-ink">
             Записаться
           </Link>
         </nav>
@@ -57,7 +58,7 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
-          <Link href="/kontakty" onClick={() => setOpen(false)} className="border border-ink px-4 py-2 text-center text-sm">
+          <Link href="/kontakty" onClick={() => setOpen(false)} className="rounded-full bg-gold px-4 py-2 text-center text-sm text-ink">
             Записаться
           </Link>
         </nav>

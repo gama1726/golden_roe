@@ -31,7 +31,7 @@ final class ImageProcessor
         foreach ([640, 1280, 1920] as $width) {
             $variant = "images/{$name}-{$width}.webp";
             try {
-                $encoded = Image::read($file->getRealPath())
+                $encoded = Image::decode($file->getRealPath())
                     ->scaleDown(width: $width)
                     ->encode(new WebpEncoder(quality: 82));
                 Storage::disk('public')->put($variant, (string) $encoded);

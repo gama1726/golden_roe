@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Admin;
 
+use App\Rules\StoredImage;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ServiceRequest extends FormRequest
@@ -28,6 +29,7 @@ class ServiceRequest extends FormRequest
             'result' => [$required, 'string', 'max:5000'],
             'sort_order' => ['sometimes', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
+            'image' => ['sometimes', 'nullable', new StoredImage],
         ];
     }
 }

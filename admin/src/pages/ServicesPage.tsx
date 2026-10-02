@@ -1,8 +1,9 @@
 import { ChevronDown, ChevronUp, Plus } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
-import { Button, Field, Notice, PageTitle, TextArea, controlClass } from '../components/ui'
-import { api, errorText } from '../lib/api'
-import type { Service } from '../lib/types'
+import { Button, Field, Notice, TextArea, controlClass } from '../components/ui'
+import { api, errorText, uploadImage } from '../lib/api'
+import type { Service, StoredImage } from '../lib/types'
+import { ContentPage } from './ContentPage'
 
 const empty = { title: '', price: '', format: '', audience: '', result: '', is_active: true }
 
@@ -12,6 +13,8 @@ export function ServicesPage() {
   const [editing, setEditing] = useState<number | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [image, setImage] = useState<StoredImage | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
 
   async function load() {
     const response = await api.get<{ data: Service[] }>('/api/v1/admin/services')
@@ -29,7 +32,7 @@ export function ServicesPage() {
 
   async function save(event: FormEvent) {
     event.preventDefault()
-    const payload = {
+    const payload: Record<string, unknown> = {
       title: form.title,
       price: Number(form.price),
       format: form.format,
@@ -37,6 +40,7 @@ export function ServicesPage() {
       result: form.result,
       is_active: form.is_active,
     }
+    if (image) payload.image = image
     try {
       if (editing) {
         await api.patch(`/api/v1/admin/services/${editing}`, payload)
@@ -45,6 +49,8 @@ export function ServicesPage() {
       }
       setForm(empty)
       setEditing(null)
+      setImage(null)
+      setPreview(null)
       await load()
       notify('Сохранено')
     } catch (reason) {
@@ -62,6 +68,15 @@ export function ServicesPage() {
       result: service.result,
       is_active: service.is_active,
     })
+    setImage(null)
+    setPreview(service.image?.original ?? null)
+  }
+
+  async function onFile(file: File | undefined) {
+    if (!file) return
+    const uploaded = await uploadImage(file)
+    setImage({ original: uploaded.original, webp: uploaded.webp, alt: uploaded.alt })
+    setPreview(uploaded.urls.original)
   }
 
   async function remove(service: Service) {
@@ -86,8 +101,10 @@ export function ServicesPage() {
   }
 
   return (
+    <div className="space-y-12">
+    <ContentPage page="services" title="Услуги" />
     <section className="space-y-6">
-      <PageTitle title="Услуги" />
+      <h2 className="font-serif text-4xl leading-none">Карточки услуг</h2>
       <Notice text={notice} />
       <Notice text={error} />
       <div className="space-y-3">
@@ -136,6 +153,10 @@ export function ServicesPage() {
         <Field label="Результат">
           <TextArea value={form.result} onChange={(event) => setForm({ ...form, result: event.target.value })} required />
         </Field>
+        <Field label="Изображение">
+          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onFile(event.target.files?.[0])} />
+        </Field>
+        {preview && <img src={preview} alt="" className="max-h-40 rounded-2xl object-cover" />}
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={form.is_active} onChange={(event) => setForm({ ...form, is_active: event.target.checked })} />
           Показывать на сайте
@@ -146,12 +167,13 @@ export function ServicesPage() {
             Сохранить
           </Button>
           {editing && (
-            <Button type="button" variant="ghost" onClick={() => { setEditing(null); setForm(empty) }}>
+            <Button type="button" variant="ghost" onClick={() => { setEditing(null); setForm(empty); setImage(null); setPreview(null) }}>
               Отмена
             </Button>
           )}
         </div>
       </form>
     </section>
+    </div>
   )
 }

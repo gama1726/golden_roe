@@ -12,6 +12,7 @@ class Service extends Model
 {
     protected $fillable = [
         'title',
+        'image',
         'price',
         'format',
         'audience',
@@ -23,6 +24,7 @@ class Service extends Model
     protected function casts(): array
     {
         return [
+            'image' => 'array',
             'price' => 'integer',
             'sort_order' => 'integer',
             'is_active' => 'boolean',

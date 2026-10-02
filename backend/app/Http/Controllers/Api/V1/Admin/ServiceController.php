@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\ReorderRequest;
 use App\Http\Requests\Admin\ServiceRequest;
 use App\Http\Resources\ServiceResource;
 use App\Models\Service;
+use App\Services\ImageProcessor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -29,9 +30,12 @@ class ServiceController extends Controller
     {
         $this->authorize('create', Service::class);
 
-        $data = $request->validated();
+        $data = $request->safe()->except(['image']);
         $data['sort_order'] ??= ((int) Service::query()->max('sort_order')) + 1;
         $data['is_active'] ??= true;
+        if ($request->exists('image')) {
+            $data['image'] = app(ImageProcessor::class)->sync(null, $request->input('image'));
+        }
 
         $service = Service::query()->create($data);
 
@@ -52,7 +56,11 @@ class ServiceController extends Controller
     public function update(ServiceRequest $request, Service $service): JsonResponse
     {
         $this->authorize('update', $service);
-        $service->update($request->validated());
+        $data = $request->safe()->except(['image']);
+        if ($request->exists('image')) {
+            $data['image'] = app(ImageProcessor::class)->sync($service->image, $request->input('image'));
+        }
+        $service->update($data);
 
         return response()->json([
             'data' => (new ServiceResource($service->refresh()))->resolve(),
@@ -62,6 +70,7 @@ class ServiceController extends Controller
     public function destroy(Service $service): JsonResponse
     {
         $this->authorize('delete', $service);
+        app(ImageProcessor::class)->delete($service->image);
         $service->delete();
 
         return response()->json(['message' => 'Deleted.']);

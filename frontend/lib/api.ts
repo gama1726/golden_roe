@@ -11,6 +11,7 @@ import type {
   ReviewItem,
   Seo,
   Service,
+  ServicesData,
 } from './types'
 
 export function apiBase(): string {
@@ -34,7 +35,7 @@ export function getHome() {
 }
 
 export function getServices() {
-  return getJson<{ data: Service[]; banner: HomeData['banner']; seo: Seo }>('/api/v1/services')
+  return getJson<ServicesData>('/api/v1/services')
 }
 
 export async function getService(id: number): Promise<Service | null> {

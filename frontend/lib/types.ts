@@ -20,6 +20,7 @@ export type Banner = {
 }
 
 export type Block = {
+  eyebrow: string | null
   title: string | null
   body: string | null
   image: ImageUrls | null
@@ -38,6 +39,7 @@ export type Service = {
   title: string
   price: number
   price_display: string
+  image: ImageUrls | null
   format: string
   audience: string
   result: string
@@ -70,12 +72,24 @@ export type AuthorStat = {
   is_active: boolean
 }
 
+export type ServicesData = {
+  data: Service[]
+  banner: Banner | null
+  blocks: {
+    quote: Block | null
+    points: PageContent[]
+    cta: Block | null
+  }
+  seo: Seo
+}
+
 export type HomeData = {
   banner: Banner | null
   blocks: {
     approach: Block | null
     choice: Block | null
     results: {
+      eyebrow: string | null
       title: string | null
       body: string | null
       items: PageContent[]
