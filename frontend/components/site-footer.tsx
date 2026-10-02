@@ -44,7 +44,7 @@ export function SiteFooter({ contacts, documents }: { contacts: ContactChannel[]
               </a>
             )
           })}
-          <Link href="/kontakty" className="rounded-full bg-gold px-5 py-2 text-sm text-ink">
+          <Link href="/kontakty" className="rounded-full bg-gold-button px-5 py-2 text-sm text-ink">
             Записаться
           </Link>
         </div>

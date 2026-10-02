@@ -27,7 +27,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
               {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
               <h1 className="mt-5 max-w-xl font-serif text-5xl leading-[0.95] font-medium md:text-6xl">{banner?.subtitle || 'Об авторе'}</h1>
               {banner?.text && <p className="mt-6 max-w-md text-base leading-relaxed text-ivory/80">{banner.text}</p>}
-              <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+              <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                 Записаться на консультацию
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>
@@ -140,7 +140,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
               {manifesto.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{manifesto.eyebrow}</p>}
               {manifesto.title && <h2 className="mt-4 max-w-xl font-serif text-5xl leading-tight md:text-6xl">{manifesto.title}</h2>}
               {manifesto.body && <p className="mt-6 max-w-xl leading-relaxed text-ivory/85">{manifesto.body}</p>}
-              <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+              <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                 Записаться на консультацию
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>

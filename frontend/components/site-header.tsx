@@ -40,7 +40,7 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
-          <Link href="/kontakty" className="rounded-full bg-gold px-4 py-2 text-sm text-ink xl:px-5">
+          <Link href="/kontakty" className="rounded-full bg-gold-button px-4 py-2 text-sm text-ink xl:px-5">
             Записаться
           </Link>
         </nav>
@@ -68,7 +68,7 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
-          <Link href="/kontakty" onClick={() => setOpen(false)} className="mt-2 rounded-full bg-gold px-4 py-3 text-center text-sm text-ink">
+          <Link href="/kontakty" onClick={() => setOpen(false)} className="mt-2 rounded-full bg-gold-button px-4 py-3 text-center text-sm text-ink">
             Записаться
           </Link>
         </nav>

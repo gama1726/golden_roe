@@ -31,7 +31,7 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
               {banner?.text && <p className="mt-6 max-w-md text-base leading-relaxed text-ivory/80 md:text-lg">{banner.text}</p>}
               <div className="mt-8 flex flex-wrap gap-3">
                 {telegram && (
-                  <a href={telegram.url ?? undefined} className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+                  <a href={telegram.url ?? undefined} className="inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                     <Send aria-hidden="true" size={16} />
                     Записаться в Telegram
                   </a>
@@ -103,7 +103,7 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
                   )}
                 </div>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <Link href={`/kontakty?service=${service.id}`} className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+                  <Link href={`/kontakty?service=${service.id}`} className="inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                     Узнать подробнее
                     <ArrowRight aria-hidden="true" size={16} />
                   </Link>
@@ -146,7 +146,7 @@ function ClosingBand({ block }: { block: Block }) {
       <div className="relative mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-center px-5 py-16 md:px-10">
         {block.title && <h2 className="max-w-xl font-serif text-5xl leading-tight md:text-6xl">{block.title}</h2>}
         {block.body && <p className="mt-6 max-w-xl whitespace-pre-line leading-relaxed text-ivory/85">{block.body}</p>}
-        <Link href="/kontakty" className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+        <Link href="/kontakty" className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
           Записаться на консультацию
           <ArrowRight aria-hidden="true" size={16} />
         </Link>

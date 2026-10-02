@@ -32,7 +32,7 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
             {banner?.text && <p className="mt-4 max-w-md text-sm leading-relaxed text-ivory/80 sm:mt-6 sm:text-base md:text-lg">{banner.text}</p>}
             <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
               {telegram && (
-                <a href={telegram.url ?? undefined} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink sm:w-auto">
+                <a href={telegram.url ?? undefined} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink sm:w-auto">
                   <Send aria-hidden="true" size={16} />
                   Записаться в Telegram
                 </a>
@@ -103,7 +103,7 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
             {blocks.choice.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{blocks.choice.eyebrow}</p>}
             {blocks.choice.title && <h2 className="mt-4 max-w-xl font-serif text-4xl leading-tight sm:text-5xl md:text-6xl">{blocks.choice.title}</h2>}
             {blocks.choice.body && <p className="mt-4 max-w-xl text-sm whitespace-pre-line leading-relaxed text-ivory/85 sm:mt-6 sm:text-base">{blocks.choice.body}</p>}
-            <Link href="/kontakty" className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink sm:mt-8">
+            <Link href="/kontakty" className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink sm:mt-8">
               Записаться на консультацию
               <ArrowRight aria-hidden="true" size={16} />
             </Link>

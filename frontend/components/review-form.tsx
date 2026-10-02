@@ -116,7 +116,7 @@ export function ReviewForm({ services }: { services: Service[] }) {
       </label>
       {error && <p className="text-sm">{error}</p>}
       {notice && <p className="text-sm">{notice}</p>}
-      <button type="submit" className="justify-self-start rounded-full bg-gold px-5 py-3 text-sm text-ink disabled:opacity-60" disabled={pending}>
+      <button type="submit" className="justify-self-start rounded-full bg-gold-button px-5 py-3 text-sm text-ink disabled:opacity-60" disabled={pending}>
         {pending ? 'Отправка…' : 'Отправить отзыв'}
       </button>
     </form>

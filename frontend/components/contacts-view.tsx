@@ -137,7 +137,7 @@ function MessengerButtons({ telegram, whatsapp }: { telegram?: ContactChannel; w
   return (
     <div className="mt-8 flex flex-col gap-3 min-[380px]:flex-row min-[380px]:flex-wrap">
       {telegram?.url && (
-        <a href={telegram.url} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 text-sm text-ivory">
+        <a href={telegram.url} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
           Написать в Telegram
           <ArrowRight aria-hidden="true" size={16} />
         </a>

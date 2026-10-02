@@ -32,7 +32,7 @@ export function ReviewsView({
               {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
               <h1 className="mt-5 font-serif text-5xl leading-[0.95] font-medium md:text-7xl">{banner?.subtitle || 'Отзывы'}</h1>
               {banner?.text && <p className="mt-6 max-w-md leading-relaxed text-muted">{banner.text}</p>}
-              <a href="#otzyv" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+              <a href="#otzyv" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                 Оставить отзыв
                 <ArrowRight aria-hidden="true" size={16} />
               </a>
@@ -73,7 +73,7 @@ export function ReviewsView({
               {cta.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{cta.eyebrow}</p>}
               {cta.title && <h2 className="mt-4 font-serif text-4xl md:text-5xl">{cta.title}</h2>}
               {cta.body && <p className="mt-6 max-w-md leading-relaxed text-ivory/85">{cta.body}</p>}
-              <a href="#otzyv" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+              <a href="#otzyv" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                 Оставить отзыв
                 <ArrowRight aria-hidden="true" size={16} />
               </a>
