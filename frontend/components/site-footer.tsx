@@ -23,9 +23,9 @@ const channelIcons: Record<string, LucideIcon> = {
 export function SiteFooter({ contacts, documents }: { contacts: ContactChannel[]; documents: DocumentItem[] }) {
   return (
     <footer className="mt-auto border-t border-line">
-      <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-8 px-5 py-10 md:flex-row md:items-center md:justify-between">
-        <Link href="/" aria-label="Golden Roe">
-          <Logo markClassName="h-14" />
+      <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-8 px-4 py-10 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+        <Link href="/" className="shrink-0" aria-label="Golden Roe">
+          <Logo markClassName="h-12 sm:h-14" />
         </Link>
         <nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm" aria-label="Разделы сайта">
           {links.map((link) => (
@@ -34,7 +34,7 @@ export function SiteFooter({ contacts, documents }: { contacts: ContactChannel[]
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {contacts.map((channel) => {
             const Icon = channelIcons[channel.key]
             if (!Icon || !channel.url) return null
@@ -50,7 +50,7 @@ export function SiteFooter({ contacts, documents }: { contacts: ContactChannel[]
         </div>
       </div>
       <div className="border-t border-line">
-        <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-3 px-5 py-4 text-xs text-muted md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-3 px-4 py-4 text-xs text-muted sm:px-5 lg:flex-row lg:items-center lg:justify-between">
           <ul className="flex flex-wrap gap-x-4 gap-y-2">
             {documents.map((document) => (
               <li key={document.type}>
