@@ -21,21 +21,41 @@ class AuthorController extends Controller
     {
         $data = $cache->remember('author', function () use ($seo): array {
             $banner = Banner::query()->where('page', 'author')->orderBy('sort_order')->first();
-            $blocks = PageContent::query()->where('page', 'author')->orderBy('sort_order')->get()->keyBy('key');
+            $blocks = PageContent::query()->where('page', 'author')->orderBy('sort_order')->orderBy('id')->get();
+            $keyed = $blocks->keyBy('key');
             $anchors = $blocks->filter(fn (PageContent $block): bool => str_starts_with($block->key, 'anchor.'))->values();
+            $pillars = $blocks->filter(fn (PageContent $block): bool => str_starts_with($block->key, 'pillar.') && $block->key !== 'pillar.quote')->values();
+            $guideItems = $blocks->filter(fn (PageContent $block): bool => str_starts_with($block->key, 'guide.'))->values();
 
             return [
                 'banner' => $banner ? (new BannerResource($banner))->resolve() : null,
+                'quote' => $this->block($keyed->get('quote')),
                 'stats' => AuthorStatResource::collection(
                     AuthorStat::query()->active()->orderBy('sort_order')->get()
                 )->resolve(),
+                'path' => $this->block($keyed->get('path')),
+                'path_photo' => $this->block($keyed->get('path.photo')),
+                'pillars' => [
+                    'title' => $keyed->get('pillars')?->title,
+                    'items' => PageContentResource::collection($pillars)->resolve(),
+                    'quote' => $this->block($keyed->get('pillar.quote')),
+                ],
                 'anchors' => PageContentResource::collection($anchors)->resolve(),
-                'son' => $blocks->get('son') ? (new PageContentResource($blocks->get('son')))->resolve() : null,
-                'guide' => $blocks->get('guide') ? (new PageContentResource($blocks->get('guide')))->resolve() : null,
+                'son' => $this->block($keyed->get('son')),
+                'son_photo' => $this->block($keyed->get('son.photo')),
+                'guide' => $this->block($keyed->get('guide')),
+                'guide_items' => PageContentResource::collection($guideItems)->resolve(),
+                'manifesto' => $this->block($keyed->get('manifesto')),
+                'manifesto_quote' => $this->block($keyed->get('manifesto.quote')),
                 'seo' => $seo->forPage('author'),
             ];
         });
 
         return response()->json(['data' => $data]);
+    }
+
+    private function block(?PageContent $item): ?array
+    {
+        return $item ? (new PageContentResource($item))->resolve() : null;
     }
 }

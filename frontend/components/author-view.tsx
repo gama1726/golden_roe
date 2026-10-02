@@ -1,0 +1,162 @@
+import { MediaImage } from '@/components/media-image'
+import type { AuthorData, PageContent } from '@/lib/types'
+import { ArrowRight, ChartNoAxesColumn, Check, Flower2, Gem, Leaf, Music, Users } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import Link from 'next/link'
+
+const pillarIcons: Record<string, LucideIcon> = {
+  'pillar.family': Users,
+  'pillar.spirit': Flower2,
+  'pillar.business': ChartNoAxesColumn,
+  'pillar.creativity': Music,
+  'pillar.health': Leaf,
+  'pillar.beauty': Gem,
+}
+
+export function AuthorView({ author }: { author: AuthorData }) {
+  const { banner, quote, stats, path, path_photo, pillars, son, son_photo, guide, guide_items, manifesto, manifesto_quote } = author
+
+  return (
+    <>
+      <section className="relative min-h-[38rem] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
+        <MediaImage image={banner?.image ?? null} className="absolute inset-0 h-full w-full object-cover object-[72%_center]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/80 to-ink/15" />
+        <div className="relative mx-auto flex min-h-[38rem] w-full max-w-[80rem] items-center md:min-h-[44rem]">
+          <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,28rem)_minmax(0,16rem)] md:px-10 md:py-20">
+            <div>
+              {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
+              <h1 className="mt-5 max-w-xl font-serif text-5xl leading-[0.95] font-medium md:text-6xl">{banner?.subtitle || 'Об авторе'}</h1>
+              {banner?.text && <p className="mt-6 max-w-md text-base leading-relaxed text-ivory/80">{banner.text}</p>}
+              <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+                Записаться на консультацию
+                <ArrowRight aria-hidden="true" size={16} />
+              </Link>
+            </div>
+            {quote?.title && (
+              <blockquote>
+                <p className="font-serif text-2xl leading-snug text-ivory md:text-3xl">{quote.title}</p>
+                {quote.eyebrow && <p className="mt-4 text-xs tracking-[0.22em] text-ivory/70 uppercase">{quote.eyebrow}</p>}
+              </blockquote>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {(path || path_photo) && (
+        <section className="mx-auto grid w-full max-w-[80rem] items-center gap-8 px-5 py-16 md:py-24 lg:grid-cols-[0.8fr_1.15fr_0.8fr]">
+          <MediaImage image={path?.image ?? null} className="aspect-[4/5] w-full object-cover" />
+          <div>
+            {path?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{path.eyebrow}</p>}
+            {path?.title && <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">{path.title}</h2>}
+            {path?.body && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">{path.body}</p>}
+            <Link href="/stati" className="mt-8 inline-flex items-center gap-2 text-sm">
+              Больше о моём пути
+              <ArrowRight aria-hidden="true" size={16} />
+            </Link>
+          </div>
+          <MediaImage image={path_photo?.image ?? null} className="aspect-[3/4] w-full object-cover" />
+        </section>
+      )}
+
+      {stats.length > 0 && (
+        <section className="border-y border-line">
+          <ul className="mx-auto grid w-full max-w-[80rem] grid-cols-2 gap-8 px-5 py-12 lg:grid-cols-4">
+            {stats.map((stat) => (
+              <li key={stat.id} className="text-center">
+                {stat.value ? (
+                  <p className="font-serif text-5xl">{stat.value}</p>
+                ) : (
+                  <ChartNoAxesColumn aria-hidden="true" className="mx-auto text-gold" size={36} strokeWidth={1.25} />
+                )}
+                <p className="mt-3 text-sm leading-relaxed">{stat.label}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {(pillars.title || pillars.items.length > 0) && (
+        <section className="mx-auto grid w-full max-w-[80rem] gap-12 px-5 py-16 md:py-24 lg:grid-cols-[1fr_18rem] lg:items-center">
+          <div>
+            {pillars.title && <h2 className="font-serif text-4xl md:text-5xl">{pillars.title}</h2>}
+            {pillars.items.length > 0 && (
+              <ul className="mt-10 grid grid-cols-3 gap-8">
+                {pillars.items.map((item) => (
+                  <li key={item.id} className="text-center">
+                    <PillarIcon item={item} />
+                    {item.title && <p className="mt-4 text-sm leading-relaxed">{item.title}</p>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {pillars.quote?.body && <p className="font-serif text-2xl leading-snug text-gold md:text-3xl">{pillars.quote.body}</p>}
+        </section>
+      )}
+
+      {(son || son_photo) && (
+        <section className="border-t border-line">
+          <div className="mx-auto grid w-full max-w-[80rem] items-center gap-8 px-5 py-16 md:py-24 lg:grid-cols-[0.85fr_1.1fr_1fr]">
+            <MediaImage image={son?.image ?? null} className="aspect-[4/5] w-full object-cover" />
+            <div>
+              {son?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{son.eyebrow}</p>}
+              {son?.title && <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">{son.title}</h2>}
+              {son?.body && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">{son.body}</p>}
+            </div>
+            <MediaImage image={son_photo?.image ?? null} className="aspect-[4/3] w-full object-cover" />
+          </div>
+        </section>
+      )}
+
+      {(guide?.title || guide?.body || guide_items.length > 0) && (
+        <section className="border-t border-line">
+          <div className="mx-auto w-full max-w-[80rem] px-5 py-16 md:py-24">
+            {guide?.title && <h2 className="max-w-3xl font-serif text-4xl leading-tight md:text-5xl">{guide.title}</h2>}
+            <div className="mt-10 grid gap-10 lg:grid-cols-2">
+              {guide?.body && <p className="whitespace-pre-line leading-relaxed text-muted">{guide.body}</p>}
+              {guide_items.length > 0 && (
+                <ul className="space-y-4">
+                  {guide_items.map((item) => (
+                    <li key={item.id} className="flex gap-3">
+                      <Check aria-hidden="true" className="mt-0.5 shrink-0 text-gold" size={18} strokeWidth={1.5} />
+                      {item.title && <span className="leading-relaxed">{item.title}</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {manifesto && (
+        <section className="relative min-h-[28rem] overflow-hidden bg-ink text-ivory">
+          <MediaImage image={manifesto.image} className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-ink/45" />
+          <div className="relative mx-auto grid min-h-[28rem] w-full max-w-[80rem] items-center gap-10 px-5 py-16 md:grid-cols-2 md:px-10">
+            <div>
+              {manifesto.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{manifesto.eyebrow}</p>}
+              {manifesto.title && <h2 className="mt-4 max-w-xl font-serif text-5xl leading-tight md:text-6xl">{manifesto.title}</h2>}
+              {manifesto.body && <p className="mt-6 max-w-xl leading-relaxed text-ivory/85">{manifesto.body}</p>}
+              <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+                Записаться на консультацию
+                <ArrowRight aria-hidden="true" size={16} />
+              </Link>
+            </div>
+            {manifesto_quote?.title && (
+              <blockquote className="md:justify-self-end md:text-right">
+                <p className="max-w-sm font-serif text-2xl leading-snug md:text-3xl">{manifesto_quote.title}</p>
+                {manifesto_quote.eyebrow && <p className="mt-4 text-xs tracking-[0.22em] text-ivory/70 uppercase">{manifesto_quote.eyebrow}</p>}
+              </blockquote>
+            )}
+          </div>
+        </section>
+      )}
+    </>
+  )
+}
+
+function PillarIcon({ item }: { item: PageContent }) {
+  const Icon = pillarIcons[item.key] ?? Gem
+  return <Icon aria-hidden="true" className="mx-auto text-gold" size={28} strokeWidth={1.25} />
+}

@@ -7,7 +7,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Enums\ReviewStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Public\StoreReviewRequest;
+use App\Http\Resources\BannerResource;
+use App\Http\Resources\PageContentResource;
 use App\Http\Resources\ReviewPublicResource;
+use App\Models\Banner;
+use App\Models\PageContent;
 use App\Models\Review;
 use App\Models\Service;
 use App\Models\Setting;
@@ -21,19 +25,19 @@ class ReviewController extends Controller
     public function index(PublicContentCache $cache, SeoSettings $seo): JsonResponse
     {
         $payload = $cache->remember('reviews', function () use ($seo): array {
-            if (! Setting::reviewsEnabled()) {
-                return [
-                    'data' => [],
-                    'meta' => ['enabled' => false],
-                    'seo' => $seo->forPage('reviews'),
-                ];
-            }
-
-            $reviews = Review::query()->approved()->latest()->get();
+            $enabled = Setting::reviewsEnabled();
+            $banner = Banner::query()->where('page', 'reviews')->orderBy('sort_order')->first();
+            $blocks = PageContent::query()->where('page', 'reviews')->orderBy('sort_order')->get()->keyBy('key');
+            $reviews = $enabled ? Review::query()->approved()->latest()->get() : collect();
 
             return [
                 'data' => ReviewPublicResource::collection($reviews)->resolve(),
-                'meta' => ['enabled' => true],
+                'meta' => ['enabled' => $enabled],
+                'banner' => $banner ? (new BannerResource($banner))->resolve() : null,
+                'quote' => $this->block($blocks->get('quote')),
+                'intro' => $this->block($blocks->get('intro')),
+                'cta' => $this->block($blocks->get('cta')),
+                'note' => $this->block($blocks->get('cta.note')),
                 'seo' => $seo->forPage('reviews'),
             ];
         });
@@ -65,5 +69,10 @@ class ReviewController extends Controller
         });
 
         return response()->json(['data' => ['status' => ReviewStatus::Pending->value]], 201);
+    }
+
+    private function block(?PageContent $item): ?array
+    {
+        return $item ? (new PageContentResource($item))->resolve() : null;
     }
 }

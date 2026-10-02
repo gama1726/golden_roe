@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { Button, Notice, PageTitle } from '../components/ui'
+import { Button, Notice } from '../components/ui'
 import { api, errorText } from '../lib/api'
 import type { Article, PageMeta } from '../lib/types'
+import { ContentPage } from './ContentPage'
 
 export function ArticlesPage() {
   const [items, setItems] = useState<Article[]>([])
@@ -27,12 +28,15 @@ export function ArticlesPage() {
   }
 
   return (
+    <div className="space-y-12">
+    <ContentPage page="articles" title="Статьи" />
     <section>
-      <PageTitle title="Статьи">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <h2 className="font-serif text-4xl leading-none">Материалы</h2>
         <Link to="/articles/new" className="rounded-full bg-ink px-4 py-2 text-sm text-ivory">
           Новая статья
         </Link>
-      </PageTitle>
+      </div>
       <Notice text={error} />
       <div className="space-y-3">
         {items.length === 0 && <p className="text-muted">Статей пока нет.</p>}
@@ -64,5 +68,6 @@ export function ArticlesPage() {
         </div>
       )}
     </section>
+    </div>
   )
 }

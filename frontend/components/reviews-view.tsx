@@ -1,0 +1,136 @@
+import { MediaImage } from '@/components/media-image'
+import { ReviewForm } from '@/components/review-form'
+import { formatDate } from '@/lib/format'
+import type { Banner, Block, ReviewItem, Service } from '@/lib/types'
+import { ArrowRight, Star } from 'lucide-react'
+
+export function ReviewsView({
+  banner,
+  quote,
+  intro,
+  reviews,
+  cta,
+  note,
+  services,
+}: {
+  banner: Banner | null
+  quote: Block | null
+  intro: Block | null
+  reviews: ReviewItem[]
+  cta: Block | null
+  note: Block | null
+  services: Service[]
+}) {
+  return (
+    <>
+      <section className="relative min-h-[34rem] overflow-hidden bg-ivory text-ink md:min-h-[40rem]">
+        <MediaImage image={banner?.image ?? null} className="absolute inset-0 h-full w-full object-cover object-[72%_center]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/88 to-ivory/10" />
+        <div className="relative mx-auto flex min-h-[34rem] w-full max-w-[80rem] items-center md:min-h-[40rem]">
+          <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,28rem)_minmax(0,16rem)] md:px-10 md:py-20">
+            <div>
+              {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
+              <h1 className="mt-5 font-serif text-5xl leading-[0.95] font-medium md:text-7xl">{banner?.subtitle || 'Отзывы'}</h1>
+              {banner?.text && <p className="mt-6 max-w-md leading-relaxed text-muted">{banner.text}</p>}
+              <a href="#otzyv" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+                Оставить отзыв
+                <ArrowRight aria-hidden="true" size={16} />
+              </a>
+            </div>
+            {quote?.title && (
+              <blockquote>
+                <p className="font-serif text-2xl leading-snug text-gold italic md:text-3xl">{quote.title}</p>
+                {quote.eyebrow && <p className="mt-4 text-xs tracking-[0.22em] text-gold uppercase">{quote.eyebrow}</p>}
+              </blockquote>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-[80rem] px-5 py-16 md:py-24">
+        {intro?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{intro.eyebrow}</p>}
+        <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_18rem] lg:items-end">
+          {intro?.title && <h2 className="font-serif text-4xl md:text-5xl">{intro.title}</h2>}
+          {intro?.body && <p className="leading-relaxed text-muted">{intro.body}</p>}
+        </div>
+        {reviews.length > 0 ? (
+          <div className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+            {reviews.map((review) => (
+              <ReviewCard key={review.id} review={review} />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-12 text-muted">Одобренных отзывов пока нет.</p>
+        )}
+      </section>
+
+      {cta && (
+        <section className="relative min-h-[24rem] overflow-hidden bg-ink text-ivory">
+          <MediaImage image={cta.image} className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-ink/45" />
+          <div className="relative mx-auto grid min-h-[24rem] w-full max-w-[80rem] items-center gap-10 px-5 py-16 md:grid-cols-2 md:px-10">
+            <div>
+              {cta.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{cta.eyebrow}</p>}
+              {cta.title && <h2 className="mt-4 font-serif text-4xl md:text-5xl">{cta.title}</h2>}
+              {cta.body && <p className="mt-6 max-w-md leading-relaxed text-ivory/85">{cta.body}</p>}
+              <a href="#otzyv" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm text-ink">
+                Оставить отзыв
+                <ArrowRight aria-hidden="true" size={16} />
+              </a>
+            </div>
+            {note?.body && <p className="max-w-sm leading-relaxed text-ivory/85 md:justify-self-end">{note.body}</p>}
+          </div>
+        </section>
+      )}
+
+      <section id="otzyv" className="mx-auto w-full max-w-3xl px-5 py-16 md:py-24">
+        <h2 className="font-serif text-4xl">Оставить отзыв</h2>
+        <p className="mt-3 text-sm text-muted">Отзыв появится на сайте после проверки.</p>
+        <div className="mt-8">
+          <ReviewForm services={services} />
+        </div>
+      </section>
+    </>
+  )
+}
+
+function ReviewCard({ review }: { review: ReviewItem }) {
+  const date = formatDate(review.created_at)
+
+  return (
+    <article>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Avatar review={review} />
+          <div>
+            <p className="font-medium">{review.full_name}</p>
+            {date && <p className="text-sm text-muted">{date}</p>}
+          </div>
+        </div>
+        {review.service && <p className="max-w-[9rem] text-right text-xs text-muted">{review.service}</p>}
+      </div>
+      <Stars rating={review.rating} />
+      <h2 className="mt-4 font-serif text-2xl leading-tight">{review.title}</h2>
+      <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{review.text}</p>
+    </article>
+  )
+}
+
+function Avatar({ review }: { review: ReviewItem }) {
+  if (review.image?.original) {
+    return <MediaImage image={review.image} className="h-12 w-12 rounded-full object-cover" />
+  }
+
+  const letter = review.full_name.trim().charAt(0).toUpperCase()
+  return <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cream font-serif text-lg">{letter}</span>
+}
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <p className="mt-4 flex gap-0.5 text-gold" aria-label={`${rating} из 5`}>
+      {Array.from({ length: 5 }, (_, index) => (
+        <Star key={index} aria-hidden="true" size={14} fill={index < rating ? 'currentColor' : 'none'} />
+      ))}
+    </p>
+  )
+}

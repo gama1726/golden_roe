@@ -3,7 +3,7 @@ import { Button, Field, Notice, PageTitle, TextArea, controlClass } from '../com
 import { api, errorText, uploadImage } from '../lib/api'
 import type { AuthorStat, Banner, PageContent, StoredImage } from '../lib/types'
 
-type Props = { page: 'home' | 'author' | 'services'; title: string }
+type Props = { page: 'home' | 'author' | 'services' | 'articles' | 'reviews'; title: string }
 
 const blockLabel: Record<string, string> = {
   quote: 'Цитата на баннере',
@@ -12,6 +12,28 @@ const blockLabel: Record<string, string> = {
   'point.trust': 'Принцип: конфиденциальность',
   'point.results': 'Принцип: реальные изменения',
   cta: 'Нижний экран',
+  path: 'Мой путь',
+  'path.photo': 'Мой путь: фото справа',
+  pillars: 'Точки опоры',
+  'pillar.family': 'Точка опоры: семья',
+  'pillar.spirit': 'Точка опоры: духовное развитие',
+  'pillar.business': 'Точка опоры: предпринимательство',
+  'pillar.creativity': 'Точка опоры: творчество',
+  'pillar.health': 'Точка опоры: здоровье',
+  'pillar.beauty': 'Точка опоры: эстетика',
+  'pillar.quote': 'Цитата: точки опоры',
+  son: 'Семья',
+  'son.photo': 'Семья: фото справа',
+  guide: 'Почему я могу быть проводником',
+  'guide.experience': 'Пункт: предпринимательский опыт',
+  'guide.person': 'Пункт: понимание человека',
+  'guide.system': 'Пункт: системный подход',
+  'guide.care': 'Пункт: честность и поддержка',
+  'guide.growth': 'Пункт: живой пример',
+  manifesto: 'Манифест',
+  'manifesto.quote': 'Цитата манифеста',
+  intro: 'Вступление к отзывам',
+  'cta.note': 'Пояснение о проверке',
 }
 
 export function ContentPage({ page, title }: Props) {

@@ -102,10 +102,22 @@ export type HomeData = {
 
 export type AuthorData = {
   banner: Banner | null
+  quote: Block | null
   stats: AuthorStat[]
+  path: Block | null
+  path_photo: Block | null
+  pillars: {
+    title: string | null
+    items: PageContent[]
+    quote: Block | null
+  }
   anchors: PageContent[]
   son: PageContent | null
+  son_photo: Block | null
   guide: PageContent | null
+  guide_items: PageContent[]
+  manifesto: Block | null
+  manifesto_quote: Block | null
   seo: Seo
 }
 

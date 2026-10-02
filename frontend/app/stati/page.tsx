@@ -22,14 +22,25 @@ export default async function ArticlesPage() {
     )
   }
 
+  const { banner, quote } = page
+
   return (
-    <section className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-      <h1 className="font-serif text-5xl leading-none md:text-7xl">{page.banner?.title || 'Статьи'}</h1>
-      {page.banner?.text && <p className="mt-6 max-w-2xl text-muted">{page.banner.text}</p>}
-      <MediaImage image={page.banner?.image ?? null} className="mt-8 max-h-96 w-full object-cover" />
-      <div className="mt-12">
+    <>
+      <section className="relative min-h-[34rem] overflow-hidden bg-ink text-ivory md:min-h-[40rem]">
+        <MediaImage image={banner?.image ?? null} className="absolute inset-0 h-full w-full object-cover object-[72%_center]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/82 to-ink/10" />
+        <div className="relative mx-auto flex min-h-[34rem] w-full max-w-[80rem] items-center md:min-h-[40rem]">
+          <div className="max-w-xl px-5 py-16 md:px-10 md:py-20">
+            {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
+            <h1 className="mt-5 font-serif text-5xl leading-[0.95] font-medium md:text-7xl">{banner?.subtitle || 'Статьи'}</h1>
+            {banner?.text && <p className="mt-6 max-w-md text-base leading-relaxed text-ivory/80 md:text-lg">{banner.text}</p>}
+            {quote?.title && <p className="mt-8 max-w-sm font-serif text-2xl leading-snug text-ivory italic md:text-3xl">{quote.title}</p>}
+          </div>
+        </div>
+      </section>
+      <section className="mx-auto w-full max-w-[80rem] px-5 py-16 md:py-24">
         <ArticleList initial={page.data} meta={page.meta} />
-      </div>
-    </section>
+      </section>
+    </>
   )
 }

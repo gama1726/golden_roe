@@ -118,6 +118,24 @@ php artisan db:seed --class=HomeVisualSeeder
 php artisan db:seed --class=ServicesVisualSeeder
 ```
 
+Оформление страницы «Об авторе» — баннер, путь, точки опоры, фотографии и манифест — тоже в базе. Уже заполненные факты и текст о семье повторный запуск не перезаписывает.
+
+```bash
+php artisan db:seed --class=AuthorVisualSeeder
+```
+
+Оформление страницы статей — баннер и строка под ним — тоже в базе. Карточки статей этот запуск не трогает.
+
+```bash
+php artisan db:seed --class=ArticlesVisualSeeder
+```
+
+Оформление страницы отзывов — баннер, цитата, вступление и нижний экран — тоже в базе. Сами отзывы этот запуск не создаёт.
+
+```bash
+php artisan db:seed --class=ReviewsVisualSeeder
+```
+
 Фиктивный отзыв:
 
 ```bash

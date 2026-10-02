@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Button, Notice, PageTitle } from '../components/ui'
+import { Button, Notice } from '../components/ui'
+import { ContentPage } from './ContentPage'
 import { api, errorText } from '../lib/api'
 import type { Review } from '../lib/types'
 
@@ -47,10 +48,13 @@ export function ReviewsPage() {
   }
 
   return (
+    <div className="space-y-12">
+    <ContentPage page="reviews" title="Отзывы" />
     <section className="space-y-4">
-      <PageTitle title="Отзывы">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <h2 className="font-serif text-4xl leading-none">Модерация</h2>
         <span className="text-sm text-muted">На проверке: {pendingCount}</span>
-      </PageTitle>
+      </div>
       <div className="flex gap-2">
         {filters.map((filter) => (
           <Button
@@ -97,5 +101,6 @@ export function ReviewsPage() {
         </article>
       ))}
     </section>
+    </div>
   )
 }

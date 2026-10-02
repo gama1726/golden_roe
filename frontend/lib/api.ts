@@ -4,6 +4,7 @@ import type {
   Article,
   ArticleCard,
   AuthorData,
+  Block,
   ContactChannel,
   DocumentItem,
   HomeData,
@@ -55,7 +56,7 @@ export function getAuthor() {
 }
 
 export function getArticles(page = 1) {
-  return getJson<{ data: ArticleCard[]; meta: PageMeta; banner: HomeData['banner']; seo: Seo }>(
+  return getJson<{ data: ArticleCard[]; meta: PageMeta; banner: HomeData['banner']; quote: Block | null; seo: Seo }>(
     `/api/v1/articles?page=${page}`,
   )
 }
@@ -73,7 +74,16 @@ export async function getArticle(slug: string): Promise<{ article: Article; seo:
 }
 
 export function getReviews() {
-  return getJson<{ data: ReviewItem[]; meta: { enabled: boolean }; seo: Seo }>('/api/v1/reviews')
+  return getJson<{
+    data: ReviewItem[]
+    meta: { enabled: boolean }
+    banner: HomeData['banner']
+    quote: Block | null
+    intro: Block | null
+    cta: Block | null
+    note: Block | null
+    seo: Seo
+  }>('/api/v1/reviews')
 }
 
 export function getContacts() {
