@@ -1,6 +1,6 @@
-FROM composer:2 AS composer_bin
+FROM docker.io/library/composer:2 AS composer_bin
 
-FROM php:8.3-cli
+FROM docker.io/library/php:8.3-cli
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

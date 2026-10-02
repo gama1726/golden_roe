@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:8.4
+    image: docker.io/library/mysql:8.4
     environment:
       MYSQL_DATABASE: golden_roe
       MYSQL_USER: golden
@@ -17,7 +17,7 @@ services:
       retries: 20
 
   redis:
-    image: redis:7-alpine
+    image: docker.io/library/redis:7-alpine
     ports:
       - "6379:6379"
 
