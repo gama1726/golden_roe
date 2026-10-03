@@ -1,6 +1,8 @@
 import { MediaImage } from '@/components/media-image'
 import type { Banner, Block, ContactChannel, PageContent, Service } from '@/lib/types'
-import { ArrowRight, Calendar, Clock, Heart, Mail, MessageCircle, Phone, Quote, Send, Shield, type LucideIcon } from 'lucide-react'
+import { TelegramIcon } from '@/components/telegram-icon'
+import { WhatsAppIcon } from '@/components/whatsapp-icon'
+import { ArrowRight, Calendar, Clock, Heart, Mail, MessageCircle, Phone, Quote, Shield, type LucideIcon } from 'lucide-react'
 
 const pointIcons: Record<string, LucideIcon> = {
   'point.reply': Clock,
@@ -9,9 +11,9 @@ const pointIcons: Record<string, LucideIcon> = {
   'point.privacy': Shield,
 }
 
-const channelIcons: Record<string, LucideIcon> = {
-  telegram: Send,
-  whatsapp: MessageCircle,
+const channelIcons: Record<string, LucideIcon | typeof WhatsAppIcon | typeof TelegramIcon> = {
+  telegram: TelegramIcon,
+  whatsapp: WhatsAppIcon,
   email: Mail,
   phone: Phone,
 }

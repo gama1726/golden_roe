@@ -1,6 +1,8 @@
 import { MediaImage } from '@/components/media-image'
 import type { Block, ContactChannel, PageContent, ServicesData } from '@/lib/types'
-import { ArrowRight, ChartNoAxesColumn, Gem, Leaf, MessageCircle, Send, Target, UserRound, Users } from 'lucide-react'
+import { TelegramIcon } from '@/components/telegram-icon'
+import { WhatsAppIcon } from '@/components/whatsapp-icon'
+import { ArrowRight, ChartNoAxesColumn, Gem, Leaf, Target, UserRound, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 
@@ -32,13 +34,13 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
               <div className="mt-8 flex flex-wrap gap-3">
                 {telegram && (
                   <a href={telegram.url ?? undefined} className="inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
-                    <Send aria-hidden="true" size={16} />
+                    <TelegramIcon size={16} />
                     Записаться в Telegram
                   </a>
                 )}
                 {whatsapp && (
                   <a href={whatsapp.url ?? undefined} className="inline-flex items-center gap-2 rounded-full border border-ivory/40 px-5 py-3 text-sm">
-                    <MessageCircle aria-hidden="true" size={16} />
+                    <WhatsAppIcon size={16} />
                     Записаться в WhatsApp
                   </a>
                 )}
@@ -109,13 +111,13 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
                   </Link>
                   {telegram && (
                     <a href={telegram.url ?? undefined} className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-3 text-sm">
-                      <Send aria-hidden="true" size={16} />
+                      <TelegramIcon size={16} />
                       Записаться в Telegram
                     </a>
                   )}
                   {whatsapp && (
                     <a href={whatsapp.url ?? undefined} className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-3 text-sm">
-                      <MessageCircle aria-hidden="true" size={16} />
+                      <WhatsAppIcon size={16} />
                       Записаться в WhatsApp
                     </a>
                   )}

@@ -1,6 +1,8 @@
 import { Logo } from '@/components/logo'
 import type { ContactChannel, DocumentItem } from '@/lib/types'
-import { Mail, MessageCircle, Phone, Send } from 'lucide-react'
+import { TelegramIcon } from '@/components/telegram-icon'
+import { WhatsAppIcon } from '@/components/whatsapp-icon'
+import { Mail, Phone } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 
@@ -13,9 +15,9 @@ const links = [
   { href: '/kontakty', label: 'Контакты' },
 ]
 
-const channelIcons: Record<string, LucideIcon> = {
-  telegram: Send,
-  whatsapp: MessageCircle,
+const channelIcons: Record<string, LucideIcon | typeof WhatsAppIcon | typeof TelegramIcon> = {
+  telegram: TelegramIcon,
+  whatsapp: WhatsAppIcon,
   email: Mail,
   phone: Phone,
 }

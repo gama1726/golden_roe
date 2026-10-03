@@ -1,7 +1,9 @@
 import { MediaImage } from '@/components/media-image'
 import { formatDate } from '@/lib/format'
 import type { ContactChannel, HomeData, PageContent } from '@/lib/types'
-import { ArrowRight, Baby, Briefcase, ChartNoAxesColumn, Heart, House, Leaf, MessageCircle, Mouse, Send } from 'lucide-react'
+import { TelegramIcon } from '@/components/telegram-icon'
+import { WhatsAppIcon } from '@/components/whatsapp-icon'
+import { ArrowRight, Baby, Briefcase, ChartNoAxesColumn, Heart, House, Leaf, Mouse } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 
@@ -33,13 +35,13 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
             <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
               {telegram && (
                 <a href={telegram.url ?? undefined} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink sm:w-auto">
-                  <Send aria-hidden="true" size={16} />
+                  <TelegramIcon size={16} />
                   Записаться в Telegram
                 </a>
               )}
               {whatsapp && (
                 <a href={whatsapp.url ?? undefined} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-ivory/40 px-5 py-3 text-sm sm:w-auto">
-                  <MessageCircle aria-hidden="true" size={16} />
+                  <WhatsAppIcon size={16} />
                   Записаться в WhatsApp
                 </a>
               )}
