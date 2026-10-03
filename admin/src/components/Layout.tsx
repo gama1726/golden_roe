@@ -82,12 +82,12 @@ export function Layout() {
 
   return (
     <div className="md:grid md:min-h-screen md:grid-cols-[240px_1fr]">
-      <aside className="border-b border-line bg-white md:border-r md:border-b-0">
+      <aside className="border-b border-line bg-white md:sticky md:top-0 md:flex md:h-screen md:flex-col md:border-r md:border-b-0">
         <div className="px-5 py-5">
           <p className="font-serif text-2xl tracking-wide">Golden Roe</p>
           <p className="text-xs text-muted">{user?.email}</p>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:block md:space-y-1">
+        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:min-h-0 md:flex-1 md:overflow-y-auto md:overflow-x-visible md:block md:space-y-1">
           {links.map((link) => (
             <NavLink
               key={link.to}
