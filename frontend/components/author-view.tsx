@@ -70,11 +70,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
               <ArrowRight aria-hidden="true" size={16} />
             </Link>
           </div>
-          <Portrait
-            image={path_photo?.image ?? null}
-            caption={path_photo?.title || path_photo?.body || 'Система\nСоздание\nСвобода'}
-            card
-          />
+          <Portrait image={path_photo?.image ?? null} />
         </section>
       )}
 

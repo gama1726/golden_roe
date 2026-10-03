@@ -110,6 +110,7 @@ export function ContentPage({ page, title }: Props) {
   function blockDirty(block: PageContent) {
     const key = `block-${block.id}`
     if (images[key] || removed[key]) return true
+    if (block.key === 'path.photo' && (block.eyebrow || block.title || block.body)) return true
     const base = saved.blocks.find((item) => item.id === block.id)
     if (!base) return false
     return block.eyebrow !== base.eyebrow || block.title !== base.title || block.body !== base.body
@@ -154,11 +155,14 @@ export function ContentPage({ page, title }: Props) {
       for (const block of blocks) {
         if (!blockDirty(block)) continue
         const key = `block-${block.id}`
-        const payload: Record<string, unknown> = {
-          eyebrow: block.eyebrow,
-          title: block.title,
-          body: block.body,
-        }
+        const payload: Record<string, unknown> =
+          block.key === 'path.photo'
+            ? { eyebrow: null, title: null, body: null }
+            : {
+                eyebrow: block.eyebrow,
+                title: block.title,
+                body: block.body,
+              }
         if (images[key]) payload.image = images[key]
         else if (removed[key]) payload.image = null
         const response = await api.patch<{ data: PageContent }>(`/api/v1/admin/page-contents/${block.id}`, payload)
@@ -275,22 +279,29 @@ export function ContentPage({ page, title }: Props) {
         if (page === 'services' && block.key.startsWith('point.')) return false
         if (page === 'author' && (block.key === 'manifesto' || block.key === 'manifesto.quote')) return false
         return true
-      }).map((block) => (
+      }).map((block) => {
+        const imageOnly = block.key === 'path.photo'
+
+        return (
         <div key={block.id} className={cardClass}>
           <h2 className={cardHeadingClass}>{blockLabel[block.key] ?? block.key}</h2>
-          <Field label={block.key === 'approach' ? 'Цитата справа' : 'Надзаголовок'}>
-            <input className={controlClass} value={block.eyebrow ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, eyebrow: event.target.value } : item))} placeholder={block.key === 'approach' ? 'Текст цитаты справа от блока «Обо мне»' : undefined} />
-          </Field>
-          <Field label="Заголовок">
-            <input className={controlClass} value={block.title ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, title: event.target.value } : item))} />
-          </Field>
-          <Field label="Текст">
-            <TextArea
-              value={block.body ?? ''}
-              placeholder="Текст будет предоставлен заказчиком"
-              onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, body: event.target.value } : item))}
-            />
-          </Field>
+          {!imageOnly && (
+            <>
+              <Field label={block.key === 'approach' ? 'Цитата справа' : 'Надзаголовок'}>
+                <input className={controlClass} value={block.eyebrow ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, eyebrow: event.target.value } : item))} placeholder={block.key === 'approach' ? 'Текст цитаты справа от блока «Обо мне»' : undefined} />
+              </Field>
+              <Field label="Заголовок">
+                <input className={controlClass} value={block.title ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, title: event.target.value } : item))} />
+              </Field>
+              <Field label="Текст">
+                <TextArea
+                  value={block.body ?? ''}
+                  placeholder="Текст будет предоставлен заказчиком"
+                  onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, body: event.target.value } : item))}
+                />
+              </Field>
+            </>
+          )}
           <ImageEditor
             label="Изображение блока"
             inputKey={`block-${block.id}`}
@@ -301,7 +312,8 @@ export function ContentPage({ page, title }: Props) {
             onRemove={removeImage}
           />
         </div>
-      ))}
+        )
+      })}
     </section>
   )
 }

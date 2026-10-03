@@ -11,7 +11,7 @@ use Illuminate\Http\UploadedFile;
 
 class AuthorVisualSeeder extends Seeder
 {
-    private const VERSION_KEY = 'author_visual_v2';
+    private const VERSION_KEY = 'author_visual_v3';
 
     public function run(): void
     {
@@ -56,7 +56,9 @@ class AuthorVisualSeeder extends Seeder
         ], 'image_portrait_black_white.png', 'Эльвира Вартанова', force: true);
 
         $this->fill('path.photo', [
-            'title' => "Система\nСоздание\nСвобода",
+            'eyebrow' => null,
+            'title' => null,
+            'body' => null,
             'sort_order' => 12,
         ], 'image_portrait_outdoor.png', 'Эльвира Вартанова', force: true);
 
