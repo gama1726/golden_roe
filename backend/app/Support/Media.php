@@ -10,7 +10,7 @@ final class Media
 {
     /**
      * @param  array<string, mixed>|null  $image
-     * @return array{alt: string, original: string|null, webp: array<string, string|null>}|null
+     * @return array{alt: string, original: string|null, webp: object}|null
      */
     public static function urls(?array $image): ?array
     {
@@ -18,10 +18,16 @@ final class Media
             return null;
         }
 
-        $webp = [];
+        // Widths stay on an object. A PHP list is reindexed by the API resource,
+        // and the site then tells the browser the files are 0, 1 and 2 pixels wide.
+        $webp = new \stdClass();
         foreach ($image['webp'] ?? [] as $width => $path) {
-            if (is_string($path)) {
-                $webp[(string) $width] = Storage::disk('public')->url($path);
+            if (! is_string($path)) {
+                continue;
+            }
+            $key = self::variantWidth($width, $path);
+            if ($key !== null) {
+                $webp->{$key} = Storage::disk('public')->url($path);
             }
         }
 
@@ -54,5 +60,18 @@ final class Media
             'webp' => $webp,
             'alt' => is_string($image['alt'] ?? null) ? $image['alt'] : '',
         ];
+    }
+
+    private static function variantWidth(mixed $width, string $path): ?string
+    {
+        if (preg_match('/-(\d+)\.webp$/', $path, $match) === 1 && (int) $match[1] > 0) {
+            return $match[1];
+        }
+
+        if (is_numeric($width) && (int) $width > 0) {
+            return (string) (int) $width;
+        }
+
+        return null;
     }
 }
