@@ -60,16 +60,34 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
       {blocks.points.length > 0 && (
         <MarbleBand seed="services-points" className="relative border-y border-line">
           <div className="pointer-events-none absolute inset-0 bg-[#3d2a1f]/12" aria-hidden="true" />
-          <ul className="relative mx-auto grid w-full max-w-[80rem] grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line">
-            {blocks.points.map((point, index) => (
-              <li
-                key={point.id}
-                className={`px-4 py-10 text-center text-ink sm:px-6 sm:py-12 ${index % 2 === 1 ? 'border-l border-line lg:border-l-0' : ''} ${index >= 2 ? 'border-t border-line lg:border-t-0' : ''}`}
-              >
-                <PointIcon point={point} />
-                {point.title && <p className="mx-auto mt-5 max-w-[14rem] text-base leading-relaxed md:text-lg">{point.title}</p>}
-              </li>
-            ))}
+          <ul className="relative grid w-full grid-cols-2 lg:grid-cols-4">
+            {blocks.points.map((point, index) => {
+              const mobileColDivider = index % 2 === 1
+              const desktopDivider = index > 0
+              const mobileRowDivider = index >= 2
+
+              return (
+                <li
+                  key={point.id}
+                  className={[
+                    'relative px-4 py-10 text-center text-ink sm:px-8 sm:py-12 lg:px-10 xl:px-16',
+                    mobileColDivider || desktopDivider
+                      ? 'before:absolute before:top-[18%] before:bottom-[18%] before:left-0 before:w-px before:bg-[#3d2a1f]/20'
+                      : '',
+                    !mobileColDivider && desktopDivider ? 'before:hidden lg:before:block' : '',
+                    mobileColDivider && !desktopDivider ? 'lg:before:hidden' : '',
+                    mobileRowDivider
+                      ? 'after:absolute after:top-0 after:right-[18%] after:left-[18%] after:h-px after:bg-[#3d2a1f]/20 lg:after:hidden'
+                      : '',
+                  ].join(' ')}
+                >
+                  <PointIcon point={point} />
+                  {point.title && (
+                    <p className="mx-auto mt-5 max-w-[16rem] text-base leading-relaxed md:text-lg xl:max-w-none">{point.title}</p>
+                  )}
+                </li>
+              )
+            })}
           </ul>
         </MarbleBand>
       )}
