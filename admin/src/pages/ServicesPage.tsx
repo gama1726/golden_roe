@@ -1,7 +1,8 @@
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { useEffect, useState, type FormEvent } from 'react'
-import { Button, Field, Notice, SaveButton, TextArea, controlClass, useSaveFeedback } from '../components/ui'
+import { useEffect, useState } from 'react'
+import { Button, Field, Notice, TextArea, controlClass } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
+import { usePageSave } from '../lib/save-bar'
 import type { Service, StoredImage } from '../lib/types'
 import { ContentPage } from './ContentPage'
 
@@ -13,9 +14,10 @@ export function ServicesPage() {
   const [editing, setEditing] = useState<number | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const feedback = useSaveFeedback()
   const [image, setImage] = useState<StoredImage | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [baseline, setBaseline] = useState(JSON.stringify(empty))
+  const formDirty = JSON.stringify(form) !== baseline || image !== null
 
   async function load() {
     const response = await api.get<{ data: Service[] }>('/api/v1/admin/services')
@@ -31,8 +33,8 @@ export function ServicesPage() {
     setError(null)
   }
 
-  async function save(event: FormEvent) {
-    event.preventDefault()
+  async function saveService() {
+    if (!formDirty) return
     const payload: Record<string, unknown> = {
       title: form.title,
       price: Number(form.price),
@@ -51,9 +53,12 @@ export function ServicesPage() {
     setEditing(null)
     setImage(null)
     setPreview(null)
+    setBaseline(JSON.stringify(empty))
     await load()
     setError(null)
   }
+
+  usePageSave('service-form', formDirty, saveService)
 
   function edit(service: Service) {
     setEditing(service.id)
@@ -67,6 +72,16 @@ export function ServicesPage() {
     })
     setImage(null)
     setPreview(service.image?.original ?? null)
+    setBaseline(
+      JSON.stringify({
+        title: service.title,
+        price: String(service.price),
+        format: service.format,
+        audience: service.audience,
+        result: service.result,
+        is_active: service.is_active,
+      }),
+    )
   }
 
   async function onFile(file: File | undefined) {
@@ -133,13 +148,7 @@ export function ServicesPage() {
           </article>
         ))}
       </div>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          feedback.run('service', () => save(event)).catch((reason: unknown) => setError(errorText(reason)))
-        }}
-        className="space-y-3 rounded-3xl bg-white p-5"
-      >
+      <div className="space-y-3 rounded-3xl bg-white p-5">
         <h2 className="font-serif text-2xl">{editing ? 'Редактирование' : 'Новая услуга'}</h2>
         <Field label="Название">
           <input className={controlClass} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
@@ -164,15 +173,22 @@ export function ServicesPage() {
           <input type="checkbox" checked={form.is_active} onChange={(event) => setForm({ ...form, is_active: event.target.checked })} />
           Показывать на сайте
         </label>
-        <div className="flex gap-2">
-          <SaveButton pending={feedback.pending('service')} saved={feedback.saved('service')} />
-          {editing && (
-            <Button type="button" variant="ghost" onClick={() => { setEditing(null); setForm(empty); setImage(null); setPreview(null) }}>
-              Отмена
-            </Button>
-          )}
-        </div>
-      </form>
+        {editing && (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => {
+              setEditing(null)
+              setForm(empty)
+              setImage(null)
+              setPreview(null)
+              setBaseline(JSON.stringify(empty))
+            }}
+          >
+            Отмена
+          </Button>
+        )}
+      </div>
     </section>
     </div>
   )

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Field, Notice, PageTitle, SaveButton, TextArea, controlClass, useSaveFeedback } from '../components/ui'
+import { Field, Notice, PageTitle, TextArea, controlClass } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
+import { usePageSave } from '../lib/save-bar'
 import type { AuthorStat, Banner, PageContent, StoredImage } from '../lib/types'
 
 type Props = { page: 'home' | 'author' | 'services' | 'articles' | 'reviews' | 'contacts'; title: string }
@@ -65,84 +66,129 @@ export function ContentPage({ page, title }: Props) {
   const [images, setImages] = useState<Record<string, StoredImage>>({})
   const [previews, setPreviews] = useState<Record<string, string>>({})
   const [removed, setRemoved] = useState<Record<string, boolean>>({})
+  const [saved, setSaved] = useState<{ banners: Banner[]; blocks: PageContent[]; stats: AuthorStat[] }>({
+    banners: [],
+    blocks: [],
+    stats: [],
+  })
   const [error, setError] = useState<string | null>(null)
-  const feedback = useSaveFeedback()
 
   async function load() {
     const [bannerResponse, contentResponse] = await Promise.all([
       api.get<{ data: Banner[] }>(`/api/v1/admin/banners?page=${page}`),
       api.get<{ data: PageContent[] }>(`/api/v1/admin/page-contents?page=${page}`),
     ])
-    setBanners(bannerResponse.data.data)
-    setBlocks(contentResponse.data.data)
+    const nextBanners = bannerResponse.data.data
+    const nextBlocks = contentResponse.data.data
+    let nextStats: AuthorStat[] = []
     if (page === 'author') {
       const statResponse = await api.get<{ data: AuthorStat[] }>('/api/v1/admin/author-stats')
-      setStats(statResponse.data.data)
+      nextStats = statResponse.data.data
     }
+    setBanners(nextBanners)
+    setBlocks(nextBlocks)
+    setStats(nextStats)
+    setSaved({ banners: nextBanners, blocks: nextBlocks, stats: nextStats })
+    setImages({})
+    setPreviews({})
+    setRemoved({})
   }
 
   useEffect(() => {
     load().catch((reason: unknown) => setError(errorText(reason)))
   }, [page])
 
-  async function saveBanner(banner: Banner) {
-    const payload: Record<string, unknown> = {
-      title: banner.title,
-      subtitle: banner.subtitle,
-      text: banner.text,
-    }
+  function bannerDirty(banner: Banner) {
     const key = `banner-${banner.id}`
-    if (images[key]) payload.image = images[key]
-    else if (removed[key]) payload.image = null
-    const response = await api.patch<{ data: Banner }>(`/api/v1/admin/banners/${banner.id}`, payload)
-    clearImageState(key)
-    setBanners((current) => current.map((item) => (item.id === banner.id ? response.data.data : item)))
-    setError(null)
+    if (images[key] || removed[key]) return true
+    const base = saved.banners.find((item) => item.id === banner.id)
+    if (!base) return false
+    return banner.title !== base.title || banner.subtitle !== base.subtitle || banner.text !== base.text
   }
 
-  async function saveBlock(block: PageContent) {
-    const payload: Record<string, unknown> = {
-      eyebrow: block.eyebrow,
-      title: block.title,
-      body: block.body,
-    }
+  function blockDirty(block: PageContent) {
     const key = `block-${block.id}`
-    if (images[key]) payload.image = images[key]
-    else if (removed[key]) payload.image = null
-    const response = await api.patch<{ data: PageContent }>(`/api/v1/admin/page-contents/${block.id}`, payload)
-    clearImageState(key)
-    setBlocks((current) => current.map((item) => (item.id === block.id ? response.data.data : item)))
-    setError(null)
+    if (images[key] || removed[key]) return true
+    const base = saved.blocks.find((item) => item.id === block.id)
+    if (!base) return false
+    return block.eyebrow !== base.eyebrow || block.title !== base.title || block.body !== base.body
   }
 
-  function clearImageState(key: string) {
-    setImages((current) => {
-      const next = { ...current }
-      delete next[key]
-      return next
-    })
-    setPreviews((current) => {
-      const next = { ...current }
-      delete next[key]
-      return next
-    })
-    setRemoved((current) => {
-      const next = { ...current }
-      delete next[key]
-      return next
-    })
+  function statDirty(stat: AuthorStat) {
+    const base = saved.stats.find((item) => item.id === stat.id)
+    if (!base) return false
+    return stat.value !== base.value || stat.label !== base.label || stat.is_active !== base.is_active
   }
 
-  async function saveStat(stat: AuthorStat) {
-    const response = await api.patch<{ data: AuthorStat }>(`/api/v1/admin/author-stats/${stat.id}`, {
-      value: stat.value,
-      label: stat.label,
-      is_active: stat.is_active,
-      sort_order: stat.sort_order,
-    })
-    setStats((current) => current.map((item) => (item.id === stat.id ? response.data.data : item)))
+  const dirty = banners.some(bannerDirty) || blocks.some(blockDirty) || stats.some(statDirty)
+
+  useEffect(() => {
+    if (!dirty) return
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault()
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [dirty])
+
+  async function saveAll() {
     setError(null)
+    try {
+      let nextBanners = banners
+      let nextBlocks = blocks
+      let nextStats = stats
+
+      for (const banner of banners) {
+        if (!bannerDirty(banner)) continue
+        const key = `banner-${banner.id}`
+        const payload: Record<string, unknown> = {
+          title: banner.title,
+          subtitle: banner.subtitle,
+          text: banner.text,
+        }
+        if (images[key]) payload.image = images[key]
+        else if (removed[key]) payload.image = null
+        const response = await api.patch<{ data: Banner }>(`/api/v1/admin/banners/${banner.id}`, payload)
+        nextBanners = nextBanners.map((item) => (item.id === banner.id ? response.data.data : item))
+      }
+
+      for (const block of blocks) {
+        if (!blockDirty(block)) continue
+        const key = `block-${block.id}`
+        const payload: Record<string, unknown> = {
+          eyebrow: block.eyebrow,
+          title: block.title,
+          body: block.body,
+        }
+        if (images[key]) payload.image = images[key]
+        else if (removed[key]) payload.image = null
+        const response = await api.patch<{ data: PageContent }>(`/api/v1/admin/page-contents/${block.id}`, payload)
+        nextBlocks = nextBlocks.map((item) => (item.id === block.id ? response.data.data : item))
+      }
+
+      for (const stat of stats) {
+        if (!statDirty(stat)) continue
+        const response = await api.patch<{ data: AuthorStat }>(`/api/v1/admin/author-stats/${stat.id}`, {
+          value: stat.value,
+          label: stat.label,
+          is_active: stat.is_active,
+          sort_order: stat.sort_order,
+        })
+        nextStats = nextStats.map((item) => (item.id === stat.id ? response.data.data : item))
+      }
+
+      setBanners(nextBanners)
+      setBlocks(nextBlocks)
+      setStats(nextStats)
+      setSaved({ banners: nextBanners, blocks: nextBlocks, stats: nextStats })
+      setImages({})
+      setPreviews({})
+      setRemoved({})
+    } catch (reason) {
+      setError(errorText(reason))
+      throw reason
+    }
   }
+
+  usePageSave(`content-${page}`, dirty, saveAll)
 
   async function onFile(key: string, file: File | undefined) {
     if (!file) return
@@ -178,17 +224,10 @@ export function ContentPage({ page, title }: Props) {
   return (
     <section className="space-y-4">
       <PageTitle title={title} />
-      <p className="text-sm text-muted">Тексты и фотографии этой страницы берутся отсюда. Чтобы заменить картинку, выберите файл и сохраните. Пустое поле на сайте остаётся пустым.</p>
+      <p className="text-sm text-muted">Тексты и фотографии этой страницы берутся отсюда. Чтобы заменить картинку, выберите файл. Пустое поле на сайте остаётся пустым. Все правки на странице сохраняются одной кнопкой внизу.</p>
       <Notice text={error} />
       {banners.map((banner) => (
-        <form
-          key={banner.id}
-          className="space-y-3 rounded-3xl bg-white p-5"
-          onSubmit={(event) => {
-            event.preventDefault()
-            feedback.run(`banner-${banner.id}`, () => saveBanner(banner)).catch((reason: unknown) => setError(errorText(reason)))
-          }}
-        >
+        <div key={banner.id} className="space-y-3 rounded-3xl bg-white p-5">
           <h2 className="font-serif text-2xl">Баннер первого экрана</h2>
           <Field label="Заголовок">
             <input className={controlClass} value={banner.title ?? ''} onChange={(event) => setBanners(banners.map((item) => item.id === banner.id ? { ...item, title: event.target.value } : item))} />
@@ -208,38 +247,20 @@ export function ContentPage({ page, title }: Props) {
             onPick={onFile}
             onRemove={removeImage}
           />
-          <SaveButton idle="Сохранить баннер" pending={feedback.pending(`banner-${banner.id}`)} saved={feedback.saved(`banner-${banner.id}`)} />
-        </form>
+        </div>
       ))}
       {page === 'author' && stats.map((stat) => (
-        <form
-          key={stat.id}
-          className="grid items-end gap-3 rounded-3xl bg-white p-5 sm:grid-cols-[minmax(14rem,1fr)_minmax(0,1.4fr)_auto]"
-          onSubmit={(event) => {
-            event.preventDefault()
-            feedback.run(`stat-${stat.id}`, () => saveStat(stat)).catch((reason: unknown) => setError(errorText(reason)))
-          }}
-        >
+        <div key={stat.id} className="grid items-end gap-3 rounded-3xl bg-white p-5 sm:grid-cols-2">
           <Field label="Основная часть">
             <input className={controlClass} placeholder="34 года" value={stat.value ?? ''} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, value: event.target.value } : item))} />
           </Field>
           <Field label="Подпись">
             <input className={controlClass} value={stat.label} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, label: event.target.value } : item))} />
           </Field>
-          <div className="flex items-end">
-            <SaveButton pending={feedback.pending(`stat-${stat.id}`)} saved={feedback.saved(`stat-${stat.id}`)} />
-          </div>
-        </form>
+        </div>
       ))}
       {blocks.map((block) => (
-        <form
-          key={block.id}
-          className="space-y-3 rounded-3xl bg-white p-5"
-          onSubmit={(event) => {
-            event.preventDefault()
-            feedback.run(`block-${block.id}`, () => saveBlock(block)).catch((reason: unknown) => setError(errorText(reason)))
-          }}
-        >
+        <div key={block.id} className="space-y-3 rounded-3xl bg-white p-5">
           <h2 className="font-serif text-2xl">{blockLabel[block.key] ?? block.key}</h2>
           <Field label="Надзаголовок">
             <input className={controlClass} value={block.eyebrow ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, eyebrow: event.target.value } : item))} />
@@ -263,8 +284,7 @@ export function ContentPage({ page, title }: Props) {
             onPick={onFile}
             onRemove={removeImage}
           />
-          <SaveButton idle="Сохранить блок" pending={feedback.pending(`block-${block.id}`)} saved={feedback.saved(`block-${block.id}`)} />
-        </form>
+        </div>
       ))}
     </section>
   )

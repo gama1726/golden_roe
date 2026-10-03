@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { RichText } from '../components/Editor'
-import { Field, Notice, PageTitle, SaveButton, controlClass, useSaveFeedback } from '../components/ui'
+import { Field, Notice, PageTitle, controlClass } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
+import { usePageSave } from '../lib/save-bar'
 import type { Article, StoredImage } from '../lib/types'
 
 export function ArticleEditorPage() {
@@ -17,7 +18,13 @@ export function ArticleEditorPage() {
   const [image, setImage] = useState<StoredImage | null>(null)
   const [ready, setReady] = useState(isNew)
   const [error, setError] = useState<string | null>(null)
-  const feedback = useSaveFeedback()
+  const [baseline, setBaseline] = useState({ title: '', excerpt: '', content: '<p></p>', published: false })
+  const dirty =
+    title !== baseline.title ||
+    excerpt !== baseline.excerpt ||
+    content !== baseline.content ||
+    published !== baseline.published ||
+    image !== null
 
   useEffect(() => {
     if (isNew || !params.id) return
@@ -30,6 +37,12 @@ export function ArticleEditorPage() {
         setContent(article.content || '<p></p>')
         setPublished(article.is_published)
         setPreview(article.image?.original ?? null)
+        setBaseline({
+          title: article.title,
+          excerpt: article.excerpt ?? '',
+          content: article.content || '<p></p>',
+          published: article.is_published,
+        })
         setReady(true)
       })
       .catch((reason: unknown) => setError(errorText(reason)))
@@ -55,9 +68,13 @@ export function ArticleEditorPage() {
       navigate(`/articles/${response.data.data.id}`, { replace: true })
     } else {
       await api.patch(`/api/v1/admin/articles/${params.id}`, payload)
+      setBaseline({ title, excerpt, content, published })
+      setImage(null)
     }
     setError(null)
   }
+
+  usePageSave('article', dirty, save)
 
   return (
     <section>
@@ -68,13 +85,7 @@ export function ArticleEditorPage() {
       </PageTitle>
       <Notice text={error} />
       {ready && (
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            feedback.run('article', save).catch((reason: unknown) => setError(errorText(reason)))
-          }}
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           <Field label="Название">
             <input className={controlClass} value={title} onChange={(event) => setTitle(event.target.value)} required />
           </Field>
@@ -90,8 +101,7 @@ export function ArticleEditorPage() {
             <input type="checkbox" checked={published} onChange={(event) => setPublished(event.target.checked)} />
             Опубликовать
           </label>
-          <SaveButton pending={feedback.pending('article')} saved={feedback.saved('article')} />
-        </form>
+        </div>
       )}
     </section>
   )

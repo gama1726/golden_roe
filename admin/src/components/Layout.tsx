@@ -1,4 +1,5 @@
 import {
+  Check,
   FileText,
   House,
   LogOut,
@@ -10,10 +11,11 @@ import {
   TextQuote,
   LayoutDashboard,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { api } from '../lib/api'
+import { api, errorText } from '../lib/api'
 import { useAuth } from '../lib/auth'
+import { SaveBarProvider } from '../lib/save-bar'
 
 const links = [
   { to: '/', label: 'Обзор', icon: LayoutDashboard, end: true },
@@ -31,6 +33,39 @@ export function Layout() {
   const { user, setUser } = useAuth()
   const navigate = useNavigate()
   const [pending, setPending] = useState(0)
+  const [savers, setSavers] = useState<Record<string, { dirty: boolean; save: () => Promise<void> }>>({})
+  const saversRef = useRef(savers)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const rememberSavers = useCallback((next: Record<string, { dirty: boolean; save: () => Promise<void> }>) => {
+    saversRef.current = next
+    setSavers(next)
+  }, [])
+  const dirty = Object.values(savers).some((saver) => saver.dirty)
+  const hasSave = Object.keys(savers).length > 0
+
+  useEffect(() => {
+    if (!saved) return
+    const timer = window.setTimeout(() => setSaved(false), 2000)
+    return () => window.clearTimeout(timer)
+  }, [saved])
+
+  async function savePage() {
+    setSaving(true)
+    setSaved(false)
+    setSaveError(null)
+    try {
+      for (const saver of Object.values(saversRef.current)) {
+        if (saver.dirty) await saver.save()
+      }
+      setSaved(true)
+    } catch (reason) {
+      setSaveError(errorText(reason))
+    } finally {
+      setSaving(false)
+    }
+  }
 
   useEffect(() => {
     api
@@ -79,11 +114,46 @@ export function Layout() {
           </button>
         </div>
       </aside>
-      <main className="px-4 py-6 md:px-10">
-        <div className="mx-auto max-w-4xl">
-          <Outlet context={{ refreshPending: setPending }} />
-        </div>
-      </main>
+      <SaveBarProvider onChange={rememberSavers}>
+        <main className={`px-4 py-6 md:px-10 ${hasSave ? 'pb-28' : ''}`}>
+          <div className="mx-auto max-w-4xl">
+            <Outlet context={{ refreshPending: setPending }} />
+          </div>
+        </main>
+        {hasSave && (
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 backdrop-blur md:left-[240px]">
+            <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3 md:px-10">
+              <p className={`text-sm ${saveError ? 'text-red-800' : 'text-muted'}`}>
+                {saveError ?? (dirty ? 'Есть несохранённые изменения' : saved ? 'Сохранено' : 'Изменений нет')}
+              </p>
+              <button
+                type="button"
+                disabled={!dirty || saving}
+                onClick={() => void savePage()}
+                className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm transition ${
+                  dirty || saving
+                    ? 'bg-gold text-ink shadow-sm hover:bg-gold/90'
+                    : 'cursor-not-allowed border border-line bg-white text-muted'
+                }`}
+              >
+                {saving ? (
+                  <>
+                    <span className="size-3.5 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden="true" />
+                    Сохраняю…
+                  </>
+                ) : saved && !dirty ? (
+                  <>
+                    <Check aria-hidden="true" size={16} />
+                    Сохранено
+                  </>
+                ) : (
+                  'Сохранить'
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+      </SaveBarProvider>
     </div>
   )
 }

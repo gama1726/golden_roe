@@ -1,37 +1,69 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Button, Field, Notice, SaveButton, controlClass, useSaveFeedback } from '../components/ui'
+import { Button, Field, Notice, controlClass } from '../components/ui'
 import { ContentPage } from './ContentPage'
 import { api, errorText } from '../lib/api'
+import { usePageSave } from '../lib/save-bar'
 import type { ContactChannel } from '../lib/types'
 
 export function ContactsPage() {
   const [items, setItems] = useState<ContactChannel[]>([])
+  const [saved, setSaved] = useState<ContactChannel[]>([])
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const feedback = useSaveFeedback()
   const [draft, setDraft] = useState({ key: '', label: '', value: '' })
 
   async function load() {
     const response = await api.get<{ data: ContactChannel[] }>('/api/v1/admin/contacts')
-    setItems(response.data.data)
+    const incoming = response.data.data
+    setItems((current) =>
+      incoming.map((server) => {
+        const local = current.find((item) => item.id === server.id)
+        const base = saved.find((item) => item.id === server.id)
+        if (
+          local &&
+          base &&
+          (local.label !== base.label || local.value !== base.value || local.is_public !== base.is_public)
+        ) {
+          return { ...server, label: local.label, value: local.value, is_public: local.is_public }
+        }
+        return server
+      }),
+    )
+    setSaved(incoming)
   }
 
   useEffect(() => {
     load().catch((reason: unknown) => setError(errorText(reason)))
   }, [])
 
-  async function save(channel: ContactChannel) {
-    const response = await api.patch<{ data: { url: string | null } }>(`/api/v1/admin/contacts/${channel.id}`, {
-      key: channel.key,
-      label: channel.label,
-      value: channel.value,
-      url: channel.url_override,
-      is_public: channel.is_public,
-      sort_order: channel.sort_order,
-    })
-    setItems((current) => current.map((item) => (item.id === channel.id ? { ...item, url: response.data.data.url } : item)))
+  function channelDirty(channel: ContactChannel) {
+    const base = saved.find((item) => item.id === channel.id)
+    if (!base) return false
+    return channel.label !== base.label || channel.value !== base.value || channel.is_public !== base.is_public
+  }
+
+  const channelsDirty = items.some(channelDirty)
+
+  async function saveChannels() {
+    let next = items
+    for (const channel of items) {
+      if (!channelDirty(channel)) continue
+      const response = await api.patch<{ data: { url: string | null } }>(`/api/v1/admin/contacts/${channel.id}`, {
+        key: channel.key,
+        label: channel.label,
+        value: channel.value,
+        url: channel.url_override,
+        is_public: channel.is_public,
+        sort_order: channel.sort_order,
+      })
+      next = next.map((item) => (item.id === channel.id ? { ...item, url: response.data.data.url } : item))
+    }
+    setItems(next)
+    setSaved(next)
     setError(null)
   }
+
+  usePageSave('contact-channels', channelsDirty, saveChannels)
 
   async function create(event: FormEvent) {
     event.preventDefault()
@@ -57,14 +89,7 @@ export function ContactsPage() {
       <Notice text={notice} />
       <Notice text={error} />
       {items.map((channel) => (
-        <form
-          key={channel.id}
-          className="space-y-3 rounded-3xl bg-white p-5"
-          onSubmit={(event) => {
-            event.preventDefault()
-            feedback.run(`channel-${channel.id}`, () => save(channel)).catch((reason: unknown) => setError(errorText(reason)))
-          }}
-        >
+        <div key={channel.id} className="space-y-3 rounded-3xl bg-white p-5">
           <h2 className="font-serif text-2xl">{channel.label}</h2>
           <p className="text-sm text-muted">Ссылка: {channel.url ?? 'будет собрана из значения'}</p>
           <Field label="Подпись">
@@ -77,8 +102,7 @@ export function ContactsPage() {
             <input type="checkbox" checked={channel.is_public} onChange={(event) => update(channel.id, { is_public: event.target.checked })} />
             Показывать на сайте
           </label>
-          <SaveButton pending={feedback.pending(`channel-${channel.id}`)} saved={feedback.saved(`channel-${channel.id}`)} />
-        </form>
+        </div>
       ))}
       <form onSubmit={create} className="space-y-3 rounded-3xl bg-white p-5">
         <h2 className="font-serif text-2xl">Новый канал</h2>

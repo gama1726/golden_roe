@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Field, Notice, PageTitle, SaveButton, controlClass, useSaveFeedback } from '../components/ui'
+import { Field, Notice, PageTitle, controlClass } from '../components/ui'
 import { api, errorText } from '../lib/api'
+import { usePageSave } from '../lib/save-bar'
 import type { Settings } from '../lib/types'
 
 const pages = [
@@ -12,15 +13,23 @@ const pages = [
   ['contacts', 'Контакты'],
 ] as const
 
+function snapshot(value: Settings) {
+  return JSON.stringify({ reviews_enabled: value.reviews_enabled, seo: value.seo })
+}
+
 export function SettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null)
+  const [baseline, setBaseline] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const feedback = useSaveFeedback()
+  const dirty = settings !== null && baseline !== null && snapshot(settings) !== baseline
 
   useEffect(() => {
     api
       .get<{ data: Settings }>('/api/v1/admin/settings')
-      .then((response) => setSettings(response.data.data))
+      .then((response) => {
+        setSettings(response.data.data)
+        setBaseline(snapshot(response.data.data))
+      })
       .catch((reason: unknown) => setError(errorText(reason)))
   }, [])
 
@@ -28,8 +37,11 @@ export function SettingsPage() {
     if (!settings) return
     const response = await api.patch<{ data: Settings }>('/api/v1/admin/settings', settings)
     setSettings(response.data.data)
+    setBaseline(snapshot(response.data.data))
     setError(null)
   }
+
+  usePageSave('settings', dirty, save)
 
   if (!settings) return <Notice text={error ?? 'Загрузка…'} />
 
@@ -78,7 +90,6 @@ export function SettingsPage() {
           </div>
         )
       })}
-      <SaveButton type="button" idle="Сохранить" pending={feedback.pending('settings')} saved={feedback.saved('settings')} onClick={() => feedback.run('settings', save).catch((reason: unknown) => setError(errorText(reason)))} />
     </section>
   )
 }
