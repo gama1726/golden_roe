@@ -23,6 +23,7 @@ export function SiteQuote({
   className?: string
 }) {
   const text = tone === 'ivory' ? 'text-ivory' : 'text-gold'
+  const mark = tone === 'ivory' ? 'text-ivory/45' : 'text-gold/65'
   const credit = tone === 'ivory' ? 'text-ivory/70' : 'text-gold'
   const box =
     boxed && tone === 'gold'
@@ -41,9 +42,18 @@ export function SiteQuote({
         .filter(Boolean)
         .join(' ')}
     >
+      <span
+        aria-hidden="true"
+        className={[
+          'block font-serif text-6xl leading-[0.7] md:text-7xl',
+          boxed && tone === 'ivory' ? 'text-ink/35' : mark,
+        ].join(' ')}
+      >
+        “
+      </span>
       <p
         className={[
-          'max-w-sm font-script text-[1.65rem] leading-snug md:text-[1.85rem]',
+          'mt-3 max-w-sm font-serif text-2xl leading-snug italic md:text-3xl',
           boxed && tone === 'ivory' ? 'text-ink' : text,
         ].join(' ')}
       >
