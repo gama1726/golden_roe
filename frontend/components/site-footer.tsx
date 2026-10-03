@@ -25,9 +25,9 @@ const channelIcons: Record<string, LucideIcon | typeof WhatsAppIcon | typeof Tel
 export function SiteFooter({ contacts, documents }: { contacts: ContactChannel[]; documents: DocumentItem[] }) {
   return (
     <footer className="mt-auto border-t border-line">
-      <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-8 px-4 py-10 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-4 px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
         <Link href="/" className="shrink-0" aria-label="Golden Roe">
-          <Logo markClassName="h-12 sm:h-14" />
+          <Logo markClassName="h-8" wordmarkClassName="h-4 w-auto" />
         </Link>
         <nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm" aria-label="Разделы сайта">
           {links.map((link) => (
@@ -52,7 +52,7 @@ export function SiteFooter({ contacts, documents }: { contacts: ContactChannel[]
         </div>
       </div>
       <div className="border-t border-line">
-        <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-3 px-4 py-4 text-xs text-muted sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-2 px-4 py-2.5 text-xs text-muted sm:px-5 lg:flex-row lg:items-center lg:justify-between">
           <ul className="flex flex-wrap gap-x-4 gap-y-2">
             {documents.map((document) => (
               <li key={document.type}>
