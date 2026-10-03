@@ -50,13 +50,17 @@ services:
       context: ./frontend
     ports:
       - "3000:3000"
+    entrypoint: ["/bin/sh", "/app/docker-entrypoint.sh"]
     volumes:
       - ./frontend:/app
       - frontend_node_modules:/app/node_modules
     environment:
       API_URL: http://backend:8000
-      NEXT_PUBLIC_API_URL: http://127.0.0.1:8000
-      SITE_URL: http://127.0.0.1:3000
+      # Use `${VAR-default}` (not `:-`) so an empty .env value keeps same-origin API calls.
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL-http://127.0.0.1:8000}
+      SITE_URL: ${SITE_URL:-http://127.0.0.1:3000}
+      FRONTEND_MODE: ${FRONTEND_MODE:-dev}
+      FRONTEND_REBUILD: ${FRONTEND_REBUILD:-0}
     depends_on:
       backend:
         condition: service_healthy
