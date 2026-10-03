@@ -9,21 +9,21 @@ import {
   Check,
   Flower2,
   Gem,
+  Heart,
   HeartHandshake,
+  Leaf,
   Music,
   Sparkles,
-  Sun,
-  Users,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 
 const pillarIcons: Record<string, LucideIcon> = {
-  'pillar.family': Users,
+  'pillar.family': Heart,
   'pillar.spirit': Flower2,
   'pillar.business': ChartNoAxesColumn,
   'pillar.creativity': Music,
-  'pillar.health': Sun,
+  'pillar.health': Leaf,
   'pillar.beauty': Gem,
 }
 
@@ -116,51 +116,59 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {(pillars.title || pillars.items.length > 0) && (
-        <section className="border-b border-line">
-          <div className="mx-auto grid w-full max-w-[80rem] items-end gap-8 px-5 py-8 md:px-10 md:py-12 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12">
-            <div>
+        <section className="w-full border-y border-line bg-[#efe6d8]">
+          <div className="grid w-full items-stretch lg:grid-cols-[minmax(0,1fr)_minmax(16rem,22rem)]">
+            <div className="px-5 py-8 md:px-10 md:py-10 lg:px-12 lg:py-12">
               {pillars.title && <h2 className="font-serif text-4xl md:text-5xl">{pillars.title}</h2>}
               {pillars.items.length > 0 && (
-                <ul className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+                <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:mt-10 lg:grid-cols-6 lg:gap-x-2 xl:gap-x-4">
                   {pillars.items.map((item) => (
                     <li key={item.id} className="text-center">
                       <PillarIcon item={item} />
-                      {item.title && <p className="mt-4 text-sm leading-relaxed">{item.title}</p>}
+                      {item.title && <p className="mx-auto mt-3 max-w-[9rem] text-sm leading-snug">{item.title}</p>}
                     </li>
                   ))}
                 </ul>
               )}
             </div>
             {pillars.quote?.body && (
-              <SiteQuote boxed className="lg:pb-2">
-                {cleanQuoteText(pillars.quote.body)}
-              </SiteQuote>
+              <div className="flex border-t border-[#e0d4c4] bg-ivory/75 lg:border-t-0 lg:border-l">
+                <SiteQuote className="flex h-full w-full flex-col justify-center px-6 py-8 md:px-8 md:py-10">
+                  {cleanQuoteText(pillars.quote.body)}
+                </SiteQuote>
+              </div>
             )}
           </div>
         </section>
       )}
 
       {(son || son_photo) && (
-        <section className="border-t border-line">
-          <div className="mx-auto grid w-full max-w-[80rem] items-stretch gap-6 px-5 py-8 md:px-10 md:py-12 lg:grid-cols-[1fr_1.05fr_1fr] lg:gap-8">
+        <section className="w-full">
+          <div className="grid w-full items-stretch lg:grid-cols-4 lg:gap-0">
             <div className="min-h-0 lg:h-full">
               <MediaImage
                 image={son?.image ?? null}
-                className="aspect-[4/5] w-full object-cover lg:h-full lg:aspect-auto"
+                sizes="(min-width: 1024px) 25vw, 100vw"
+                className="aspect-[4/5] w-full object-cover lg:h-full lg:min-h-[28rem] lg:aspect-auto"
               />
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col justify-center bg-ivory px-6 py-10 md:px-8 md:py-12 lg:px-10">
               {son?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{son.eyebrow}</p>}
               {son?.title && <h2 className="mt-3 font-serif text-3xl leading-tight md:text-4xl">{son.title}</h2>}
               {son?.body && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">{son.body}</p>}
             </div>
-            <div className="relative min-h-0 lg:h-full">
+            <div className="relative min-h-0 lg:col-span-2 lg:h-full">
               <MediaImage
                 image={son_photo?.image ?? null}
-                className="aspect-[4/5] w-full object-cover lg:h-full lg:aspect-auto"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="aspect-[16/10] w-full object-cover lg:h-full lg:min-h-[28rem] lg:aspect-auto"
               />
               {son_quote?.body && (
-                <SiteQuote boxed tone="ivory" className="absolute right-3 bottom-3 max-w-[14rem] shadow-sm md:right-5 md:bottom-5">
+                <SiteQuote
+                  boxed
+                  tone="ivory"
+                  className="absolute inset-y-[12%] right-[6%] flex w-[min(14rem,42%)] flex-col justify-center shadow-sm"
+                >
                   {cleanQuoteText(son_quote.body)}
                 </SiteQuote>
               )}
@@ -170,24 +178,24 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {(guide?.title || guide?.body || guide_items.length > 0) && (
-        <section className="border-t border-line">
-          <div className="mx-auto grid w-full max-w-[80rem] items-start gap-6 px-5 py-8 md:px-10 md:py-12 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-x-12">
-            <div>
-              {guide?.title && <h2 className="font-serif text-4xl leading-[1.05] md:text-5xl">{guide.title}</h2>}
-              {guide?.body && <p className="mt-4 whitespace-pre-line leading-relaxed text-muted">{guide.body}</p>}
+        <section className="w-full border-t border-line">
+          <div className="w-full px-5 py-10 md:px-10 md:py-14 lg:px-12">
+            {guide?.title && <h2 className="max-w-4xl font-serif text-4xl leading-[1.05] md:text-5xl">{guide.title}</h2>}
+            <div className="mt-8 grid items-start gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-x-16 xl:gap-x-24">
+              {guide?.body && <p className="whitespace-pre-line leading-relaxed text-muted">{guide.body}</p>}
+              {guide_items.length > 0 && (
+                <ul className="grid gap-4">
+                  {guide_items.map((item) => (
+                    <li key={item.id} className="flex items-start gap-3">
+                      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full border border-gold text-gold">
+                        <Check aria-hidden="true" size={14} strokeWidth={1.75} />
+                      </span>
+                      {item.title && <span className="leading-snug">{item.title}</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            {guide_items.length > 0 && (
-              <ul className="grid gap-4">
-                {guide_items.map((item) => (
-                  <li key={item.id} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border border-gold text-gold">
-                      <Check aria-hidden="true" size={14} strokeWidth={1.75} />
-                    </span>
-                    {item.title && <span className="leading-snug">{item.title}</span>}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
         </section>
       )}
@@ -253,7 +261,7 @@ function Portrait({
 
 function PillarIcon({ item }: { item: PageContent }) {
   const Icon = pillarIcons[item.key] ?? Gem
-  return <Icon aria-hidden="true" className="mx-auto text-gold" size={32} strokeWidth={1.15} />
+  return <Icon aria-hidden="true" className="mx-auto text-gold" size={34} strokeWidth={1.1} />
 }
 
 function StatIcon({ index }: { stat: AuthorStat; index: number }) {
