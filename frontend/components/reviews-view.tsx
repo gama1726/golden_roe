@@ -48,7 +48,7 @@ export function ReviewsView({
     <>
       <section className="relative min-h-[34rem] overflow-hidden bg-ivory text-ink md:min-h-[40rem]">
         <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_center]" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ivory via-ivory/88 to-ivory/10" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ivory via-ivory/55 to-transparent" />
         <div className="relative z-10 mx-auto flex min-h-[34rem] w-full max-w-[80rem] items-center md:min-h-[40rem]">
           <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,28rem)_minmax(0,16rem)] md:px-10 md:py-20">
             <div>

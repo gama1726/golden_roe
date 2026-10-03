@@ -26,7 +26,7 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
     <>
       <section className="relative min-h-[38rem] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
         <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_center]" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/80 to-ink/15" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/35 to-transparent" />
         <div className="relative z-10 mx-auto flex min-h-[38rem] w-full max-w-[80rem] items-center md:min-h-[44rem]">
           <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,26rem)_minmax(0,14rem)] md:px-10 md:py-20">
             <div>

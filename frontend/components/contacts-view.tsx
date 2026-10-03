@@ -48,7 +48,7 @@ export function ContactsView({
     <>
       <section className="relative min-h-[30rem] overflow-hidden bg-ink text-ivory sm:min-h-[34rem] md:min-h-[40rem] lg:min-h-[44rem]">
         <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[82%_center] sm:object-[72%_center] lg:object-[68%_center]" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/30 sm:via-ink/75 sm:to-ink/10" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/40 to-transparent sm:via-ink/30" />
         <div className="relative z-10 mx-auto flex min-h-[30rem] w-full max-w-[80rem] items-center sm:min-h-[34rem] md:min-h-[40rem] lg:min-h-[44rem]">
           <div className="w-full max-w-xl px-4 py-12 sm:px-5 sm:py-16 md:px-10 md:py-20">
             {banner?.title && <p className="text-[0.7rem] tracking-[0.22em] text-gold uppercase sm:text-xs sm:tracking-[0.28em]">{banner.title}</p>}
