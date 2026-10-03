@@ -28,7 +28,7 @@ export function Field({
   children: ReactNode
 }) {
   return (
-    <label className="block space-y-3 text-sm">
+    <label className="block space-y-1.5 text-sm">
       <span className="text-muted">{label}</span>
       {children}
     </label>
@@ -37,6 +37,63 @@ export function Field({
 
 export const controlClass =
   'w-full rounded-xl border border-line bg-white px-3 py-2 text-sm outline-none'
+
+export const cardClass = 'space-y-5 rounded-3xl bg-white p-5'
+export const cardHeadingClass = 'font-serif text-2xl leading-tight'
+
+export function FilePicker({
+  label,
+  accept,
+  buttonLabel = 'Выбрать файл',
+  hint,
+  preview,
+  onPick,
+  onClear,
+}: {
+  label: string
+  accept: string
+  buttonLabel?: string
+  hint?: string | null
+  preview?: string | null
+  onPick: (file: File | undefined) => void
+  onClear?: () => void
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <div className="space-y-1.5 text-sm">
+      <p className="text-muted">{label}</p>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          className="inline-flex shrink-0 items-center rounded-full border border-line bg-white px-4 py-2 text-sm hover:bg-cream"
+          onClick={() => inputRef.current?.click()}
+        >
+          {buttonLabel}
+        </button>
+        {hint ? <span className="min-w-0 truncate text-muted">{hint}</span> : null}
+        {onClear && preview ? (
+          <button type="button" className="shrink-0 text-muted underline" onClick={onClear}>
+            Убрать
+          </button>
+        ) : null}
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        className="sr-only"
+        onChange={(event) => {
+          onPick(event.target.files?.[0])
+          event.target.value = ''
+        }}
+      />
+      {preview ? (
+        <img src={preview} alt="" className="mt-2 max-h-48 w-full max-w-md rounded-2xl object-cover" />
+      ) : null}
+    </div>
+  )
+}
 
 export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea className={`${controlClass} min-h-28`} {...props} />

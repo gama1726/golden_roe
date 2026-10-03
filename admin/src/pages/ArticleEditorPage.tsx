@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { RichText } from '../components/Editor'
-import { Field, Notice, PageTitle, controlClass } from '../components/ui'
+import { Field, FilePicker, Notice, PageTitle, controlClass } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
 import { usePageSave } from '../lib/save-bar'
 import type { Article, StoredImage } from '../lib/types'
@@ -85,17 +85,22 @@ export function ArticleEditorPage() {
       </PageTitle>
       <Notice text={error} />
       {ready && (
-        <div className="space-y-4">
+        <div className="space-y-5">
           <Field label="Название">
             <input className={controlClass} value={title} onChange={(event) => setTitle(event.target.value)} required />
           </Field>
           <Field label="Короткое описание">
             <input className={controlClass} value={excerpt} onChange={(event) => setExcerpt(event.target.value)} />
           </Field>
-          <Field label="Изображение">
-            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onFile(event.target.files?.[0])} />
-          </Field>
-          {preview && <img src={preview} alt="" className="max-h-64 rounded-2xl object-cover" />}
+          <FilePicker
+            label="Изображение"
+            accept="image/jpeg,image/png,image/webp"
+            buttonLabel="Выбрать изображение"
+            hint={preview ? 'Файл выбран' : 'JPEG, PNG или WebP'}
+            preview={preview}
+            onPick={onFile}
+            onClear={preview ? () => { setImage(null); setPreview(null) } : undefined}
+          />
           <RichText key={params.id ?? 'new'} initial={content} onChange={setContent} />
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={published} onChange={(event) => setPublished(event.target.checked)} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Field, Notice, PageTitle, controlClass } from '../components/ui'
+import { Field, Notice, PageTitle, cardClass, cardHeadingClass, controlClass } from '../components/ui'
 import { api, errorText } from '../lib/api'
 import { usePageSave } from '../lib/save-bar'
 import type { Settings } from '../lib/types'
@@ -46,7 +46,7 @@ export function SettingsPage() {
   if (!settings) return <Notice text={error ?? 'Загрузка…'} />
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-6">
       <PageTitle title="Настройки" />
       <Notice text={error} />
       <label className="flex items-center gap-2 rounded-3xl bg-white p-5 text-sm">
@@ -60,8 +60,8 @@ export function SettingsPage() {
       {pages.map(([key, label]) => {
         const entry = settings.seo[key] ?? { title: '', description: '' }
         return (
-          <div key={key} className="space-y-3 rounded-3xl bg-white p-5">
-            <h2 className="font-serif text-2xl">{label}</h2>
+          <div key={key} className={cardClass}>
+            <h2 className={cardHeadingClass}>{label}</h2>
             <Field label="Заголовок страницы">
               <input
                 className={controlClass}

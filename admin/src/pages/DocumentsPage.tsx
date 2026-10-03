@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Notice, PageTitle } from '../components/ui'
+import { FilePicker, Notice, PageTitle, cardClass, cardHeadingClass } from '../components/ui'
 import { api, errorText } from '../lib/api'
 import type { DocumentItem } from '../lib/types'
 
@@ -38,11 +38,17 @@ export function DocumentsPage() {
       <Notice text={notice} />
       <Notice text={error} />
       {items.map((document) => (
-        <article key={document.type} className="rounded-3xl bg-white p-5">
-          <h2 className="font-serif text-2xl">{document.label}</h2>
+        <article key={document.type} className={cardClass}>
+          <h2 className={cardHeadingClass}>{document.label}</h2>
           <p className="text-sm text-muted">{document.available ? 'Файл загружен' : 'Документ будет предоставлен заказчиком'}</p>
-          <p className="mt-1 text-xs text-muted">{document.url}</p>
-          <input className="mt-3 block text-sm" type="file" accept="application/pdf,.pdf" onChange={(event) => upload(document.type, event.target.files?.[0])} />
+          <p className="text-xs text-muted break-all">{document.url}</p>
+          <FilePicker
+            label="PDF"
+            accept="application/pdf,.pdf"
+            buttonLabel="Выбрать PDF"
+            hint={document.available ? 'Файл загружен' : 'Только PDF'}
+            onPick={(file) => void upload(document.type, file)}
+          />
         </article>
       ))}
     </section>

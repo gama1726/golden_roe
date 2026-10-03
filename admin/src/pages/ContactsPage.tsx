@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Button, Field, Notice, controlClass } from '../components/ui'
+import { Button, Field, Notice, cardClass, cardHeadingClass, controlClass } from '../components/ui'
 import { ContentPage } from './ContentPage'
 import { api, errorText } from '../lib/api'
 import { usePageSave } from '../lib/save-bar'
@@ -89,8 +89,8 @@ export function ContactsPage() {
       <Notice text={notice} />
       <Notice text={error} />
       {items.map((channel) => (
-        <div key={channel.id} className="space-y-3 rounded-3xl bg-white p-5">
-          <h2 className="font-serif text-2xl">{channel.label}</h2>
+        <div key={channel.id} className={cardClass}>
+          <h2 className={cardHeadingClass}>{channel.label}</h2>
           <p className="text-sm text-muted">Ссылка: {channel.url ?? 'будет собрана из значения'}</p>
           <Field label="Подпись">
             <input className={controlClass} value={channel.label} onChange={(event) => update(channel.id, { label: event.target.value })} />
@@ -104,8 +104,8 @@ export function ContactsPage() {
           </label>
         </div>
       ))}
-      <form onSubmit={create} className="space-y-3 rounded-3xl bg-white p-5">
-        <h2 className="font-serif text-2xl">Новый канал</h2>
+      <form onSubmit={create} className={cardClass}>
+        <h2 className={cardHeadingClass}>Новый канал</h2>
         <p className="text-sm text-muted">Для будущего адреса или соцсети. Пустые каналы не создаются заранее.</p>
         <Field label="Ключ, латиницей">
           <input className={controlClass} value={draft.key} onChange={(event) => setDraft({ ...draft, key: event.target.value })} placeholder="instagram" required />

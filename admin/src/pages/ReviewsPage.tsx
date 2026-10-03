@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Button, Notice } from '../components/ui'
+import { Button, FilePicker, Notice, cardClass, cardHeadingClass } from '../components/ui'
 import { ContentPage } from './ContentPage'
 import { api, errorText } from '../lib/api'
 import type { Review } from '../lib/types'
@@ -71,10 +71,10 @@ export function ReviewsPage() {
       <Notice text={error} />
       {items.length === 0 && <p className="text-muted">Отзывов нет.</p>}
       {items.map((review) => (
-        <article key={review.id} className="space-y-3 rounded-3xl bg-white p-5">
+        <article key={review.id} className={cardClass}>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="font-serif text-2xl">{review.title}</h2>
+              <h2 className={cardHeadingClass}>{review.title}</h2>
               <p className="text-sm text-muted">
                 {review.full_name} · {review.rating}/5 · {review.status === 'pending' ? 'На проверке' : 'Одобрен'}
               </p>
@@ -93,11 +93,14 @@ export function ReviewsPage() {
           <p className="text-xs text-muted">
             {review.phone} · {review.email}
           </p>
-          {review.image?.original && <img src={review.image.original} alt="" className="max-h-40 rounded-2xl object-cover" />}
-          <label className="block text-sm text-muted">
-            Изображение
-            <input className="mt-1 block" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => upload(review.id, event.target.files?.[0])} />
-          </label>
+          <FilePicker
+            label="Изображение"
+            accept="image/jpeg,image/png,image/webp"
+            buttonLabel="Выбрать изображение"
+            hint={review.image?.original ? 'Файл загружен' : 'JPEG, PNG или WebP'}
+            preview={review.image?.original ?? null}
+            onPick={(file) => void upload(review.id, file)}
+          />
         </article>
       ))}
     </section>

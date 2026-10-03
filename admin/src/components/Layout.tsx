@@ -121,9 +121,9 @@ export function Layout() {
           </div>
         </main>
         {hasSave && (
-          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 backdrop-blur md:left-[240px]">
-            <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3 md:px-10">
-              <p className={`text-sm ${saveError ? 'text-red-800' : 'text-muted'}`}>
+          <div className="fixed inset-x-0 bottom-0 z-40 bg-ink text-ivory md:left-[240px]">
+            <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3.5 md:px-10">
+              <p className={`text-sm ${saveError ? 'text-red-300' : 'text-ivory/65'}`}>
                 {saveError ?? (dirty ? 'Есть несохранённые изменения' : saved ? 'Сохранено' : 'Изменений нет')}
               </p>
               <button
@@ -133,7 +133,7 @@ export function Layout() {
                 className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm transition ${
                   dirty || saving
                     ? 'bg-gold text-ink shadow-sm hover:bg-gold/90'
-                    : 'cursor-not-allowed border border-line bg-white text-muted'
+                    : 'cursor-not-allowed border border-ivory/20 bg-ink text-ivory/40'
                 }`}
               >
                 {saving ? (

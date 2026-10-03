@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Field, Notice, PageTitle, TextArea, controlClass } from '../components/ui'
+import { Field, FilePicker, Notice, PageTitle, TextArea, cardClass, cardHeadingClass, controlClass } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
 import { usePageSave } from '../lib/save-bar'
 import type { AuthorStat, Banner, PageContent, StoredImage } from '../lib/types'
@@ -223,13 +223,13 @@ export function ContentPage({ page, title }: Props) {
   }
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-6">
       <PageTitle title={title} />
       <p className="text-sm text-muted">Тексты и фотографии этой страницы берутся отсюда. Чтобы заменить картинку, выберите файл. Пустое поле на сайте остаётся пустым. Все правки на странице сохраняются одной кнопкой внизу.</p>
       <Notice text={error} />
       {banners.map((banner) => (
-        <div key={banner.id} className="space-y-3 rounded-3xl bg-white p-5">
-          <h2 className="font-serif text-2xl">Баннер первого экрана</h2>
+        <div key={banner.id} className={cardClass}>
+          <h2 className={cardHeadingClass}>Баннер первого экрана</h2>
           <Field label="Заголовок">
             <input className={controlClass} value={banner.title ?? ''} onChange={(event) => setBanners(banners.map((item) => item.id === banner.id ? { ...item, title: event.target.value } : item))} />
           </Field>
@@ -262,7 +262,7 @@ export function ContentPage({ page, title }: Props) {
         />
       )}
       {page === 'author' && stats.map((stat) => (
-        <div key={stat.id} className="grid items-end gap-3 rounded-3xl bg-white p-5 sm:grid-cols-2">
+        <div key={stat.id} className="grid items-end gap-5 rounded-3xl bg-white p-5 sm:grid-cols-2">
           <Field label="Основная часть">
             <input className={controlClass} placeholder="34 года" value={stat.value ?? ''} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, value: event.target.value } : item))} />
           </Field>
@@ -276,8 +276,8 @@ export function ContentPage({ page, title }: Props) {
         if (page === 'author' && (block.key === 'manifesto' || block.key === 'manifesto.quote')) return false
         return true
       }).map((block) => (
-        <div key={block.id} className="space-y-3 rounded-3xl bg-white p-5">
-          <h2 className="font-serif text-2xl">{blockLabel[block.key] ?? block.key}</h2>
+        <div key={block.id} className={cardClass}>
+          <h2 className={cardHeadingClass}>{blockLabel[block.key] ?? block.key}</h2>
           <Field label={block.key === 'approach' ? 'Цитата справа' : 'Надзаголовок'}>
             <input className={controlClass} value={block.eyebrow ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, eyebrow: event.target.value } : item))} placeholder={block.key === 'approach' ? 'Текст цитаты справа от блока «Обо мне»' : undefined} />
           </Field>
@@ -311,8 +311,8 @@ function ServiceStrip({ blocks, onChange }: { blocks: PageContent[]; onChange: (
   if (points.length === 0) return null
 
   return (
-    <div className="space-y-3 rounded-3xl bg-white p-5">
-      <h2 className="font-serif text-2xl">Бежевая полоса под баннером</h2>
+    <div className={cardClass}>
+      <h2 className={cardHeadingClass}>Бежевая полоса под баннером</h2>
       <p className="text-sm text-muted">Четыре подписи с иконками между баннером и списком услуг. На сайте виден только этот текст.</p>
       {points.map((block) => (
         <Field key={block.id} label={blockLabel[block.key] ?? block.key}>
@@ -351,8 +351,8 @@ function AuthorClosingBanner({
   }
 
   return (
-    <div className="space-y-3 rounded-3xl bg-white p-5">
-      <h2 className="font-serif text-2xl">Большой баннер внизу страницы</h2>
+    <div className={cardClass}>
+      <h2 className={cardHeadingClass}>Большой баннер внизу страницы</h2>
       <p className="text-sm text-muted">Тёмный экран перед подвалом: заголовок и текст слева, цитата справа, фотография на весь фон.</p>
       {banner && (
         <>
@@ -410,14 +410,14 @@ function ImageEditor({
   const shown = preview ?? (removed ? null : current)
 
   return (
-    <Field label={label}>
-      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onPick(inputKey, event.target.files?.[0])} />
-      {shown && <img src={shown} alt="" className="mt-3 max-h-48 rounded-2xl object-cover" />}
-      {shown && (
-        <button type="button" className="mt-2 text-sm text-muted underline" onClick={() => onRemove(inputKey)}>
-          Убрать изображение
-        </button>
-      )}
-    </Field>
+    <FilePicker
+      label={label}
+      accept="image/jpeg,image/png,image/webp"
+      buttonLabel="Выбрать изображение"
+      hint={shown ? 'Файл выбран' : 'JPEG, PNG или WebP'}
+      preview={shown}
+      onPick={(file) => onPick(inputKey, file)}
+      onClear={shown ? () => onRemove(inputKey) : undefined}
+    />
   )
 }

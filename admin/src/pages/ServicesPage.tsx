@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Button, Field, Notice, TextArea, controlClass } from '../components/ui'
+import { Button, Field, FilePicker, Notice, TextArea, cardClass, cardHeadingClass, controlClass } from '../components/ui'
 import { api, errorText, uploadImage } from '../lib/api'
 import { usePageSave } from '../lib/save-bar'
 import type { Service, StoredImage } from '../lib/types'
@@ -148,8 +148,8 @@ export function ServicesPage() {
           </article>
         ))}
       </div>
-      <div className="space-y-3 rounded-3xl bg-white p-5">
-        <h2 className="font-serif text-2xl">{editing ? 'Редактирование' : 'Новая услуга'}</h2>
+      <div className={cardClass}>
+        <h2 className={cardHeadingClass}>{editing ? 'Редактирование' : 'Новая услуга'}</h2>
         <Field label="Название">
           <input className={controlClass} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
         </Field>
@@ -165,10 +165,15 @@ export function ServicesPage() {
         <Field label="Результат">
           <TextArea value={form.result} onChange={(event) => setForm({ ...form, result: event.target.value })} required />
         </Field>
-        <Field label="Изображение">
-          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onFile(event.target.files?.[0])} />
-        </Field>
-        {preview && <img src={preview} alt="" className="max-h-40 rounded-2xl object-cover" />}
+        <FilePicker
+          label="Изображение"
+          accept="image/jpeg,image/png,image/webp"
+          buttonLabel="Выбрать изображение"
+          hint={preview ? 'Файл выбран' : 'JPEG, PNG или WebP'}
+          preview={preview}
+          onPick={onFile}
+          onClear={preview ? () => { setImage(null); setPreview(null) } : undefined}
+        />
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={form.is_active} onChange={(event) => setForm({ ...form, is_active: event.target.checked })} />
           Показывать на сайте
