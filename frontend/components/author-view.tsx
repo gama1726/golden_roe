@@ -181,13 +181,21 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {(guide?.title || guide?.body || guide_items.length > 0) && (
-        <section className="w-full border-t border-line">
-          <div className="w-full px-5 py-10 md:px-10 md:py-14 lg:px-12">
-            {guide?.title && <h2 className="max-w-4xl font-serif text-4xl leading-[1.05] md:text-5xl">{guide.title}</h2>}
-            <div className="mt-8 grid items-start gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-x-16 xl:gap-x-24">
-              {guide?.body && <p className="whitespace-pre-line leading-relaxed text-muted">{guide.body}</p>}
+        <section className="border-t border-line">
+          <div className="mx-auto w-full max-w-5xl px-5 py-8 md:px-8 md:py-10">
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-x-12">
+              <div className="flex flex-col justify-center">
+                {guide?.title && (
+                  <h2 className="font-serif text-3xl leading-[1.05] md:text-4xl">{guide.title}</h2>
+                )}
+                {guide?.body && (
+                  <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">
+                    {guide.body}
+                  </p>
+                )}
+              </div>
               {guide_items.length > 0 && (
-                <ul className="grid gap-4">
+                <ul className="flex h-full flex-col justify-between gap-3 lg:py-1">
                   {guide_items.map((item) => (
                     <li key={item.id} className="flex items-start gap-3">
                       <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full border border-gold text-gold">
