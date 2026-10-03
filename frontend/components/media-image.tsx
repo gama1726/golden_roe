@@ -1,6 +1,6 @@
 import type { ImageUrls } from '@/lib/types'
 
-export function MediaImage({ image, className }: { image: ImageUrls | null; className?: string }) {
+export function MediaImage({ image, className, sizes = '(min-width: 768px) 40rem, 100vw' }: { image: ImageUrls | null; className?: string; sizes?: string }) {
   if (!image?.original) return null
 
   const srcSet = Object.entries(image.webp)
@@ -13,7 +13,7 @@ export function MediaImage({ image, className }: { image: ImageUrls | null; clas
     <img
       src={image.original}
       srcSet={srcSet || undefined}
-      sizes="(min-width: 768px) 40rem, 100vw"
+      sizes={sizes}
       alt={image.alt}
       className={className}
     />

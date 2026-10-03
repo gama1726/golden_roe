@@ -106,7 +106,7 @@ class AuthorVisualSeeder extends Seeder
 
         $this->fill('manifesto.quote', [
             'eyebrow' => 'Эльвира Вартанова',
-            'title' => '«Красота начинается с внутренней гармонии, а вера в себя.»',
+            'title' => '«Красота начинается с внутренней гармонии, а масштаб — с веры в себя.»',
             'sort_order' => 28,
         ]);
 

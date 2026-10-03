@@ -250,6 +250,16 @@ export function ContentPage({ page, title }: Props) {
         </div>
       ))}
       {page === 'services' && <ServiceStrip blocks={blocks} onChange={setBlocks} />}
+      {page === 'author' && (
+        <AuthorClosingBanner
+          blocks={blocks}
+          onChange={setBlocks}
+          previews={previews}
+          removed={removed}
+          onPick={onFile}
+          onRemove={removeImage}
+        />
+      )}
       {page === 'author' && stats.map((stat) => (
         <div key={stat.id} className="grid items-end gap-3 rounded-3xl bg-white p-5 sm:grid-cols-2">
           <Field label="Основная часть">
@@ -260,7 +270,11 @@ export function ContentPage({ page, title }: Props) {
           </Field>
         </div>
       ))}
-      {blocks.filter((block) => page !== 'services' || !block.key.startsWith('point.')).map((block) => (
+      {blocks.filter((block) => {
+        if (page === 'services' && block.key.startsWith('point.')) return false
+        if (page === 'author' && (block.key === 'manifesto' || block.key === 'manifesto.quote')) return false
+        return true
+      }).map((block) => (
         <div key={block.id} className="space-y-3 rounded-3xl bg-white p-5">
           <h2 className="font-serif text-2xl">{blockLabel[block.key] ?? block.key}</h2>
           <Field label="Надзаголовок">
@@ -308,6 +322,69 @@ function ServiceStrip({ blocks, onChange }: { blocks: PageContent[]; onChange: (
           />
         </Field>
       ))}
+    </div>
+  )
+}
+
+function AuthorClosingBanner({
+  blocks,
+  onChange,
+  previews,
+  removed,
+  onPick,
+  onRemove,
+}: {
+  blocks: PageContent[]
+  onChange: (blocks: PageContent[]) => void
+  previews: Record<string, string>
+  removed: Record<string, boolean>
+  onPick: (key: string, file: File | undefined) => void
+  onRemove: (key: string) => void
+}) {
+  const banner = blocks.find((block) => block.key === 'manifesto')
+  const quote = blocks.find((block) => block.key === 'manifesto.quote')
+  if (!banner && !quote) return null
+
+  function patch(id: number, field: 'eyebrow' | 'title' | 'body', value: string) {
+    onChange(blocks.map((item) => (item.id === id ? { ...item, [field]: value } : item)))
+  }
+
+  return (
+    <div className="space-y-3 rounded-3xl bg-white p-5">
+      <h2 className="font-serif text-2xl">Большой баннер внизу страницы</h2>
+      <p className="text-sm text-muted">Тёмный экран перед подвалом: заголовок и текст слева, цитата справа, фотография на весь фон.</p>
+      {banner && (
+        <>
+          <Field label="Надзаголовок">
+            <input className={controlClass} value={banner.eyebrow ?? ''} onChange={(event) => patch(banner.id, 'eyebrow', event.target.value)} />
+          </Field>
+          <Field label="Заголовок">
+            <input className={controlClass} value={banner.title ?? ''} onChange={(event) => patch(banner.id, 'title', event.target.value)} />
+          </Field>
+          <Field label="Текст">
+            <TextArea value={banner.body ?? ''} onChange={(event) => patch(banner.id, 'body', event.target.value)} />
+          </Field>
+          <ImageEditor
+            label="Фото баннера"
+            inputKey={`block-${banner.id}`}
+            current={banner.image?.original ?? null}
+            preview={previews[`block-${banner.id}`] ?? null}
+            removed={removed[`block-${banner.id}`] ?? false}
+            onPick={onPick}
+            onRemove={onRemove}
+          />
+        </>
+      )}
+      {quote && (
+        <>
+          <Field label="Цитата справа">
+            <input className={controlClass} value={quote.title ?? ''} onChange={(event) => patch(quote.id, 'title', event.target.value)} />
+          </Field>
+          <Field label="Подпись цитаты">
+            <input className={controlClass} value={quote.eyebrow ?? ''} onChange={(event) => patch(quote.id, 'eyebrow', event.target.value)} />
+          </Field>
+        </>
+      )}
     </div>
   )
 }

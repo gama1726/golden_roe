@@ -132,13 +132,13 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {manifesto && (
-        <section className="relative min-h-[28rem] overflow-hidden bg-ink text-ivory">
-          <MediaImage image={manifesto.image} className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-ink/45" />
-          <div className="relative mx-auto grid min-h-[28rem] w-full max-w-[80rem] items-center gap-10 px-5 py-16 md:grid-cols-2 md:px-10">
+        <section className="relative min-h-[36rem] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
+          <MediaImage image={manifesto.image} sizes="100vw" className="absolute inset-0 h-full w-full object-cover object-[center_42%]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/55 to-ink/25" />
+          <div className="relative mx-auto grid min-h-[36rem] w-full max-w-[80rem] items-center gap-10 px-5 py-16 md:min-h-[44rem] md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:px-10 md:py-20">
             <div>
               {manifesto.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{manifesto.eyebrow}</p>}
-              {manifesto.title && <h2 className="mt-4 max-w-xl font-serif text-5xl leading-tight md:text-6xl">{manifesto.title}</h2>}
+              {manifesto.title && <h2 className="mt-4 max-w-xl font-serif text-5xl leading-[1.05] md:text-6xl">{manifesto.title}</h2>}
               {manifesto.body && <p className="mt-6 max-w-xl leading-relaxed text-ivory/85">{manifesto.body}</p>}
               <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                 Записаться на консультацию
@@ -147,7 +147,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
             </div>
             {manifesto_quote?.title && (
               <blockquote className="md:justify-self-end md:text-right">
-                <p className="max-w-sm font-serif text-2xl leading-snug md:text-3xl">{manifesto_quote.title}</p>
+                <p className="max-w-sm font-serif text-2xl leading-snug text-ivory md:text-3xl">{manifesto_quote.title}</p>
                 {manifesto_quote.eyebrow && <p className="mt-4 text-xs tracking-[0.22em] text-ivory/70 uppercase">{manifesto_quote.eyebrow}</p>}
               </blockquote>
             )}
