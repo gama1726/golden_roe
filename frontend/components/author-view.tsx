@@ -1,6 +1,6 @@
 import { MediaImage } from '@/components/media-image'
 import type { AuthorData, PageContent } from '@/lib/types'
-import { ArrowRight, ChartNoAxesColumn, Check, Flower2, Gem, Leaf, Music, Users } from 'lucide-react'
+import { ArrowRight, ChartNoAxesColumn, Check, Flower2, Gem, Music, Sun, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 
@@ -9,7 +9,7 @@ const pillarIcons: Record<string, LucideIcon> = {
   'pillar.spirit': Flower2,
   'pillar.business': ChartNoAxesColumn,
   'pillar.creativity': Music,
-  'pillar.health': Leaf,
+  'pillar.health': Sun,
   'pillar.beauty': Gem,
 }
 
@@ -43,18 +43,18 @@ export function AuthorView({ author }: { author: AuthorData }) {
       </section>
 
       {(path || path_photo) && (
-        <section className="mx-auto grid w-full max-w-[80rem] items-center gap-8 px-5 py-16 md:py-24 lg:grid-cols-[0.8fr_1.15fr_0.8fr]">
-          <MediaImage image={path?.image ?? null} className="aspect-[4/5] w-full object-cover" />
+        <section className="mx-auto grid w-full max-w-[80rem] items-center gap-8 px-5 py-14 md:px-10 md:py-20 lg:grid-cols-[0.9fr_1.15fr_0.9fr] lg:gap-10">
+          <Portrait image={path?.image ?? null} />
           <div>
             {path?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{path.eyebrow}</p>}
-            {path?.title && <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">{path.title}</h2>}
+            {path?.title && <h2 className="mt-4 font-serif text-4xl leading-[1.05] md:text-5xl">{path.title}</h2>}
             {path?.body && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">{path.body}</p>}
             <Link href="/stati" className="mt-8 inline-flex items-center gap-2 text-sm">
               Больше о моём пути
               <ArrowRight aria-hidden="true" size={16} />
             </Link>
           </div>
-          <MediaImage image={path_photo?.image ?? null} className="aspect-[3/4] w-full object-cover" />
+          <Portrait image={path_photo?.image ?? null} card />
         </section>
       )}
 
@@ -78,21 +78,23 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {(pillars.title || pillars.items.length > 0) && (
-        <section className="mx-auto grid w-full max-w-[80rem] gap-12 px-5 py-16 md:py-24 lg:grid-cols-[1fr_18rem] lg:items-center">
-          <div>
-            {pillars.title && <h2 className="font-serif text-4xl md:text-5xl">{pillars.title}</h2>}
-            {pillars.items.length > 0 && (
-              <ul className="mt-10 grid grid-cols-3 gap-8">
-                {pillars.items.map((item) => (
-                  <li key={item.id} className="text-center">
-                    <PillarIcon item={item} />
-                    {item.title && <p className="mt-4 text-sm leading-relaxed">{item.title}</p>}
-                  </li>
-                ))}
-              </ul>
-            )}
+        <section className="border-b border-line">
+          <div className="mx-auto grid w-full max-w-[80rem] items-end gap-10 px-5 py-14 md:px-10 md:py-16 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16">
+            <div>
+              {pillars.title && <h2 className="font-serif text-4xl md:text-5xl">{pillars.title}</h2>}
+              {pillars.items.length > 0 && (
+                <ul className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+                  {pillars.items.map((item) => (
+                    <li key={item.id} className="text-center">
+                      <PillarIcon item={item} />
+                      {item.title && <p className="mt-4 text-sm leading-relaxed">{item.title}</p>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {pillars.quote?.body && <p className="font-serif text-2xl leading-snug text-gold italic lg:pb-2 lg:text-3xl">{pillars.quote.body}</p>}
           </div>
-          {pillars.quote?.body && <p className="font-serif text-2xl leading-snug text-gold md:text-3xl">{pillars.quote.body}</p>}
         </section>
       )}
 
@@ -155,6 +157,19 @@ export function AuthorView({ author }: { author: AuthorData }) {
         </section>
       )}
     </>
+  )
+}
+
+function Portrait({ image, card = false }: { image: PageContent['image']; card?: boolean }) {
+  if (!image) return null
+
+  return (
+    <div className="relative">
+      <MediaImage image={image} sizes="(min-width: 1024px) 28rem, 100vw" className="aspect-[4/5] w-full object-cover" />
+      <p className={card ? 'absolute right-4 bottom-6 max-w-[11rem] bg-ivory/95 px-4 py-3 font-serif text-2xl leading-none text-ink italic' : 'absolute bottom-6 left-5 max-w-[11rem] font-serif text-3xl leading-none text-ivory italic'}>
+        Эльвира Вартанова
+      </p>
+    </div>
   )
 }
 
