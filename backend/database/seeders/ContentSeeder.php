@@ -10,6 +10,7 @@ use App\Models\Document;
 use App\Models\PageContent;
 use App\Models\Service;
 use App\Models\Setting;
+use App\Support\ServicesPoints;
 use Illuminate\Database\Seeder;
 
 class ContentSeeder extends Seeder
@@ -36,6 +37,8 @@ class ContentSeeder extends Seeder
                 ['title' => $title],
             );
         }
+
+        ServicesPoints::ensure();
 
         $this->page('home', 'approach', 'Системный подход к масштабному росту', 1);
         $this->page('home', 'results', 'Результаты клиентов за 6 лет практики', 2);

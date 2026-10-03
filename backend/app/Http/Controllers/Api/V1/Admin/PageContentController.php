@@ -10,6 +10,7 @@ use App\Http\Resources\PageContentResource;
 use App\Models\PageContent;
 use App\Services\ImageProcessor;
 use App\Support\Media;
+use App\Support\ServicesPoints;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,10 @@ class PageContentController extends Controller
     public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', PageContent::class);
+
+        if ($request->string('page')->toString() === 'services') {
+            ServicesPoints::ensure();
+        }
 
         $contents = PageContent::query()
             ->when($request->filled('page'), fn ($query) => $query->where('page', $request->string('page')->toString()))

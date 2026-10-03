@@ -7,6 +7,7 @@ use App\Models\PageContent;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Services\ImageProcessor;
+use App\Support\ServicesPoints;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
 
@@ -14,6 +15,8 @@ class ServicesVisualSeeder extends Seeder
 {
     public function run(): void
     {
+        ServicesPoints::ensure();
+
         if (Setting::getValue('services_visual_v1') === true) {
             return;
         }
@@ -40,20 +43,6 @@ class ServicesVisualSeeder extends Seeder
             'title' => '«Когда внутри порядок — реальность начинает работать на вас.»',
             'sort_order' => 1,
         ]);
-
-        $points = [
-            'point.system' => ['Системный подход и глубокая экспертиза', 2],
-            'point.individual' => ['Индивидуальные решения', 3],
-            'point.trust' => ['Конфиденциальность и доверие', 4],
-            'point.results' => ['Реальные изменения в жизни', 5],
-        ];
-
-        foreach ($points as $key => [$title, $sort]) {
-            $this->ensure($key, [
-                'title' => $title,
-                'sort_order' => $sort,
-            ]);
-        }
 
         $this->ensure('cta', [
             'title' => 'Готовы к изменениям?',
