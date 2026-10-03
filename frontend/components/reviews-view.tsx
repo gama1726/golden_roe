@@ -1,8 +1,11 @@
+'use client'
+
 import { MediaImage } from '@/components/media-image'
 import { ReviewForm } from '@/components/review-form'
 import { formatDate } from '@/lib/format'
 import type { Banner, Block, ReviewItem, Service } from '@/lib/types'
-import { ArrowRight, Star } from 'lucide-react'
+import { ArrowRight, Star, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 export function ReviewsView({
   banner,
@@ -21,6 +24,24 @@ export function ReviewsView({
   note: Block | null
   services: Service[]
 }) {
+  const [formOpen, setFormOpen] = useState(false)
+  const formRef = useRef<HTMLElement>(null)
+
+  function openForm() {
+    setFormOpen(true)
+  }
+
+  useEffect(() => {
+    if (window.location.hash === '#otzyv') {
+      setFormOpen(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!formOpen) return
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [formOpen])
+
   return (
     <>
       <section className="relative min-h-[34rem] overflow-hidden bg-ivory text-ink md:min-h-[40rem]">
@@ -32,10 +53,10 @@ export function ReviewsView({
               {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
               <h1 className="mt-5 font-serif text-5xl leading-[0.95] font-medium md:text-7xl">{banner?.subtitle || 'Отзывы'}</h1>
               {banner?.text && <p className="mt-6 max-w-md leading-relaxed text-muted">{banner.text}</p>}
-              <a href="#otzyv" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+              <button type="button" onClick={openForm} className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                 Оставить отзыв
                 <ArrowRight aria-hidden="true" size={16} />
-              </a>
+              </button>
             </div>
             {quote?.title && (
               <blockquote>
@@ -73,23 +94,40 @@ export function ReviewsView({
               {cta.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{cta.eyebrow}</p>}
               {cta.title && <h2 className="mt-4 font-serif text-4xl md:text-5xl">{cta.title}</h2>}
               {cta.body && <p className="mt-6 max-w-md leading-relaxed text-ivory/85">{cta.body}</p>}
-              <a href="#otzyv" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+              <button type="button" onClick={openForm} className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                 Оставить отзыв
                 <ArrowRight aria-hidden="true" size={16} />
-              </a>
+              </button>
             </div>
             {note?.body && <p className="max-w-sm leading-relaxed text-ivory/85 md:justify-self-end">{note.body}</p>}
           </div>
         </section>
       )}
 
-      <section id="otzyv" className="mx-auto w-full max-w-3xl px-5 py-16 md:py-24">
-        <h2 className="font-serif text-4xl">Оставить отзыв</h2>
-        <p className="mt-3 text-sm text-muted">Отзыв появится на сайте после проверки.</p>
-        <div className="mt-8">
-          <ReviewForm services={services} />
-        </div>
-      </section>
+      {formOpen && (
+        <section id="otzyv" ref={formRef} className="border-t border-line bg-cream scroll-mt-24">
+          <div className="mx-auto w-full max-w-3xl px-5 py-14 md:px-10 md:py-20">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs tracking-[0.22em] text-gold uppercase">Обратная связь</p>
+                <h2 className="mt-3 font-serif text-4xl md:text-5xl">Оставить отзыв</h2>
+                <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">Отзыв появится на сайте после проверки.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setFormOpen(false)}
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-ivory text-ink"
+                aria-label="Закрыть форму"
+              >
+                <X aria-hidden="true" size={18} />
+              </button>
+            </div>
+            <div className="mt-10 border-t border-line pt-10">
+              <ReviewForm services={services} />
+            </div>
+          </div>
+        </section>
+      )}
     </>
   )
 }

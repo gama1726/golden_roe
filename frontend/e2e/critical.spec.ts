@@ -58,6 +58,9 @@ test('a new review stays hidden until it is approved and publication is enabled'
   await page.goto('/otzyvy')
   await expect(page.getByText('Одобренных отзывов пока нет.')).toBeVisible()
 
+  await page.getByRole('button', { name: 'Оставить отзыв' }).first().click()
+  await expect(page.getByLabel('Имя')).toBeVisible()
+
   await page.getByLabel('Имя').fill('Проверка формы')
   await page.getByLabel('Телефон').fill('89990001122')
   await page.getByLabel('Email').fill('e2e@example.test')
