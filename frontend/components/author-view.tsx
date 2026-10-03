@@ -60,17 +60,34 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {stats.length > 0 && (
-        <MarbleBand seed="author-stats" className="border-y border-line">
-          <ul className="mx-auto grid w-full max-w-[80rem] grid-cols-2 gap-8 px-5 py-12 lg:grid-cols-4">
-            {stats.map((stat) => {
+        <MarbleBand seed="author-stats" className="relative border-y border-line">
+          <div className="pointer-events-none absolute inset-0 bg-[#3d2a1f]/12" aria-hidden="true" />
+          <ul className="relative grid w-full grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat, index) => {
               const long = (stat.value?.length ?? 0) > 12
+              const mobileColDivider = index % 2 === 1
+              const desktopDivider = index > 0
+              const mobileRowDivider = index >= 2
 
               return (
-                <li key={stat.id} className="text-center text-gold">
+                <li
+                  key={stat.id}
+                  className={[
+                    'relative px-4 py-10 text-center text-[#3d2a1f] sm:px-8 sm:py-12 lg:px-10 xl:px-16',
+                    mobileColDivider || desktopDivider
+                      ? 'before:absolute before:top-[18%] before:bottom-[18%] before:left-0 before:w-px before:bg-[#3d2a1f]/20'
+                      : '',
+                    !mobileColDivider && desktopDivider ? 'before:hidden lg:before:block' : '',
+                    mobileColDivider && !desktopDivider ? 'lg:before:hidden' : '',
+                    mobileRowDivider
+                      ? 'after:absolute after:top-0 after:right-[18%] after:left-[18%] after:h-px after:bg-[#3d2a1f]/20 lg:after:hidden'
+                      : '',
+                  ].join(' ')}
+                >
                   {stat.value && (
                     <p className={`font-serif leading-tight ${long ? 'text-2xl md:text-3xl' : 'text-4xl md:text-5xl'}`}>{stat.value}</p>
                   )}
-                  <p className="mt-3 text-sm leading-relaxed">{stat.label}</p>
+                  <p className="mx-auto mt-4 max-w-[16rem] text-base leading-relaxed md:text-lg xl:max-w-none">{stat.label}</p>
                 </li>
               )
             })}
