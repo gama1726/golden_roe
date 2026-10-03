@@ -1,9 +1,10 @@
 import { MarbleBand, marbleStyle } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import type { Banner, Block, ContactChannel, PageContent, Service } from '@/lib/types'
 import { TelegramIcon } from '@/components/telegram-icon'
 import { WhatsAppIcon } from '@/components/whatsapp-icon'
-import { ArrowRight, Calendar, Clock, Heart, Mail, MessageCircle, Phone, Quote, Shield, type LucideIcon } from 'lucide-react'
+import { ArrowRight, Calendar, Clock, Heart, Mail, MessageCircle, Phone, Shield, type LucideIcon } from 'lucide-react'
 
 const pointIcons: Record<string, LucideIcon> = {
   'point.reply': Clock,
@@ -82,10 +83,7 @@ export function ContactsView({
             <MessengerButtons telegram={telegram} whatsapp={whatsapp} />
           </div>
           {promise?.title && (
-            <blockquote className="md:pt-2 lg:pt-6">
-              <Quote aria-hidden="true" className="text-gold" size={32} strokeWidth={1.25} />
-              <p className="mt-4 font-serif text-xl leading-snug text-gold italic sm:text-2xl lg:text-3xl">{promise.title}</p>
-            </blockquote>
+            <SiteQuote className="md:pt-2 lg:pt-6">{cleanQuoteText(promise.title)}</SiteQuote>
           )}
         </div>
       </section>

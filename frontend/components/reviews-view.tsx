@@ -3,6 +3,7 @@
 import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
 import { ReviewForm } from '@/components/review-form'
+import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import { formatDate } from '@/lib/format'
 import type { Banner, Block, ReviewItem, Service } from '@/lib/types'
 import { ArrowRight, Star, X } from 'lucide-react'
@@ -60,10 +61,7 @@ export function ReviewsView({
               </button>
             </div>
             {quote?.title && (
-              <blockquote>
-                <p className="font-serif text-2xl leading-snug text-gold italic md:text-3xl">{quote.title}</p>
-                {quote.eyebrow && <p className="mt-4 text-xs tracking-[0.22em] text-gold uppercase">{quote.eyebrow}</p>}
-              </blockquote>
+              <SiteQuote attribution={quote.eyebrow}>{cleanQuoteText(quote.title)}</SiteQuote>
             )}
           </div>
         </div>

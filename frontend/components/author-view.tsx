@@ -1,5 +1,6 @@
 import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import type { AuthorData, PageContent } from '@/lib/types'
 import { ArrowRight, ChartNoAxesColumn, Check, Flower2, Gem, Music, Sun, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -34,10 +35,9 @@ export function AuthorView({ author }: { author: AuthorData }) {
               </Link>
             </div>
             {quote?.title && (
-              <blockquote>
-                <p className="font-serif text-2xl leading-snug text-ivory md:text-3xl">{quote.title}</p>
-                {quote.eyebrow && <p className="mt-4 text-xs tracking-[0.22em] text-ivory/70 uppercase">{quote.eyebrow}</p>}
-              </blockquote>
+              <SiteQuote tone="ivory" attribution={quote.eyebrow}>
+                {cleanQuoteText(quote.title)}
+              </SiteQuote>
             )}
           </div>
         </div>
@@ -94,7 +94,9 @@ export function AuthorView({ author }: { author: AuthorData }) {
                 </ul>
               )}
             </div>
-            {pillars.quote?.body && <p className="font-serif text-2xl leading-snug text-gold italic lg:pb-2 lg:text-3xl">{pillars.quote.body}</p>}
+            {pillars.quote?.body && (
+              <SiteQuote className="lg:pb-2">{cleanQuoteText(pillars.quote.body)}</SiteQuote>
+            )}
           </div>
         </section>
       )}
@@ -149,10 +151,9 @@ export function AuthorView({ author }: { author: AuthorData }) {
               </Link>
             </div>
             {manifesto_quote?.title && (
-              <blockquote className="md:justify-self-end md:text-right">
-                <p className="max-w-sm font-serif text-2xl leading-snug text-ivory md:text-3xl">{manifesto_quote.title}</p>
-                {manifesto_quote.eyebrow && <p className="mt-4 text-xs tracking-[0.22em] text-ivory/70 uppercase">{manifesto_quote.eyebrow}</p>}
-              </blockquote>
+              <SiteQuote tone="ivory" align="right" attribution={manifesto_quote.eyebrow}>
+                {cleanQuoteText(manifesto_quote.title)}
+              </SiteQuote>
             )}
           </div>
         </section>

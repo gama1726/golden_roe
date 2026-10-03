@@ -14,6 +14,12 @@ class HomeVisualSeeder extends Seeder
 {
     public function run(): void
     {
+        $approach = PageContent::query()->where('page', 'home')->where('key', 'approach')->first();
+        if ($approach !== null && is_string($approach->eyebrow) && preg_match('/^обо\s*мне$/iu', trim($approach->eyebrow)) === 1) {
+            $approach->eyebrow = '«Когда внутри порядок — реальность начинает работать на вас.»';
+            $approach->save();
+        }
+
         if (Setting::getValue('home_visual_v1') === true) {
             return;
         }

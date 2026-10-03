@@ -277,8 +277,8 @@ export function ContentPage({ page, title }: Props) {
       }).map((block) => (
         <div key={block.id} className="space-y-3 rounded-3xl bg-white p-5">
           <h2 className="font-serif text-2xl">{blockLabel[block.key] ?? block.key}</h2>
-          <Field label="Надзаголовок">
-            <input className={controlClass} value={block.eyebrow ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, eyebrow: event.target.value } : item))} />
+          <Field label={block.key === 'approach' ? 'Цитата справа' : 'Надзаголовок'}>
+            <input className={controlClass} value={block.eyebrow ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, eyebrow: event.target.value } : item))} placeholder={block.key === 'approach' ? 'Текст цитаты справа от блока «Обо мне»' : undefined} />
           </Field>
           <Field label="Заголовок">
             <input className={controlClass} value={block.title ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, title: event.target.value } : item))} />

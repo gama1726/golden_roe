@@ -1,5 +1,6 @@
 import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import type { Block, ContactChannel, PageContent, ServicesData } from '@/lib/types'
 import { TelegramIcon } from '@/components/telegram-icon'
 import { WhatsAppIcon } from '@/components/whatsapp-icon'
@@ -48,10 +49,9 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
               </div>
             </div>
             {blocks.quote?.title && (
-              <blockquote>
-                <p className="font-serif text-2xl leading-snug text-ivory md:text-3xl">{blocks.quote.title}</p>
-                {blocks.quote.eyebrow && <p className="mt-4 text-xs tracking-[0.22em] text-ivory/70 uppercase">{blocks.quote.eyebrow}</p>}
-              </blockquote>
+              <SiteQuote tone="ivory" attribution={blocks.quote.eyebrow}>
+                {cleanQuoteText(blocks.quote.title)}
+              </SiteQuote>
             )}
           </div>
         </div>

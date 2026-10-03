@@ -1,5 +1,6 @@
 import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import { formatDate } from '@/lib/format'
 import type { ContactChannel, HomeData, PageContent } from '@/lib/types'
 import { TelegramIcon } from '@/components/telegram-icon'
@@ -69,11 +70,8 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>
             </div>
-            {blocks.approach.eyebrow && (
-              <blockquote className="font-serif text-2xl leading-snug text-gold italic sm:text-3xl md:text-4xl">
-                <span className="mb-3 block font-sans text-4xl not-italic lg:hidden">“</span>
-                {blocks.approach.eyebrow}
-              </blockquote>
+            {blocks.approach.eyebrow && !/^обо\s*мне$/iu.test(blocks.approach.eyebrow.trim()) && (
+              <SiteQuote>{cleanQuoteText(blocks.approach.eyebrow)}</SiteQuote>
             )}
           </div>
         </section>
