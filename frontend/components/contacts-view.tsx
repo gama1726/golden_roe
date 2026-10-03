@@ -1,3 +1,4 @@
+import { MarbleBand, marbleStyle } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
 import type { Banner, Block, ContactChannel, PageContent, Service } from '@/lib/types'
 import { TelegramIcon } from '@/components/telegram-icon'
@@ -90,7 +91,7 @@ export function ContactsView({
       </section>
 
       {points.length > 0 && (
-        <section className="bg-cream">
+        <MarbleBand seed="contacts-points">
           <div className="mx-auto grid w-full max-w-[80rem] grid-cols-1 gap-8 px-4 py-12 min-[380px]:grid-cols-2 sm:px-5 md:gap-10 md:px-10 md:py-14 lg:grid-cols-4">
             {points.map((point) => {
               const Icon = pointIcons[point.key] ?? Heart
@@ -103,7 +104,7 @@ export function ContactsView({
               )
             })}
           </div>
-        </section>
+        </MarbleBand>
       )}
 
       {(scene?.image || consult) && (
@@ -120,7 +121,7 @@ export function ContactsView({
             </div>
           )}
           {consult && (
-            <div className="flex flex-col justify-center rounded-3xl bg-cream px-5 py-8 sm:px-8 md:px-10">
+            <div className="flex flex-col justify-center overflow-hidden rounded-3xl px-5 py-8 sm:px-8 md:px-10" style={marbleStyle('contacts-consult')}>
               <Calendar aria-hidden="true" className="text-gold" size={28} strokeWidth={1.25} />
               {consult.title && <h2 className="mt-5 font-serif text-3xl leading-tight sm:text-4xl">{consult.title}</h2>}
               {consult.body && <p className="mt-4 max-w-md leading-relaxed text-muted">{consult.body}</p>}

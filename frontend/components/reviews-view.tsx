@@ -1,5 +1,6 @@
 'use client'
 
+import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
 import { ReviewForm } from '@/components/review-form'
 import { formatDate } from '@/lib/format'
@@ -105,7 +106,7 @@ export function ReviewsView({
       )}
 
       {formOpen && (
-        <section id="otzyv" ref={formRef} className="border-t border-line bg-cream scroll-mt-24">
+        <MarbleBand id="otzyv" ref={formRef} seed="reviews-form" className="scroll-mt-24 border-t border-line">
           <div className="mx-auto w-full max-w-3xl px-5 py-14 md:px-10 md:py-20">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -126,7 +127,7 @@ export function ReviewsView({
               <ReviewForm services={services} />
             </div>
           </div>
-        </section>
+        </MarbleBand>
       )}
     </>
   )

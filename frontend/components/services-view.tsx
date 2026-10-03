@@ -1,3 +1,4 @@
+import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
 import type { Block, ContactChannel, PageContent, ServicesData } from '@/lib/types'
 import { TelegramIcon } from '@/components/telegram-icon'
@@ -57,7 +58,7 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
       </section>
 
       {blocks.points.length > 0 && (
-        <section className="border-y border-line bg-cream">
+        <MarbleBand seed="services-points" className="border-y border-line">
           <ul className="mx-auto grid w-full max-w-[80rem] grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line">
             {blocks.points.map((point, index) => (
               <li
@@ -69,7 +70,7 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
               </li>
             ))}
           </ul>
-        </section>
+        </MarbleBand>
       )}
 
       <section className="mx-auto w-full max-w-[80rem] px-5 py-8 md:py-12">
