@@ -31,4 +31,18 @@ class ContactChannelRequest extends FormRequest
             'is_public' => ['sometimes', 'boolean'],
         ];
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'key.regex' => 'Ключ только латиницей в нижнем регистре: буквы, цифры, дефис или подчёркивание. Пример: instagram',
+            'key.unique' => 'Канал с таким ключом уже есть.',
+            'key.required' => 'Укажите ключ канала.',
+            'label.required' => 'Укажите подпись канала.',
+            'value.required' => 'Укажите значение или ссылку.',
+        ];
+    }
 }

@@ -75,19 +75,21 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
       <section className="mx-auto w-full max-w-[80rem] px-5 py-8 md:py-12">
         {services.length > 0 ? (
           services.map((service, index) => (
-            <article key={service.id} className="grid gap-8 border-t border-line py-12 md:grid-cols-[0.82fr_1.18fr] md:gap-12">
-              <div>
+            <article key={service.id} className="grid gap-8 border-t border-line py-12 md:grid-cols-[0.9fr_1.1fr] md:items-stretch md:gap-12">
+              <div className="flex min-h-0 flex-col">
                 <p className="font-serif text-5xl text-gold/35">{String(index + 1).padStart(2, '0')}</p>
-                <MediaImage image={service.image} className="mt-4 aspect-[4/3] w-full object-cover" />
+                <div className="relative mt-4 aspect-square w-full overflow-hidden md:aspect-auto md:min-h-0 md:flex-1">
+                  <MediaImage image={service.image} className="h-full w-full object-cover md:absolute md:inset-0" />
+                </div>
               </div>
-              <div>
+              <div className="flex flex-col">
                 <p className="text-xs tracking-[0.22em] text-gold uppercase">{ordinals[index] ? `${ordinals[index]} услуга` : `Услуга ${index + 1}`}</p>
-                <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-6">
                   <h2 className="font-serif text-4xl leading-tight md:text-5xl">{service.title}</h2>
-                  <p className="shrink-0 font-serif text-3xl md:text-4xl">{service.price_display}</p>
+                  <p className="shrink-0 font-serif text-3xl text-brown md:text-4xl">{service.price_display}</p>
                 </div>
                 {service.format && <p className="mt-3 text-base text-muted md:text-lg">{service.format}</p>}
-                <div className="mt-10">
+                <div className="mt-8 md:mt-10">
                   {service.audience && (
                     <ServiceFact icon={UserRound} label="Для кого" text={service.audience} />
                   )}
@@ -95,7 +97,7 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
                     <ServiceFact icon={Target} label="Результат" text={service.result} bordered={Boolean(service.audience)} />
                   )}
                 </div>
-                <div className="mt-8 flex flex-wrap gap-3">
+                <div className="mt-8 flex flex-wrap gap-3 md:mt-auto md:pt-8">
                   <Link href={`/kontakty?service=${service.id}`} className="inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
                     Узнать подробнее
                     <ArrowRight aria-hidden="true" size={16} />
