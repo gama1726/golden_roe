@@ -112,16 +112,16 @@ export function AuthorView({ author }: { author: AuthorData }) {
 
       {(guide?.title || guide?.body || guide_items.length > 0) && (
         <section className="border-t border-line">
-          <div className="mx-auto w-full max-w-[80rem] px-5 py-16 md:py-24">
-            {guide?.title && <h2 className="max-w-3xl font-serif text-4xl leading-tight md:text-5xl">{guide.title}</h2>}
-            <div className="mt-10 grid gap-10 lg:grid-cols-2">
+          <div className="mx-auto grid w-full max-w-[80rem] items-start gap-6 px-5 py-10 md:px-10 md:py-12 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-x-14">
+            {guide?.title && <h2 className="font-serif text-4xl leading-[1.05] md:text-5xl">{guide.title}</h2>}
+            <div className={guide?.title ? '' : 'lg:col-span-2'}>
               {guide?.body && <p className="whitespace-pre-line leading-relaxed text-muted">{guide.body}</p>}
               {guide_items.length > 0 && (
-                <ul className="space-y-4">
+                <ul className={`${guide?.body ? 'mt-6' : ''} grid gap-x-10 gap-y-3 sm:grid-cols-2`}>
                   {guide_items.map((item) => (
                     <li key={item.id} className="flex gap-3">
                       <Check aria-hidden="true" className="mt-0.5 shrink-0 text-gold" size={18} strokeWidth={1.5} />
-                      {item.title && <span className="leading-relaxed">{item.title}</span>}
+                      {item.title && <span className="leading-snug">{item.title}</span>}
                     </li>
                   ))}
                 </ul>
