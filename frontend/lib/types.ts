@@ -114,6 +114,7 @@ export type AuthorData = {
   anchors: PageContent[]
   son: PageContent | null
   son_photo: Block | null
+  son_quote: Block | null
   guide: PageContent | null
   guide_items: PageContent[]
   manifesto: Block | null

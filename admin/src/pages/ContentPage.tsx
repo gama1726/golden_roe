@@ -25,6 +25,7 @@ const blockLabel: Record<string, string> = {
   'pillar.quote': 'Цитата: точки опоры',
   son: 'Семья',
   'son.photo': 'Семья: фото справа',
+  'son.quote': 'Цитата на фото семьи',
   guide: 'Почему я могу быть проводником',
   'guide.experience': 'Пункт: предпринимательский опыт',
   'guide.person': 'Пункт: понимание человека',

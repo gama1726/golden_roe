@@ -43,6 +43,7 @@ class AuthorController extends Controller
                 'anchors' => PageContentResource::collection($anchors)->resolve(),
                 'son' => $this->block($keyed->get('son')),
                 'son_photo' => $this->block($keyed->get('son.photo')),
+                'son_quote' => $this->block($keyed->get('son.quote')),
                 'guide' => $this->block($keyed->get('guide')),
                 'guide_items' => PageContentResource::collection($guideItems)->resolve(),
                 'manifesto' => $this->block($keyed->get('manifesto')),

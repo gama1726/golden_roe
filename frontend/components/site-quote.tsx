@@ -12,25 +12,48 @@ export function SiteQuote({
   attribution,
   tone = 'gold',
   align = 'left',
+  boxed = false,
   className = '',
 }: {
   children: ReactNode
   attribution?: string | null
   tone?: 'gold' | 'ivory'
   align?: 'left' | 'right'
+  boxed?: boolean
   className?: string
 }) {
   const text = tone === 'ivory' ? 'text-ivory' : 'text-gold'
-  const mark = tone === 'ivory' ? 'text-ivory/45' : 'text-gold/65'
   const credit = tone === 'ivory' ? 'text-ivory/70' : 'text-gold'
+  const box =
+    boxed && tone === 'gold'
+      ? 'bg-cream/90 px-5 py-6 md:px-6 md:py-7'
+      : boxed && tone === 'ivory'
+        ? 'bg-ivory/95 px-5 py-6 text-ink md:px-6 md:py-7'
+        : ''
 
   return (
-    <blockquote className={`${align === 'right' ? 'md:justify-self-end md:text-right' : ''} ${className}`.trim()}>
-      <span aria-hidden="true" className={`block font-serif text-6xl leading-[0.7] md:text-7xl ${mark}`}>
-        “
-      </span>
-      <p className={`mt-3 max-w-sm font-serif text-2xl leading-snug italic md:text-3xl ${text}`}>{children}</p>
-      {attribution ? <p className={`mt-4 text-xs tracking-[0.22em] uppercase ${credit}`}>{attribution}</p> : null}
+    <blockquote
+      className={[
+        align === 'right' ? 'md:justify-self-end md:text-right' : '',
+        box,
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <p
+        className={[
+          'max-w-sm font-script text-[1.65rem] leading-snug md:text-[1.85rem]',
+          boxed && tone === 'ivory' ? 'text-ink' : text,
+        ].join(' ')}
+      >
+        {children}
+      </p>
+      {attribution ? (
+        <p className={`mt-4 text-xs tracking-[0.22em] uppercase ${boxed && tone === 'ivory' ? 'text-muted' : credit}`}>
+          {attribution}
+        </p>
+      ) : null}
     </blockquote>
   )
 }

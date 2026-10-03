@@ -3,6 +3,7 @@
 @theme {
   --font-serif: var(--font-cormorant), Georgia, serif;
   --font-sans: var(--font-manrope), "Segoe UI", sans-serif;
+  --font-script: var(--font-marck), "Segoe Script", cursive;
   --color-ivory: #f4efe6;
   --color-ink: #161616;
   --color-brown: #4a3428;
