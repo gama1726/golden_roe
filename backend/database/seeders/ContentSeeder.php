@@ -58,10 +58,6 @@ class ContentSeeder extends Seeder
             $this->page('home', $key, $title, $order++);
         }
 
-        $this->page('author', 'anchor.beauty', '34 года в индустрии красоты', 1);
-        $this->page('author', 'anchor.business', 'предпринимательство с нуля', 2);
-        $this->page('author', 'anchor.motherhood', 'материнство и дух', 3);
-        $this->page('author', 'anchor.manifesto', 'творческий манифест', 4);
         $this->page('author', 'guide', 'Почему я имею право быть вашим проводником?', 5);
 
         PageContent::query()->firstOrCreate(

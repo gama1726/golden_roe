@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Manrope, Marck_Script } from 'next/font/google'
+import { Cormorant_Garamond, Manrope } from 'next/font/google'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { getContacts, getDocuments, safe } from '@/lib/api'
@@ -19,13 +19,6 @@ const sans = Manrope({
   display: 'swap',
 })
 
-const script = Marck_Script({
-  subsets: ['cyrillic', 'latin'],
-  weight: '400',
-  variable: '--font-marck',
-  display: 'swap',
-})
-
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL ?? 'http://127.0.0.1:3000'),
   title: {
@@ -41,7 +34,7 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
   ])
 
   return (
-    <html lang="ru" className={`${serif.variable} ${sans.variable} ${script.variable} h-full`}>
+    <html lang="ru" className={`${serif.variable} ${sans.variable} h-full`}>
       <body className="flex min-h-full flex-col bg-ivory font-sans text-ink antialiased">
         <a href="#content" className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:bg-white focus:px-3 focus:py-2">
           К содержанию

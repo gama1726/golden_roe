@@ -1,5 +1,6 @@
 import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { HeroOverlay, ctaPrimary, ctaSecondaryOnDark, heroPad } from '@/components/hero'
 import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import { formatDate } from '@/lib/format'
 import type { ContactChannel, HomeData, PageContent } from '@/lib/types'
@@ -28,21 +29,21 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
     <>
       <section className="relative min-h-[92svh] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
         <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_12%] md:object-[78%_center]" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/25 to-transparent md:bg-gradient-to-r md:from-ink/85 md:via-ink/35 md:to-transparent" />
+        <HeroOverlay variant="home" />
         <div className="relative z-10 mx-auto flex min-h-[92svh] w-full max-w-[80rem] items-end md:min-h-[44rem] md:items-center">
-          <div className="flex w-full max-w-xl flex-col justify-end px-4 pt-24 pb-10 sm:px-5 md:justify-center md:px-10 md:py-20">
-            {banner?.title && <p className="text-[0.7rem] tracking-[0.22em] text-gold uppercase sm:text-xs sm:tracking-[0.28em]">{banner.title}</p>}
+          <div className={`flex w-full max-w-xl flex-col justify-end md:justify-center ${heroPad}`}>
+            {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
             {banner?.subtitle && <h1 className="mt-4 max-w-xl font-serif text-4xl leading-[0.95] font-medium sm:text-5xl md:mt-5 md:text-7xl">{banner.subtitle}</h1>}
             {banner?.text && <p className="mt-4 max-w-md text-sm leading-relaxed text-ivory/80 sm:mt-6 sm:text-base md:text-lg">{banner.text}</p>}
             <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
               {telegram && (
-                <a href={telegram.url ?? undefined} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink sm:w-auto">
+                <a href={telegram.url ?? undefined} className={`${ctaPrimary} w-full sm:w-auto`}>
                   <TelegramIcon size={16} />
                   Записаться в Telegram
                 </a>
               )}
               {whatsapp && (
-                <a href={whatsapp.url ?? undefined} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-ivory/40 px-5 py-3 text-sm sm:w-auto">
+                <a href={whatsapp.url ?? undefined} className={`${ctaSecondaryOnDark} w-full sm:w-auto`}>
                   <WhatsAppIcon size={16} />
                   Записаться в WhatsApp
                 </a>
@@ -106,12 +107,12 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
       {blocks.choice && (
         <section className="relative min-h-[28rem] overflow-hidden bg-ink text-ivory sm:min-h-[32rem]">
           <MediaImage image={blocks.choice.image} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[center_40%]" />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/20 to-transparent" />
-          <div className="relative z-10 mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-end px-4 py-12 sm:min-h-[32rem] sm:justify-center sm:px-5 sm:py-16 md:px-10">
+          <HeroOverlay variant="dark-soft" />
+          <div className={`relative z-10 mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-end sm:min-h-[32rem] sm:justify-center ${heroPad}`}>
             {blocks.choice.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{blocks.choice.eyebrow}</p>}
             {blocks.choice.title && <h2 className="mt-4 max-w-xl font-serif text-4xl leading-tight sm:text-5xl md:text-6xl">{blocks.choice.title}</h2>}
             {blocks.choice.body && <p className="mt-4 max-w-xl text-sm whitespace-pre-line leading-relaxed text-ivory/85 sm:mt-6 sm:text-base">{blocks.choice.body}</p>}
-            <Link href="/kontakty" className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink sm:mt-8">
+            <Link href="/kontakty" className={`${ctaPrimary} mt-6 w-fit sm:mt-8`}>
               Записаться на консультацию
               <ArrowRight aria-hidden="true" size={16} />
             </Link>

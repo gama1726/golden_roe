@@ -44,10 +44,6 @@ const blockLabel: Record<string, string> = {
   'result.family': 'Результат: семья',
   'result.health': 'Результат: здоровье',
   'result.children': 'Результат: рождение детей',
-  'anchor.beauty': 'Якорь: индустрия красоты',
-  'anchor.business': 'Якорь: предпринимательство',
-  'anchor.motherhood': 'Якорь: материнство',
-  'anchor.manifesto': 'Якорь: манифест',
   'cta.note': 'Пояснение о проверке',
   greeting: 'Приветствие под заголовком',
   reach: 'Свяжитесь со мной',
@@ -277,6 +273,7 @@ export function ContentPage({ page, title }: Props) {
       ))}
       {blocks.filter((block) => {
         if (page === 'services' && block.key.startsWith('point.')) return false
+        if (page === 'author' && block.key.startsWith('anchor.')) return false
         if (page === 'author' && (block.key === 'manifesto' || block.key === 'manifesto.quote')) return false
         return true
       }).map((block) => {

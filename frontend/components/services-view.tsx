@@ -1,5 +1,6 @@
 import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { HeroOverlay, HeroShell, ctaPrimary, ctaSecondaryOnDark, ctaSecondaryOnLight, heroPad } from '@/components/hero'
 import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import type { Block, ContactChannel, PageContent, ServicesData } from '@/lib/types'
 import { TelegramIcon } from '@/components/telegram-icon'
@@ -26,22 +27,22 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
     <>
       <section className="relative min-h-[38rem] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
         <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_center]" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/35 to-transparent" />
-        <div className="relative z-10 mx-auto flex min-h-[38rem] w-full max-w-[80rem] items-center md:min-h-[44rem]">
-          <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,26rem)_minmax(0,14rem)] md:px-10 md:py-20">
+        <HeroOverlay />
+        <HeroShell>
+          <div className={`grid w-full items-end gap-8 md:grid-cols-[minmax(0,26rem)_minmax(0,14rem)] ${heroPad}`}>
             <div>
               {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
               <h1 className="mt-5 font-serif text-5xl leading-[0.95] font-medium md:text-7xl">{banner?.subtitle || 'Услуги'}</h1>
               {banner?.text && <p className="mt-6 max-w-md text-base leading-relaxed text-ivory/80 md:text-lg">{banner.text}</p>}
               <div className="mt-8 flex flex-wrap gap-3">
                 {telegram && (
-                  <a href={telegram.url ?? undefined} className="inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+                  <a href={telegram.url ?? undefined} className={ctaPrimary}>
                     <TelegramIcon size={16} />
                     Записаться в Telegram
                   </a>
                 )}
                 {whatsapp && (
-                  <a href={whatsapp.url ?? undefined} className="inline-flex items-center gap-2 rounded-full border border-ivory/40 px-5 py-3 text-sm">
+                  <a href={whatsapp.url ?? undefined} className={ctaSecondaryOnDark}>
                     <WhatsAppIcon size={16} />
                     Записаться в WhatsApp
                   </a>
@@ -54,12 +55,12 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
               </SiteQuote>
             )}
           </div>
-        </div>
+        </HeroShell>
       </section>
 
       {blocks.points.length > 0 && (
         <MarbleBand seed="services-points" className="relative border-y border-line">
-          <div className="pointer-events-none absolute inset-0 bg-[#3d2a1f]/12" aria-hidden="true" />
+          <div className="pointer-events-none absolute inset-0 bg-earth/12" aria-hidden="true" />
           <ul className="relative grid w-full grid-cols-2 lg:grid-cols-4">
             {blocks.points.map((point, index) => {
               const mobileColDivider = index % 2 === 1
@@ -70,14 +71,14 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
                 <li
                   key={point.id}
                   className={[
-                    'relative px-4 py-10 text-center text-ink sm:px-8 sm:py-12 lg:px-10 xl:px-16',
+                    'relative px-4 py-10 text-center text-earth sm:px-8 sm:py-12 lg:px-10 xl:px-16',
                     mobileColDivider || desktopDivider
-                      ? 'before:absolute before:top-[18%] before:bottom-[18%] before:left-0 before:w-px before:bg-[#3d2a1f]/20'
+                      ? 'before:absolute before:top-[18%] before:bottom-[18%] before:left-0 before:w-px before:bg-earth/20'
                       : '',
                     !mobileColDivider && desktopDivider ? 'before:hidden lg:before:block' : '',
                     mobileColDivider && !desktopDivider ? 'lg:before:hidden' : '',
                     mobileRowDivider
-                      ? 'after:absolute after:top-0 after:right-[18%] after:left-[18%] after:h-px after:bg-[#3d2a1f]/20 lg:after:hidden'
+                      ? 'after:absolute after:top-0 after:right-[18%] after:left-[18%] after:h-px after:bg-earth/20 lg:after:hidden'
                       : '',
                   ].join(' ')}
                 >
@@ -118,18 +119,18 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
                   )}
                 </div>
                 <div className="mt-8 flex flex-wrap gap-3 md:mt-auto md:pt-8">
-                  <Link href={`/kontakty?service=${service.id}`} className="inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+                  <Link href={`/kontakty?service=${service.id}`} className={ctaPrimary}>
                     Узнать подробнее
                     <ArrowRight aria-hidden="true" size={16} />
                   </Link>
                   {telegram && (
-                    <a href={telegram.url ?? undefined} className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-3 text-sm">
+                    <a href={telegram.url ?? undefined} className={ctaSecondaryOnLight}>
                       <TelegramIcon size={16} />
                       Записаться в Telegram
                     </a>
                   )}
                   {whatsapp && (
-                    <a href={whatsapp.url ?? undefined} className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-3 text-sm">
+                    <a href={whatsapp.url ?? undefined} className={ctaSecondaryOnLight}>
                       <WhatsAppIcon size={16} />
                       Записаться в WhatsApp
                     </a>
@@ -174,18 +175,18 @@ function ServiceFact({
 
 function PointIcon({ point }: { point: PageContent }) {
   const Icon = pointIcons[point.key] ?? Leaf
-  return <Icon aria-hidden="true" className="mx-auto text-[#3d2a1f]" size={40} strokeWidth={1.25} />
+  return <Icon aria-hidden="true" className="mx-auto text-earth" size={40} strokeWidth={1.25} />
 }
 
 function ClosingBand({ block }: { block: Block }) {
   return (
     <section className="relative min-h-[28rem] overflow-hidden bg-ink text-ivory">
       <MediaImage image={block.image} className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
-      <div className="pointer-events-none absolute inset-0 bg-ink/45" />
-      <div className="relative z-10 mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-center px-5 py-16 md:px-10">
+      <HeroOverlay variant="band" />
+      <div className={`relative z-10 mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-center ${heroPad}`}>
         {block.title && <h2 className="max-w-xl font-serif text-5xl leading-tight md:text-6xl">{block.title}</h2>}
         {block.body && <p className="mt-6 max-w-xl whitespace-pre-line leading-relaxed text-ivory/85">{block.body}</p>}
-        <Link href="/kontakty" className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+        <Link href="/kontakty" className={`${ctaPrimary} mt-8 w-fit`}>
           Записаться на консультацию
           <ArrowRight aria-hidden="true" size={16} />
         </Link>

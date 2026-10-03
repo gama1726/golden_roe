@@ -111,7 +111,6 @@ export type AuthorData = {
     items: PageContent[]
     quote: Block | null
   }
-  anchors: PageContent[]
   son: PageContent | null
   son_photo: Block | null
   son_quote: Block | null

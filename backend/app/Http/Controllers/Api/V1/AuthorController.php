@@ -23,7 +23,6 @@ class AuthorController extends Controller
             $banner = Banner::query()->where('page', 'author')->orderBy('sort_order')->first();
             $blocks = PageContent::query()->where('page', 'author')->orderBy('sort_order')->orderBy('id')->get();
             $keyed = $blocks->keyBy('key');
-            $anchors = $blocks->filter(fn (PageContent $block): bool => str_starts_with($block->key, 'anchor.'))->values();
             $pillars = $blocks->filter(fn (PageContent $block): bool => str_starts_with($block->key, 'pillar.') && $block->key !== 'pillar.quote')->values();
             $guideItems = $blocks->filter(fn (PageContent $block): bool => str_starts_with($block->key, 'guide.'))->values();
 
@@ -40,7 +39,6 @@ class AuthorController extends Controller
                     'items' => PageContentResource::collection($pillars)->resolve(),
                     'quote' => $this->block($keyed->get('pillar.quote')),
                 ],
-                'anchors' => PageContentResource::collection($anchors)->resolve(),
                 'son' => $this->block($keyed->get('son')),
                 'son_photo' => $this->block($keyed->get('son.photo')),
                 'son_quote' => $this->block($keyed->get('son.quote')),

@@ -2,6 +2,7 @@
 
 import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { HeroOverlay, HeroShell, ctaPrimary, heroPad } from '@/components/hero'
 import { ReviewForm } from '@/components/review-form'
 import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import { formatDate } from '@/lib/format'
@@ -56,16 +57,16 @@ export function ReviewsView({
 
   return (
     <>
-      <section className="relative min-h-[34rem] overflow-hidden bg-ivory text-ink md:min-h-[40rem]">
+      <section className="relative min-h-[38rem] overflow-hidden bg-ivory text-ink md:min-h-[44rem]">
         <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_center]" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ivory via-ivory/55 to-transparent" />
-        <div className="relative z-10 mx-auto flex min-h-[34rem] w-full max-w-[80rem] items-center md:min-h-[40rem]">
-          <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,28rem)_minmax(0,16rem)] md:px-10 md:py-20">
+        <HeroOverlay variant="light" />
+        <HeroShell>
+          <div className={`grid w-full items-end gap-8 md:grid-cols-[minmax(0,28rem)_minmax(0,16rem)] ${heroPad}`}>
             <div>
               {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
               <h1 className="mt-5 font-serif text-5xl leading-[0.95] font-medium md:text-7xl">{banner?.subtitle || 'Отзывы'}</h1>
               {banner?.text && <p className="mt-6 max-w-md leading-relaxed text-muted">{banner.text}</p>}
-              <button type="button" onClick={openForm} className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+              <button type="button" onClick={openForm} className={`${ctaPrimary} mt-8`}>
                 Оставить отзыв
                 <ArrowRight aria-hidden="true" size={16} />
               </button>
@@ -74,7 +75,7 @@ export function ReviewsView({
               <SiteQuote attribution={quote.eyebrow}>{cleanQuoteText(quote.title)}</SiteQuote>
             )}
           </div>
-        </div>
+        </HeroShell>
       </section>
 
       <section className="mx-auto w-full max-w-[80rem] px-5 py-16 md:py-24">
@@ -97,13 +98,13 @@ export function ReviewsView({
       {cta && (
         <section className="relative min-h-[24rem] overflow-hidden bg-ink text-ivory">
           <MediaImage image={cta.image} className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
-          <div className="pointer-events-none absolute inset-0 bg-ink/45" />
-          <div className="relative z-10 mx-auto grid min-h-[24rem] w-full max-w-[80rem] items-center gap-10 px-5 py-16 md:grid-cols-2 md:px-10">
+          <HeroOverlay variant="band" />
+          <div className={`relative z-10 mx-auto grid min-h-[24rem] w-full max-w-[80rem] items-center gap-10 md:grid-cols-2 ${heroPad}`}>
             <div>
               {cta.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{cta.eyebrow}</p>}
               {cta.title && <h2 className="mt-4 font-serif text-4xl md:text-5xl">{cta.title}</h2>}
               {cta.body && <p className="mt-6 max-w-md leading-relaxed text-ivory/85">{cta.body}</p>}
-              <button type="button" onClick={openForm} className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+              <button type="button" onClick={openForm} className={`${ctaPrimary} mt-8`}>
                 Оставить отзыв
                 <ArrowRight aria-hidden="true" size={16} />
               </button>

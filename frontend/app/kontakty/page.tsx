@@ -20,7 +20,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Pro
 
   if (!page) {
     return (
-      <section className="mx-auto w-full max-w-6xl px-5 py-20">
+      <section className="mx-auto w-full max-w-[80rem] px-5 py-20">
         <p>Не удалось загрузить страницу. Обновите её через минуту.</p>
       </section>
     )

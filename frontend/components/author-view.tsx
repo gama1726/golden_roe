@@ -1,7 +1,8 @@
 import { MarbleBand } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { HeroOverlay, HeroShell, ctaPrimary, heroPad } from '@/components/hero'
 import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
-import type { AuthorData, AuthorStat, PageContent } from '@/lib/types'
+import type { AuthorData, PageContent } from '@/lib/types'
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -37,14 +38,14 @@ export function AuthorView({ author }: { author: AuthorData }) {
     <>
       <section className="relative min-h-[38rem] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
         <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_center]" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/60 via-ink/20 to-transparent" />
-        <div className="relative z-10 mx-auto flex min-h-[38rem] w-full max-w-[80rem] items-center md:min-h-[44rem]">
-          <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,28rem)_minmax(0,16rem)] md:px-10 md:py-20">
+        <HeroOverlay />
+        <HeroShell>
+          <div className={`grid w-full items-end gap-8 md:grid-cols-[minmax(0,28rem)_minmax(0,16rem)] ${heroPad}`}>
             <div>
               {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
-              <h1 className="mt-5 max-w-xl font-serif text-5xl leading-[0.95] font-medium md:text-6xl">{banner?.subtitle || 'Об авторе'}</h1>
+              <h1 className="mt-5 max-w-xl font-serif text-5xl leading-[0.95] font-medium md:text-7xl">{banner?.subtitle || 'Об авторе'}</h1>
               {banner?.text && <p className="mt-6 max-w-md text-base leading-relaxed text-ivory/85">{banner.text}</p>}
-              <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+              <Link href="/kontakty" className={`${ctaPrimary} mt-8`}>
                 Записаться на консультацию
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>
@@ -55,12 +56,12 @@ export function AuthorView({ author }: { author: AuthorData }) {
               </SiteQuote>
             )}
           </div>
-        </div>
+        </HeroShell>
       </section>
 
       {(path || path_photo) && (
         <section className="grid w-full items-start gap-4 px-4 py-8 sm:px-5 md:gap-5 md:px-6 md:py-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.1fr)_minmax(0,0.95fr)] lg:gap-6 xl:px-8">
-          <Portrait image={path?.image ?? null} caption={path?.title && !path.body ? path.title : null} />
+          <Portrait image={path?.image ?? null} />
           <div className="flex flex-col justify-center self-stretch">
             {path?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{path.eyebrow}</p>}
             {path?.title && <h2 className="mt-3 font-serif text-3xl leading-[1.05] md:text-4xl">{path.title}</h2>}
@@ -76,7 +77,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
 
       {stats.length > 0 && (
         <MarbleBand seed="author-stats" className="relative border-y border-line">
-          <div className="pointer-events-none absolute inset-0 bg-[#3d2a1f]/12" aria-hidden="true" />
+          <div className="pointer-events-none absolute inset-0 bg-earth/12" aria-hidden="true" />
           <ul className="relative grid w-full grid-cols-2 lg:grid-cols-4">
             {stats.map((stat, index) => {
               const long = (stat.value?.length ?? 0) > 12
@@ -88,18 +89,18 @@ export function AuthorView({ author }: { author: AuthorData }) {
                 <li
                   key={stat.id}
                   className={[
-                    'relative px-4 py-10 text-center text-[#3d2a1f] sm:px-8 sm:py-12 lg:px-10 xl:px-16',
+                    'relative px-4 py-10 text-center text-earth sm:px-8 sm:py-12 lg:px-10 xl:px-16',
                     mobileColDivider || desktopDivider
-                      ? 'before:absolute before:top-[18%] before:bottom-[18%] before:left-0 before:w-px before:bg-[#3d2a1f]/20'
+                      ? 'before:absolute before:top-[18%] before:bottom-[18%] before:left-0 before:w-px before:bg-earth/20'
                       : '',
                     !mobileColDivider && desktopDivider ? 'before:hidden lg:before:block' : '',
                     mobileColDivider && !desktopDivider ? 'lg:before:hidden' : '',
                     mobileRowDivider
-                      ? 'after:absolute after:top-0 after:right-[18%] after:left-[18%] after:h-px after:bg-[#3d2a1f]/20 lg:after:hidden'
+                      ? 'after:absolute after:top-0 after:right-[18%] after:left-[18%] after:h-px after:bg-earth/20 lg:after:hidden'
                       : '',
                   ].join(' ')}
                 >
-                  <StatIcon stat={stat} index={index} />
+                  <StatIcon index={index} />
                   {stat.value && (
                     <p className={`mt-4 font-serif leading-tight ${long ? 'text-2xl md:text-3xl' : 'text-4xl md:text-5xl'}`}>{stat.value}</p>
                   )}
@@ -112,7 +113,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {(pillars.title || pillars.items.length > 0) && (
-        <section className="w-full border-y border-line bg-[#efe6d8]">
+        <section className="w-full border-y border-line bg-sand">
           <div className="grid w-full items-stretch lg:grid-cols-[minmax(0,1fr)_minmax(16rem,22rem)]">
             <div className="px-5 py-5 md:px-10 md:py-6 lg:px-12 lg:py-7">
               {pillars.title && <h2 className="font-serif text-4xl md:text-5xl">{pillars.title}</h2>}
@@ -130,7 +131,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
               )}
             </div>
             {pillars.quote?.body && (
-              <div className="flex border-t border-[#e0d4c4] bg-ivory/75 lg:border-t-0 lg:border-l">
+              <div className="flex border-t border-sand-line bg-ivory/75 lg:border-t-0 lg:border-l">
                 <SiteQuote className="flex h-full w-full flex-col justify-center px-6 py-5 md:px-8 md:py-6">
                   {cleanQuoteText(pillars.quote.body)}
                 </SiteQuote>
@@ -210,13 +211,13 @@ export function AuthorView({ author }: { author: AuthorData }) {
       {manifesto && (
         <section className="relative min-h-[36rem] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
           <MediaImage image={manifesto.image} sizes="100vw" className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[center_42%]" />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/55 via-ink/20 to-transparent" />
-          <div className="relative z-10 mx-auto grid min-h-[36rem] w-full max-w-[80rem] items-center gap-10 px-5 py-16 md:min-h-[44rem] md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:px-10 md:py-20">
+          <HeroOverlay variant="dark-soft" />
+          <div className={`relative z-10 mx-auto grid min-h-[36rem] w-full max-w-[80rem] items-center gap-10 md:min-h-[44rem] md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] ${heroPad}`}>
             <div>
               {manifesto.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{manifesto.eyebrow}</p>}
               {manifesto.title && <h2 className="mt-4 max-w-xl font-serif text-5xl leading-[1.05] md:text-6xl">{manifesto.title}</h2>}
               {manifesto.body && <p className="mt-6 max-w-xl leading-relaxed text-ivory/85">{manifesto.body}</p>}
-              <Link href="/kontakty" className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
+              <Link href="/kontakty" className={`${ctaPrimary} mt-8`}>
                 Записаться на консультацию
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>
@@ -233,15 +234,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
   )
 }
 
-function Portrait({
-  image,
-  caption = null,
-  card = false,
-}: {
-  image: PageContent['image']
-  caption?: string | null
-  card?: boolean
-}) {
+function Portrait({ image }: { image: PageContent['image'] }) {
   if (!image) return null
 
   return (
@@ -251,17 +244,6 @@ function Portrait({
         sizes="(min-width: 1024px) 24rem, 100vw"
         className="aspect-[4/5] w-full object-cover object-[center_22%]"
       />
-      {caption && (
-        <p
-          className={
-            card
-              ? 'absolute right-4 bottom-6 max-w-[12rem] whitespace-pre-line text-right font-script text-3xl leading-none text-ivory drop-shadow md:text-4xl'
-              : 'absolute bottom-6 left-5 max-w-[11rem] whitespace-pre-line font-script text-3xl leading-none text-ivory drop-shadow'
-          }
-        >
-          {caption}
-        </p>
-      )}
     </div>
   )
 }
@@ -271,7 +253,7 @@ function PillarIcon({ item }: { item: PageContent }) {
   return <Icon aria-hidden="true" className="mx-auto text-gold" size={42} strokeWidth={1.1} />
 }
 
-function StatIcon({ index }: { stat: AuthorStat; index: number }) {
-  const Icon = statIcons[index % statIcons.length]
-  return <Icon aria-hidden="true" className="mx-auto text-[#3d2a1f]" size={34} strokeWidth={1.2} />
+function StatIcon({ index }: { index: number }) {
+  const Icon = statIcons[index % statIcons.length] ?? Sparkles
+  return <Icon aria-hidden="true" className="mx-auto text-earth" size={34} strokeWidth={1.2} />
 }

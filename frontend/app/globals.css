@@ -3,13 +3,15 @@
 @theme {
   --font-serif: var(--font-cormorant), Georgia, serif;
   --font-sans: var(--font-manrope), "Segoe UI", sans-serif;
-  --font-script: var(--font-marck), "Segoe Script", cursive;
   --color-ivory: #f4efe6;
   --color-ink: #161616;
   --color-brown: #4a3428;
+  --color-earth: #3d2a1f;
   --color-gold: #a68456;
   --color-gold-button: #c4a574;
   --color-cream: #e9dfd0;
+  --color-sand: #efe6d8;
+  --color-sand-line: #e0d4c4;
   --color-line: #e4dccf;
   --color-muted: #6f675e;
 }

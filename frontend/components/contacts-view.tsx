@@ -1,10 +1,11 @@
 import { MarbleBand, marbleStyle } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
+import { HeroOverlay, HeroShell, ctaPrimary, ctaSecondaryOnLight, heroPad } from '@/components/hero'
 import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import type { Banner, Block, ContactChannel, PageContent, Service } from '@/lib/types'
 import { TelegramIcon } from '@/components/telegram-icon'
 import { WhatsAppIcon } from '@/components/whatsapp-icon'
-import { ArrowRight, Calendar, Clock, Heart, Mail, MessageCircle, Phone, Shield, type LucideIcon } from 'lucide-react'
+import { Calendar, Clock, Heart, Mail, MessageCircle, Phone, Shield, type LucideIcon } from 'lucide-react'
 
 const pointIcons: Record<string, LucideIcon> = {
   'point.reply': Clock,
@@ -46,17 +47,17 @@ export function ContactsView({
 
   return (
     <>
-      <section className="relative min-h-[30rem] overflow-hidden bg-ink text-ivory sm:min-h-[34rem] md:min-h-[40rem] lg:min-h-[44rem]">
+      <section className="relative min-h-[38rem] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
         <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[82%_center] sm:object-[72%_center] lg:object-[68%_center]" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/40 to-transparent sm:via-ink/30" />
-        <div className="relative z-10 mx-auto flex min-h-[30rem] w-full max-w-[80rem] items-center sm:min-h-[34rem] md:min-h-[40rem] lg:min-h-[44rem]">
-          <div className="w-full max-w-xl px-4 py-12 sm:px-5 sm:py-16 md:px-10 md:py-20">
-            {banner?.title && <p className="text-[0.7rem] tracking-[0.22em] text-gold uppercase sm:text-xs sm:tracking-[0.28em]">{banner.title}</p>}
+        <HeroOverlay />
+        <HeroShell>
+          <div className={`w-full max-w-xl ${heroPad}`}>
+            {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
             <h1 className="mt-4 font-serif text-4xl leading-[0.95] font-medium min-[380px]:text-5xl md:text-6xl lg:text-7xl">{banner?.subtitle || 'Контакты'}</h1>
             {greeting?.title && <p className="mt-4 font-serif text-2xl leading-tight min-[380px]:text-3xl md:mt-5 md:text-4xl">{greeting.title}</p>}
             {banner?.text && <p className="mt-5 max-w-md text-sm leading-relaxed text-ivory/80 sm:mt-6 sm:text-base">{banner.text}</p>}
           </div>
-        </div>
+        </HeroShell>
       </section>
 
       <section className="mx-auto w-full max-w-[80rem] px-4 py-12 sm:px-5 sm:py-16 md:px-10 md:py-20 lg:py-24">
@@ -138,14 +139,15 @@ function MessengerButtons({ telegram, whatsapp }: { telegram?: ContactChannel; w
   return (
     <div className="mt-8 flex flex-col gap-3 min-[380px]:flex-row min-[380px]:flex-wrap">
       {telegram?.url && (
-        <a href={telegram.url} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">
-          Написать в Telegram
-          <ArrowRight aria-hidden="true" size={16} />
+        <a href={telegram.url} className={ctaPrimary}>
+          <TelegramIcon size={16} />
+          Записаться в Telegram
         </a>
       )}
       {whatsapp?.url && (
-        <a href={whatsapp.url} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-line bg-white px-5 py-3 text-sm">
-          Написать в WhatsApp
+        <a href={whatsapp.url} className={ctaSecondaryOnLight}>
+          <WhatsAppIcon size={16} />
+          Записаться в WhatsApp
         </a>
       )}
     </div>
