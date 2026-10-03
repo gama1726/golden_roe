@@ -58,11 +58,14 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
 
       {blocks.points.length > 0 && (
         <section className="border-y border-line bg-cream">
-          <ul className="mx-auto grid w-full max-w-[80rem] gap-8 px-5 py-10 sm:grid-cols-2 lg:grid-cols-4">
-            {blocks.points.map((point) => (
-              <li key={point.id} className="text-center">
+          <ul className="mx-auto grid w-full max-w-[80rem] grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line">
+            {blocks.points.map((point, index) => (
+              <li
+                key={point.id}
+                className={`px-4 py-8 text-center sm:px-6 sm:py-10 ${index % 2 === 1 ? 'border-l border-line lg:border-l-0' : ''} ${index >= 2 ? 'border-t border-line lg:border-t-0' : ''}`}
+              >
                 <PointIcon point={point} />
-                {point.title && <p className="mt-4 text-sm leading-relaxed">{point.title}</p>}
+                {point.title && <p className="mx-auto mt-4 max-w-[12rem] text-sm leading-relaxed">{point.title}</p>}
               </li>
             ))}
           </ul>

@@ -8,10 +8,10 @@ type Props = { page: 'home' | 'author' | 'services' | 'articles' | 'reviews' | '
 
 const blockLabel: Record<string, string> = {
   quote: 'Цитата на баннере',
-  'point.system': 'Принцип: системный подход',
-  'point.individual': 'Принцип: индивидуальные решения',
-  'point.trust': 'Принцип: конфиденциальность',
-  'point.results': 'Принцип: реальные изменения',
+  'point.system': 'Лист — подпись',
+  'point.individual': 'Ромб — подпись',
+  'point.trust': 'Люди — подпись',
+  'point.results': 'График — подпись',
   cta: 'Нижний экран',
   path: 'Мой путь',
   'path.photo': 'Мой путь: фото справа',
@@ -249,6 +249,7 @@ export function ContentPage({ page, title }: Props) {
           />
         </div>
       ))}
+      {page === 'services' && <ServiceStrip blocks={blocks} onChange={setBlocks} />}
       {page === 'author' && stats.map((stat) => (
         <div key={stat.id} className="grid items-end gap-3 rounded-3xl bg-white p-5 sm:grid-cols-2">
           <Field label="Основная часть">
@@ -259,7 +260,7 @@ export function ContentPage({ page, title }: Props) {
           </Field>
         </div>
       ))}
-      {blocks.map((block) => (
+      {blocks.filter((block) => page !== 'services' || !block.key.startsWith('point.')).map((block) => (
         <div key={block.id} className="space-y-3 rounded-3xl bg-white p-5">
           <h2 className="font-serif text-2xl">{blockLabel[block.key] ?? block.key}</h2>
           <Field label="Надзаголовок">
@@ -287,6 +288,27 @@ export function ContentPage({ page, title }: Props) {
         </div>
       ))}
     </section>
+  )
+}
+
+function ServiceStrip({ blocks, onChange }: { blocks: PageContent[]; onChange: (blocks: PageContent[]) => void }) {
+  const points = blocks.filter((block) => block.key.startsWith('point.')).sort((a, b) => a.sort_order - b.sort_order)
+  if (points.length === 0) return null
+
+  return (
+    <div className="space-y-3 rounded-3xl bg-white p-5">
+      <h2 className="font-serif text-2xl">Бежевая полоса под баннером</h2>
+      <p className="text-sm text-muted">Четыре подписи с иконками между баннером и списком услуг. На сайте виден только этот текст.</p>
+      {points.map((block) => (
+        <Field key={block.id} label={blockLabel[block.key] ?? block.key}>
+          <input
+            className={controlClass}
+            value={block.title ?? ''}
+            onChange={(event) => onChange(blocks.map((item) => (item.id === block.id ? { ...item, title: event.target.value } : item)))}
+          />
+        </Field>
+      ))}
+    </div>
   )
 }
 
