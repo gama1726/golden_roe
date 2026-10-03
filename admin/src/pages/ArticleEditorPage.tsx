@@ -16,6 +16,7 @@ export function ArticleEditorPage() {
   const [published, setPublished] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
   const [image, setImage] = useState<StoredImage | null>(null)
+  const [removedImage, setRemovedImage] = useState(false)
   const [ready, setReady] = useState(isNew)
   const [error, setError] = useState<string | null>(null)
   const [baseline, setBaseline] = useState({ title: '', excerpt: '', content: '<p></p>', published: false })
@@ -24,7 +25,8 @@ export function ArticleEditorPage() {
     excerpt !== baseline.excerpt ||
     content !== baseline.content ||
     published !== baseline.published ||
-    image !== null
+    image !== null ||
+    removedImage
 
   useEffect(() => {
     if (isNew || !params.id) return
@@ -37,6 +39,8 @@ export function ArticleEditorPage() {
         setContent(article.content || '<p></p>')
         setPublished(article.is_published)
         setPreview(article.image?.original ?? null)
+        setImage(null)
+        setRemovedImage(false)
         setBaseline({
           title: article.title,
           excerpt: article.excerpt ?? '',
@@ -53,6 +57,7 @@ export function ArticleEditorPage() {
     const uploaded = await uploadImage(file)
     setImage({ original: uploaded.original, webp: uploaded.webp, alt: uploaded.alt })
     setPreview(uploaded.urls.original)
+    setRemovedImage(false)
   }
 
   async function save() {
@@ -63,6 +68,7 @@ export function ArticleEditorPage() {
       is_published: published,
     }
     if (image) payload.image = image
+    else if (removedImage) payload.image = null
     if (isNew) {
       const response = await api.post<{ data: Article }>('/api/v1/admin/articles', payload)
       navigate(`/articles/${response.data.data.id}`, { replace: true })
@@ -70,6 +76,7 @@ export function ArticleEditorPage() {
       await api.patch(`/api/v1/admin/articles/${params.id}`, payload)
       setBaseline({ title, excerpt, content, published })
       setImage(null)
+      setRemovedImage(false)
     }
     setError(null)
   }
@@ -99,7 +106,15 @@ export function ArticleEditorPage() {
             hint={preview ? 'Файл выбран' : 'JPEG, PNG или WebP'}
             preview={preview}
             onPick={onFile}
-            onClear={preview ? () => { setImage(null); setPreview(null) } : undefined}
+            onClear={
+              preview
+                ? () => {
+                    setImage(null)
+                    setPreview(null)
+                    setRemovedImage(true)
+                  }
+                : undefined
+            }
           />
           <RichText key={params.id ?? 'new'} initial={content} onChange={setContent} />
           <label className="flex items-center gap-2 text-sm">

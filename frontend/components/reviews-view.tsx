@@ -31,6 +31,16 @@ export function ReviewsView({
 
   function openForm() {
     setFormOpen(true)
+    if (window.location.hash !== '#otzyv') {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#otzyv`)
+    }
+  }
+
+  function closeForm() {
+    setFormOpen(false)
+    if (window.location.hash === '#otzyv') {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`)
+    }
   }
 
   useEffect(() => {
@@ -114,7 +124,7 @@ export function ReviewsView({
               </div>
               <button
                 type="button"
-                onClick={() => setFormOpen(false)}
+                onClick={closeForm}
                 className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-ivory text-ink"
                 aria-label="Закрыть форму"
               >

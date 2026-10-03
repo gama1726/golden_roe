@@ -107,7 +107,7 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
-        <div className="hidden px-3 py-4 md:block">
+        <div className="px-3 py-3 md:py-4">
           <button className="flex items-center gap-2 px-3 py-2 text-sm text-muted" onClick={logout} type="button">
             <LogOut size={16} strokeWidth={1.5} />
             Выйти

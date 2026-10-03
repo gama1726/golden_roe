@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useOutletContext, useSearchParams } from 'react-router-dom'
 import { Button, FilePicker, Notice, cardClass, cardHeadingClass } from '../components/ui'
 import { ContentPage } from './ContentPage'
 import { api, errorText } from '../lib/api'
@@ -11,7 +11,12 @@ const filters = [
   { id: 'approved', label: 'Одобренные' },
 ]
 
+type OutletContext = {
+  refreshPending: (count: number) => void
+}
+
 export function ReviewsPage() {
+  const { refreshPending } = useOutletContext<OutletContext>()
   const [params, setParams] = useSearchParams()
   const status = params.get('status') ?? ''
   const [items, setItems] = useState<Review[]>([])
@@ -24,6 +29,7 @@ export function ReviewsPage() {
     const response = await api.get<{ data: Review[]; pending_count: number }>(`/api/v1/admin/reviews${query}`)
     setItems(response.data.data)
     setPendingCount(response.data.pending_count)
+    refreshPending(response.data.pending_count)
   }
 
   useEffect(() => {
@@ -32,19 +38,27 @@ export function ReviewsPage() {
 
   async function act(id: number, action: 'approve' | 'pending' | 'delete') {
     if (action === 'delete' && !window.confirm('Удалить отзыв?')) return
-    if (action === 'delete') await api.delete(`/api/v1/admin/reviews/${id}`)
-    else await api.post(`/api/v1/admin/reviews/${id}/${action}`)
-    await load()
-    setNotice('Сохранено')
+    try {
+      if (action === 'delete') await api.delete(`/api/v1/admin/reviews/${id}`)
+      else await api.post(`/api/v1/admin/reviews/${id}/${action}`)
+      await load()
+      setNotice('Сохранено')
+    } catch (reason) {
+      setError(errorText(reason))
+    }
   }
 
   async function upload(id: number, file: File | undefined) {
     if (!file) return
-    const body = new FormData()
-    body.append('image', file)
-    await api.post(`/api/v1/admin/reviews/${id}/image`, body)
-    await load()
-    setNotice('Изображение обновлено')
+    try {
+      const body = new FormData()
+      body.append('image', file)
+      await api.post(`/api/v1/admin/reviews/${id}/image`, body)
+      await load()
+      setNotice('Изображение обновлено')
+    } catch (reason) {
+      setError(errorText(reason))
+    }
   }
 
   return (

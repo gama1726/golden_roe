@@ -16,8 +16,9 @@ export function ServicesPage() {
   const [error, setError] = useState<string | null>(null)
   const [image, setImage] = useState<StoredImage | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [removedImage, setRemovedImage] = useState(false)
   const [baseline, setBaseline] = useState(JSON.stringify(empty))
-  const formDirty = JSON.stringify(form) !== baseline || image !== null
+  const formDirty = JSON.stringify(form) !== baseline || image !== null || removedImage
 
   async function load() {
     const response = await api.get<{ data: Service[] }>('/api/v1/admin/services')
@@ -44,6 +45,7 @@ export function ServicesPage() {
       is_active: form.is_active,
     }
     if (image) payload.image = image
+    else if (removedImage) payload.image = null
     if (editing) {
       await api.patch(`/api/v1/admin/services/${editing}`, payload)
     } else {
@@ -53,6 +55,7 @@ export function ServicesPage() {
     setEditing(null)
     setImage(null)
     setPreview(null)
+    setRemovedImage(false)
     setBaseline(JSON.stringify(empty))
     await load()
     setError(null)
@@ -71,6 +74,7 @@ export function ServicesPage() {
       is_active: service.is_active,
     })
     setImage(null)
+    setRemovedImage(false)
     setPreview(service.image?.original ?? null)
     setBaseline(
       JSON.stringify({
@@ -89,16 +93,22 @@ export function ServicesPage() {
     const uploaded = await uploadImage(file)
     setImage({ original: uploaded.original, webp: uploaded.webp, alt: uploaded.alt })
     setPreview(uploaded.urls.original)
+    setRemovedImage(false)
   }
 
   async function remove(service: Service) {
     if (!window.confirm(`Удалить «${service.title}»?`)) return
-    await api.delete(`/api/v1/admin/services/${service.id}`)
-    await load()
-    notify('Удалено')
+    try {
+      await api.delete(`/api/v1/admin/services/${service.id}`)
+      await load()
+      notify('Удалено')
+    } catch (reason) {
+      setError(errorText(reason))
+    }
   }
 
   async function move(index: number, direction: -1 | 1) {
+    const previous = items
     const next = [...items]
     const target = index + direction
     if (target < 0 || target >= next.length) return
@@ -108,8 +118,13 @@ export function ServicesPage() {
     next[index] = swap
     next[target] = current
     setItems(next)
-    await api.patch('/api/v1/admin/services/reorder', { ids: next.map((item) => item.id) })
-    notify('Порядок обновлён')
+    try {
+      await api.patch('/api/v1/admin/services/reorder', { ids: next.map((item) => item.id) })
+      notify('Порядок обновлён')
+    } catch (reason) {
+      setItems(previous)
+      setError(errorText(reason))
+    }
   }
 
   return (
@@ -172,7 +187,15 @@ export function ServicesPage() {
           hint={preview ? 'Файл выбран' : 'JPEG, PNG или WebP'}
           preview={preview}
           onPick={onFile}
-          onClear={preview ? () => { setImage(null); setPreview(null) } : undefined}
+          onClear={
+            preview
+              ? () => {
+                  setImage(null)
+                  setPreview(null)
+                  setRemovedImage(true)
+                }
+              : undefined
+          }
         />
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={form.is_active} onChange={(event) => setForm({ ...form, is_active: event.target.checked })} />
@@ -187,6 +210,7 @@ export function ServicesPage() {
               setForm(empty)
               setImage(null)
               setPreview(null)
+              setRemovedImage(false)
               setBaseline(JSON.stringify(empty))
             }}
           >

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { api } from './api'
+import { api, ensureCsrf } from './api'
 import type { User } from './types'
 
 type AuthState = {
@@ -15,10 +15,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    api
-      .get<{ data: User }>('/api/v1/admin/me')
-      .then((response) => setUser(response.data.data))
-      .catch(() => setUser(null))
+    void ensureCsrf()
+      .catch(() => undefined)
+      .then(() =>
+        api
+          .get<{ data: User }>('/api/v1/admin/me')
+          .then((response) => setUser(response.data.data))
+          .catch(() => setUser(null)),
+      )
       .finally(() => setReady(true))
 
     const onLogout = () => setUser(null)
