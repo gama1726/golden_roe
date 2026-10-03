@@ -25,9 +25,9 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
   return (
     <>
       <section className="relative min-h-[92svh] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
-        <MediaImage image={banner?.image ?? null} className="absolute inset-0 h-full w-full object-cover object-[72%_12%] md:object-[78%_center]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-transparent md:bg-gradient-to-r md:from-ink md:via-ink/75 md:to-ink/10" />
-        <div className="relative mx-auto flex min-h-[92svh] w-full max-w-[80rem] items-end md:min-h-[44rem] md:items-center">
+        <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_12%] md:object-[78%_center]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-transparent md:bg-gradient-to-r md:from-ink md:via-ink/75 md:to-ink/10" />
+        <div className="relative z-10 mx-auto flex min-h-[92svh] w-full max-w-[80rem] items-end md:min-h-[44rem] md:items-center">
           <div className="flex w-full max-w-xl flex-col justify-end px-4 pt-24 pb-10 sm:px-5 md:justify-center md:px-10 md:py-20">
             {banner?.title && <p className="text-[0.7rem] tracking-[0.22em] text-gold uppercase sm:text-xs sm:tracking-[0.28em]">{banner.title}</p>}
             {banner?.subtitle && <h1 className="mt-4 max-w-xl font-serif text-4xl leading-[0.95] font-medium sm:text-5xl md:mt-5 md:text-7xl">{banner.subtitle}</h1>}
@@ -99,9 +99,9 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
 
       {blocks.choice && (
         <section className="relative min-h-[28rem] overflow-hidden bg-ink text-ivory sm:min-h-[32rem]">
-          <MediaImage image={blocks.choice.image} className="absolute inset-0 h-full w-full object-cover object-[center_40%]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/40 to-ink/20" />
-          <div className="relative mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-end px-4 py-12 sm:min-h-[32rem] sm:justify-center sm:px-5 sm:py-16 md:px-10">
+          <MediaImage image={blocks.choice.image} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[center_40%]" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/40 to-ink/20" />
+          <div className="relative z-10 mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-end px-4 py-12 sm:min-h-[32rem] sm:justify-center sm:px-5 sm:py-16 md:px-10">
             {blocks.choice.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{blocks.choice.eyebrow}</p>}
             {blocks.choice.title && <h2 className="mt-4 max-w-xl font-serif text-4xl leading-tight sm:text-5xl md:text-6xl">{blocks.choice.title}</h2>}
             {blocks.choice.body && <p className="mt-4 max-w-xl text-sm whitespace-pre-line leading-relaxed text-ivory/85 sm:mt-6 sm:text-base">{blocks.choice.body}</p>}

@@ -10,7 +10,7 @@ final class Media
 {
     /**
      * @param  array<string, mixed>|null  $image
-     * @return array{alt: string, original: string|null, webp: object}|null
+     * @return array{alt: string, original: string|null, webp: array<string, string>}|null
      */
     public static function urls(?array $image): ?array
     {
@@ -18,18 +18,19 @@ final class Media
             return null;
         }
 
-        // Widths stay on an object. A PHP list is reindexed by the API resource,
-        // and the site then tells the browser the files are 0, 1 and 2 pixels wide.
-        $webp = new \stdClass();
+        // Associative widths (640/1280/1920). Do not use stdClass: Redis cache can
+        // revive it as __PHP_Incomplete_Class and break the public site.
+        $webp = [];
         foreach ($image['webp'] ?? [] as $width => $path) {
             if (! is_string($path)) {
                 continue;
             }
             $key = self::variantWidth($width, $path);
             if ($key !== null) {
-                $webp->{$key} = Storage::disk('public')->url($path);
+                $webp[$key] = Storage::disk('public')->url($path);
             }
         }
+        ksort($webp, SORT_NUMERIC);
 
         return [
             'alt' => is_string($image['alt'] ?? null) ? $image['alt'] : '',

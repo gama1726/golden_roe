@@ -23,9 +23,9 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
   return (
     <>
       <section className="relative min-h-[38rem] overflow-hidden bg-ink text-ivory md:min-h-[44rem]">
-        <MediaImage image={banner?.image ?? null} className="absolute inset-0 h-full w-full object-cover object-[72%_center]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/80 to-ink/15" />
-        <div className="relative mx-auto flex min-h-[38rem] w-full max-w-[80rem] items-center md:min-h-[44rem]">
+        <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_center]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/80 to-ink/15" />
+        <div className="relative z-10 mx-auto flex min-h-[38rem] w-full max-w-[80rem] items-center md:min-h-[44rem]">
           <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,26rem)_minmax(0,14rem)] md:px-10 md:py-20">
             <div>
               {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
@@ -146,9 +146,9 @@ function PointIcon({ point }: { point: PageContent }) {
 function ClosingBand({ block }: { block: Block }) {
   return (
     <section className="relative min-h-[28rem] overflow-hidden bg-ink text-ivory">
-      <MediaImage image={block.image} className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-ink/45" />
-      <div className="relative mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-center px-5 py-16 md:px-10">
+      <MediaImage image={block.image} className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+      <div className="pointer-events-none absolute inset-0 bg-ink/45" />
+      <div className="relative z-10 mx-auto flex min-h-[28rem] w-full max-w-[80rem] flex-col justify-center px-5 py-16 md:px-10">
         {block.title && <h2 className="max-w-xl font-serif text-5xl leading-tight md:text-6xl">{block.title}</h2>}
         {block.body && <p className="mt-6 max-w-xl whitespace-pre-line leading-relaxed text-ivory/85">{block.body}</p>}
         <Link href="/kontakty" className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-gold-button px-5 py-3 text-sm text-ink">

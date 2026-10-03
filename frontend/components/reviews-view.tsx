@@ -45,9 +45,9 @@ export function ReviewsView({
   return (
     <>
       <section className="relative min-h-[34rem] overflow-hidden bg-ivory text-ink md:min-h-[40rem]">
-        <MediaImage image={banner?.image ?? null} className="absolute inset-0 h-full w-full object-cover object-[72%_center]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/88 to-ivory/10" />
-        <div className="relative mx-auto flex min-h-[34rem] w-full max-w-[80rem] items-center md:min-h-[40rem]">
+        <MediaImage image={banner?.image ?? null} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[72%_center]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ivory via-ivory/88 to-ivory/10" />
+        <div className="relative z-10 mx-auto flex min-h-[34rem] w-full max-w-[80rem] items-center md:min-h-[40rem]">
           <div className="grid w-full items-end gap-8 px-5 py-16 md:grid-cols-[minmax(0,28rem)_minmax(0,16rem)] md:px-10 md:py-20">
             <div>
               {banner?.title && <p className="text-xs tracking-[0.28em] text-gold uppercase">{banner.title}</p>}
@@ -87,9 +87,9 @@ export function ReviewsView({
 
       {cta && (
         <section className="relative min-h-[24rem] overflow-hidden bg-ink text-ivory">
-          <MediaImage image={cta.image} className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-ink/45" />
-          <div className="relative mx-auto grid min-h-[24rem] w-full max-w-[80rem] items-center gap-10 px-5 py-16 md:grid-cols-2 md:px-10">
+          <MediaImage image={cta.image} className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+          <div className="pointer-events-none absolute inset-0 bg-ink/45" />
+          <div className="relative z-10 mx-auto grid min-h-[24rem] w-full max-w-[80rem] items-center gap-10 px-5 py-16 md:grid-cols-2 md:px-10">
             <div>
               {cta.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{cta.eyebrow}</p>}
               {cta.title && <h2 className="mt-4 font-serif text-4xl md:text-5xl">{cta.title}</h2>}
