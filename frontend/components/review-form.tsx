@@ -1,6 +1,7 @@
 'use client'
 
 import { publicApiBase } from '@/lib/config'
+import { ensureCsrf } from '@/lib/csrf'
 import type { Service } from '@/lib/types'
 import { Star } from 'lucide-react'
 import Link from 'next/link'
@@ -28,9 +29,12 @@ export function ReviewForm({ services }: { services: Service[] }) {
     setNotice(null)
 
     try {
-      const response = await fetch(`${publicApiBase()}/api/v1/reviews`, {
+      const apiBase = publicApiBase()
+      const headers = await ensureCsrf(apiBase)
+      const response = await fetch(`${apiBase}/api/v1/reviews`, {
         method: 'POST',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers,
         body: JSON.stringify({
           full_name: data.get('full_name'),
           phone: data.get('phone'),
