@@ -58,20 +58,27 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
       </section>
 
       {blocks.approach && (
-        <section id="ob-mne" className="mx-auto w-full max-w-[80rem] px-4 py-12 sm:px-5 sm:py-16 md:py-24">
-          <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-[0.9fr_1.15fr_0.85fr]">
-            <MediaImage image={blocks.approach.image} className="aspect-[4/5] w-full rounded-3xl object-cover lg:rounded-none" />
-            <div>
+        <section id="ob-mne" className="mx-auto w-full max-w-[80rem] px-4 py-8 sm:px-5 md:py-12">
+          <div className="grid items-stretch gap-6 sm:gap-8 lg:grid-cols-[1fr_1.05fr_1fr]">
+            <div className="min-h-0 lg:h-full">
+              <MediaImage
+                image={blocks.approach.image}
+                className="aspect-[4/5] w-full rounded-3xl object-cover lg:h-full lg:aspect-auto lg:rounded-none"
+              />
+            </div>
+            <div className="flex flex-col justify-center">
               <p className="text-xs tracking-[0.22em] text-gold uppercase">Обо мне</p>
-              {blocks.approach.title && <h2 className="mt-4 font-serif text-3xl leading-tight sm:text-4xl md:text-5xl">{blocks.approach.title}</h2>}
-              {blocks.approach.body && <p className="mt-5 whitespace-pre-line text-sm leading-relaxed text-muted sm:mt-6 sm:text-base">{blocks.approach.body}</p>}
-              <Link href="/ob-avtore" className="mt-6 inline-flex items-center gap-2 text-sm sm:mt-8">
+              {blocks.approach.title && <h2 className="mt-3 font-serif text-3xl leading-tight sm:text-4xl">{blocks.approach.title}</h2>}
+              {blocks.approach.body && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">{blocks.approach.body}</p>}
+              <Link href="/ob-avtore" className="mt-5 inline-flex items-center gap-2 text-sm">
                 Узнать больше об авторе
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>
             </div>
             {blocks.approach.eyebrow && !/^обо\s*мне$/iu.test(blocks.approach.eyebrow.trim()) && (
-              <SiteQuote>{cleanQuoteText(blocks.approach.eyebrow)}</SiteQuote>
+              <div className="flex items-center lg:h-full">
+                <SiteQuote>{cleanQuoteText(blocks.approach.eyebrow)}</SiteQuote>
+              </div>
             )}
           </div>
         </section>

@@ -59,13 +59,13 @@ export function AuthorView({ author }: { author: AuthorData }) {
       </section>
 
       {(path || path_photo) && (
-        <section className="mx-auto grid w-full max-w-[80rem] items-center gap-8 px-5 py-14 md:px-10 md:py-20 lg:grid-cols-[0.9fr_1.15fr_0.9fr] lg:gap-10">
+        <section className="mx-auto grid w-full max-w-[80rem] items-stretch gap-6 px-5 py-8 md:px-10 md:py-12 lg:grid-cols-[1fr_1.05fr_1fr] lg:gap-8">
           <Portrait image={path?.image ?? null} caption={path?.title && !path.body ? path.title : null} />
-          <div>
+          <div className="flex flex-col justify-center">
             {path?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{path.eyebrow}</p>}
-            {path?.title && <h2 className="mt-4 font-serif text-4xl leading-[1.05] md:text-5xl">{path.title}</h2>}
-            {path?.body && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">{path.body}</p>}
-            <Link href="/stati" className="mt-8 inline-flex items-center gap-2 text-sm">
+            {path?.title && <h2 className="mt-3 font-serif text-3xl leading-[1.05] md:text-4xl">{path.title}</h2>}
+            {path?.body && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">{path.body}</p>}
+            <Link href="/stati" className="mt-5 inline-flex items-center gap-2 text-sm">
               Больше о моём пути
               <ArrowRight aria-hidden="true" size={16} />
             </Link>
@@ -117,11 +117,11 @@ export function AuthorView({ author }: { author: AuthorData }) {
 
       {(pillars.title || pillars.items.length > 0) && (
         <section className="border-b border-line">
-          <div className="mx-auto grid w-full max-w-[80rem] items-end gap-10 px-5 py-14 md:px-10 md:py-16 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16">
+          <div className="mx-auto grid w-full max-w-[80rem] items-end gap-8 px-5 py-8 md:px-10 md:py-12 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12">
             <div>
               {pillars.title && <h2 className="font-serif text-4xl md:text-5xl">{pillars.title}</h2>}
               {pillars.items.length > 0 && (
-                <ul className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+                <ul className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
                   {pillars.items.map((item) => (
                     <li key={item.id} className="text-center">
                       <PillarIcon item={item} />
@@ -142,15 +142,23 @@ export function AuthorView({ author }: { author: AuthorData }) {
 
       {(son || son_photo) && (
         <section className="border-t border-line">
-          <div className="mx-auto grid w-full max-w-[80rem] items-center gap-8 px-5 py-16 md:px-10 md:py-24 lg:grid-cols-[0.85fr_1.1fr_1fr]">
-            <MediaImage image={son?.image ?? null} className="aspect-[4/5] w-full object-cover" />
-            <div>
-              {son?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{son.eyebrow}</p>}
-              {son?.title && <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">{son.title}</h2>}
-              {son?.body && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">{son.body}</p>}
+          <div className="mx-auto grid w-full max-w-[80rem] items-stretch gap-6 px-5 py-8 md:px-10 md:py-12 lg:grid-cols-[1fr_1.05fr_1fr] lg:gap-8">
+            <div className="min-h-0 lg:h-full">
+              <MediaImage
+                image={son?.image ?? null}
+                className="aspect-[4/5] w-full object-cover lg:h-full lg:aspect-auto"
+              />
             </div>
-            <div className="relative">
-              <MediaImage image={son_photo?.image ?? null} className="aspect-[4/3] w-full object-cover" />
+            <div className="flex flex-col justify-center">
+              {son?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{son.eyebrow}</p>}
+              {son?.title && <h2 className="mt-3 font-serif text-3xl leading-tight md:text-4xl">{son.title}</h2>}
+              {son?.body && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">{son.body}</p>}
+            </div>
+            <div className="relative min-h-0 lg:h-full">
+              <MediaImage
+                image={son_photo?.image ?? null}
+                className="aspect-[4/5] w-full object-cover lg:h-full lg:aspect-auto"
+              />
               {son_quote?.body && (
                 <SiteQuote boxed tone="ivory" className="absolute right-3 bottom-3 max-w-[14rem] shadow-sm md:right-5 md:bottom-5">
                   {cleanQuoteText(son_quote.body)}
@@ -163,10 +171,10 @@ export function AuthorView({ author }: { author: AuthorData }) {
 
       {(guide?.title || guide?.body || guide_items.length > 0) && (
         <section className="border-t border-line">
-          <div className="mx-auto grid w-full max-w-[80rem] items-start gap-8 px-5 py-12 md:px-10 md:py-16 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-x-16">
+          <div className="mx-auto grid w-full max-w-[80rem] items-start gap-6 px-5 py-8 md:px-10 md:py-12 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-x-12">
             <div>
               {guide?.title && <h2 className="font-serif text-4xl leading-[1.05] md:text-5xl">{guide.title}</h2>}
-              {guide?.body && <p className="mt-5 whitespace-pre-line leading-relaxed text-muted">{guide.body}</p>}
+              {guide?.body && <p className="mt-4 whitespace-pre-line leading-relaxed text-muted">{guide.body}</p>}
             </div>
             {guide_items.length > 0 && (
               <ul className="grid gap-4">
@@ -222,8 +230,12 @@ function Portrait({
   if (!image) return null
 
   return (
-    <div className="relative">
-      <MediaImage image={image} sizes="(min-width: 1024px) 28rem, 100vw" className="aspect-[4/5] w-full object-cover" />
+    <div className="relative min-h-0 lg:h-full">
+      <MediaImage
+        image={image}
+        sizes="(min-width: 1024px) 28rem, 100vw"
+        className="aspect-[4/5] w-full object-cover lg:h-full lg:aspect-auto"
+      />
       {caption && (
         <p
           className={
