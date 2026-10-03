@@ -83,28 +83,16 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
               <div>
                 <p className="text-xs tracking-[0.22em] text-gold uppercase">{ordinals[index] ? `${ordinals[index]} услуга` : `Услуга ${index + 1}`}</p>
                 <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <h2 className="font-serif text-4xl leading-tight">{service.title}</h2>
-                  <p className="shrink-0 font-serif text-3xl">{service.price_display}</p>
+                  <h2 className="font-serif text-4xl leading-tight md:text-5xl">{service.title}</h2>
+                  <p className="shrink-0 font-serif text-3xl md:text-4xl">{service.price_display}</p>
                 </div>
-                {service.format && <p className="mt-3 text-muted">{service.format}</p>}
-                <div className="mt-8 space-y-6">
+                {service.format && <p className="mt-3 text-base text-muted md:text-lg">{service.format}</p>}
+                <div className="mt-10">
                   {service.audience && (
-                    <div className="flex gap-4">
-                      <UserRound aria-hidden="true" className="mt-0.5 shrink-0 text-gold" size={20} strokeWidth={1.25} />
-                      <div>
-                        <p className="text-sm font-medium">Для кого</p>
-                        <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-muted">{service.audience}</p>
-                      </div>
-                    </div>
+                    <ServiceFact icon={UserRound} label="Для кого" text={service.audience} />
                   )}
                   {service.result && (
-                    <div className="flex gap-4">
-                      <Target aria-hidden="true" className="mt-0.5 shrink-0 text-gold" size={20} strokeWidth={1.25} />
-                      <div>
-                        <p className="text-sm font-medium">Результат</p>
-                        <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-muted">{service.result}</p>
-                      </div>
-                    </div>
+                    <ServiceFact icon={Target} label="Результат" text={service.result} bordered={Boolean(service.audience)} />
                   )}
                 </div>
                 <div className="mt-8 flex flex-wrap gap-3">
@@ -135,6 +123,30 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
 
       {blocks.cta && <ClosingBand block={blocks.cta} />}
     </>
+  )
+}
+
+function ServiceFact({
+  icon: Icon,
+  label,
+  text,
+  bordered = false,
+}: {
+  icon: LucideIcon
+  label: string
+  text: string
+  bordered?: boolean
+}) {
+  return (
+    <div
+      className={`grid grid-cols-[2.5rem_minmax(5.5rem,8rem)_minmax(0,1fr)] items-start gap-x-3 gap-y-1 py-6 min-[480px]:gap-x-5 md:py-7 ${
+        bordered ? 'border-t border-line' : ''
+      }`}
+    >
+      <Icon aria-hidden="true" className="mt-0.5 text-gold" size={32} strokeWidth={1.25} />
+      <p className="pt-1 text-base font-medium md:text-lg">{label}</p>
+      <p className="pt-1 whitespace-pre-line text-base leading-relaxed text-muted md:text-lg">{text}</p>
+    </div>
   )
 }
 
