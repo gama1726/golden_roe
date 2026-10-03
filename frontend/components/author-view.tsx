@@ -59,7 +59,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
       </section>
 
       {(path || path_photo) && (
-        <section className="mx-auto grid w-full max-w-[80rem] items-start gap-5 px-5 py-8 md:px-10 md:py-10 lg:grid-cols-[0.95fr_1.1fr_0.95fr] lg:gap-6">
+        <section className="grid w-full items-start gap-4 px-4 py-8 sm:px-5 md:gap-5 md:px-6 md:py-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.1fr)_minmax(0,0.95fr)] lg:gap-6 xl:px-8">
           <Portrait image={path?.image ?? null} caption={path?.title && !path.body ? path.title : null} />
           <div className="flex flex-col justify-center self-stretch">
             {path?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{path.eyebrow}</p>}
@@ -144,30 +144,31 @@ export function AuthorView({ author }: { author: AuthorData }) {
 
       {(son || son_photo) && (
         <section className="border-t border-line">
-          <div className="mx-auto grid w-full max-w-[80rem] items-start gap-5 px-5 py-8 md:gap-6 md:px-10 md:py-10 lg:grid-cols-[0.9fr_1.1fr_1.5fr]">
-            <div>
+          <div className="grid w-full items-start gap-4 px-4 py-8 sm:px-5 md:gap-5 md:px-6 md:py-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)_minmax(0,1.35fr)] lg:gap-6 xl:px-8">
+            <div className="overflow-hidden">
               <MediaImage
                 image={son?.image ?? null}
-                sizes="(min-width: 1024px) 22vw, 100vw"
-                className="aspect-[4/5] w-full object-cover object-[center_28%]"
+                sizes="(min-width: 1280px) 28vw, (min-width: 1024px) 30vw, 100vw"
+                className="aspect-[3/4] w-full object-cover object-[center_18%] lg:aspect-[4/5]"
               />
             </div>
-            <div className="flex flex-col justify-center self-stretch py-2">
+            <div className="flex flex-col justify-center self-stretch lg:min-h-0 lg:py-4">
               {son?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{son.eyebrow}</p>}
               {son?.title && <h2 className="mt-3 font-serif text-3xl leading-tight md:text-4xl">{son.title}</h2>}
               {son?.body && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">{son.body}</p>}
             </div>
-            <div className="relative">
+            <div className="relative overflow-hidden">
               <MediaImage
                 image={son_photo?.image ?? null}
-                sizes="(min-width: 1024px) 36vw, 100vw"
-                className="aspect-[4/3] w-full object-cover object-[center_40%]"
+                sizes="(min-width: 1280px) 40vw, (min-width: 1024px) 38vw, 100vw"
+                className="aspect-[16/10] w-full object-cover object-[center_45%] lg:aspect-[5/4]"
               />
               {son_quote?.body && (
                 <SiteQuote
                   boxed
+                  compact
                   tone="ivory"
-                  className="absolute right-3 bottom-3 max-w-[13rem] shadow-sm md:right-5 md:bottom-4 md:translate-y-3"
+                  className="absolute right-3 bottom-3 z-10 max-w-[11.5rem] shadow-sm md:right-4 md:bottom-4 md:max-w-[13rem]"
                 >
                   {cleanQuoteText(son_quote.body)}
                 </SiteQuote>
