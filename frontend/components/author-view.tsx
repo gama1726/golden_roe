@@ -118,14 +118,16 @@ export function AuthorView({ author }: { author: AuthorData }) {
       {(pillars.title || pillars.items.length > 0) && (
         <section className="w-full border-y border-line bg-[#efe6d8]">
           <div className="grid w-full items-stretch lg:grid-cols-[minmax(0,1fr)_minmax(16rem,22rem)]">
-            <div className="px-5 py-8 md:px-10 md:py-10 lg:px-12 lg:py-12">
+            <div className="px-5 py-5 md:px-10 md:py-6 lg:px-12 lg:py-7">
               {pillars.title && <h2 className="font-serif text-4xl md:text-5xl">{pillars.title}</h2>}
               {pillars.items.length > 0 && (
-                <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:mt-10 lg:grid-cols-6 lg:gap-x-2 xl:gap-x-4">
+                <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:mt-12 lg:grid-cols-6 lg:gap-x-2 xl:gap-x-4">
                   {pillars.items.map((item) => (
                     <li key={item.id} className="text-center">
                       <PillarIcon item={item} />
-                      {item.title && <p className="mx-auto mt-3 max-w-[9rem] text-sm leading-snug">{item.title}</p>}
+                      {item.title && (
+                        <p className="mx-auto mt-3 max-w-[10rem] text-base leading-snug md:text-lg">{item.title}</p>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -133,7 +135,7 @@ export function AuthorView({ author }: { author: AuthorData }) {
             </div>
             {pillars.quote?.body && (
               <div className="flex border-t border-[#e0d4c4] bg-ivory/75 lg:border-t-0 lg:border-l">
-                <SiteQuote className="flex h-full w-full flex-col justify-center px-6 py-8 md:px-8 md:py-10">
+                <SiteQuote className="flex h-full w-full flex-col justify-center px-6 py-5 md:px-8 md:py-6">
                   {cleanQuoteText(pillars.quote.body)}
                 </SiteQuote>
               </div>
@@ -144,12 +146,12 @@ export function AuthorView({ author }: { author: AuthorData }) {
 
       {(son || son_photo) && (
         <section className="border-t border-line">
-          <div className="grid w-full items-start gap-4 px-4 py-8 sm:px-5 md:gap-5 md:px-6 md:py-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)_minmax(0,1.35fr)] lg:gap-6 xl:px-8">
-            <div className="overflow-hidden">
+          <div className="grid w-full items-stretch gap-4 px-4 py-8 sm:px-5 md:gap-5 md:px-6 md:py-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)_minmax(0,1.35fr)] lg:gap-6 xl:px-8">
+            <div className="relative overflow-hidden lg:min-h-0">
               <MediaImage
                 image={son?.image ?? null}
                 sizes="(min-width: 1280px) 28vw, (min-width: 1024px) 30vw, 100vw"
-                className="aspect-[3/4] w-full object-cover object-[center_18%] lg:aspect-[4/5]"
+                className="aspect-[3/4] w-full object-cover object-[center_18%] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full lg:w-full"
               />
             </div>
             <div className="flex flex-col justify-center self-stretch lg:min-h-0 lg:py-4">
@@ -262,7 +264,7 @@ function Portrait({
 
 function PillarIcon({ item }: { item: PageContent }) {
   const Icon = pillarIcons[item.key] ?? Gem
-  return <Icon aria-hidden="true" className="mx-auto text-gold" size={34} strokeWidth={1.1} />
+  return <Icon aria-hidden="true" className="mx-auto text-gold" size={42} strokeWidth={1.1} />
 }
 
 function StatIcon({ index }: { stat: AuthorStat; index: number }) {
