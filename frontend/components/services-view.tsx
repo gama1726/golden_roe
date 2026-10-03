@@ -58,15 +58,16 @@ export function ServicesView({ page, contacts }: { page: ServicesData; contacts:
       </section>
 
       {blocks.points.length > 0 && (
-        <MarbleBand seed="services-points" className="border-y border-line">
-          <ul className="mx-auto grid w-full max-w-[80rem] grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line">
+        <MarbleBand seed="services-points" className="relative border-y border-line">
+          <div className="pointer-events-none absolute inset-0 bg-[#3d2a1f]/12" aria-hidden="true" />
+          <ul className="relative mx-auto grid w-full max-w-[80rem] grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line">
             {blocks.points.map((point, index) => (
               <li
                 key={point.id}
-                className={`px-4 py-8 text-center sm:px-6 sm:py-10 ${index % 2 === 1 ? 'border-l border-line lg:border-l-0' : ''} ${index >= 2 ? 'border-t border-line lg:border-t-0' : ''}`}
+                className={`px-4 py-10 text-center text-ink sm:px-6 sm:py-12 ${index % 2 === 1 ? 'border-l border-line lg:border-l-0' : ''} ${index >= 2 ? 'border-t border-line lg:border-t-0' : ''}`}
               >
                 <PointIcon point={point} />
-                {point.title && <p className="mx-auto mt-4 max-w-[12rem] text-sm leading-relaxed">{point.title}</p>}
+                {point.title && <p className="mx-auto mt-5 max-w-[14rem] text-base leading-relaxed md:text-lg">{point.title}</p>}
               </li>
             ))}
           </ul>
@@ -155,7 +156,7 @@ function ServiceFact({
 
 function PointIcon({ point }: { point: PageContent }) {
   const Icon = pointIcons[point.key] ?? Leaf
-  return <Icon aria-hidden="true" className="mx-auto text-gold" size={28} strokeWidth={1.25} />
+  return <Icon aria-hidden="true" className="mx-auto text-[#3d2a1f]" size={40} strokeWidth={1.25} />
 }
 
 function ClosingBand({ block }: { block: Block }) {
