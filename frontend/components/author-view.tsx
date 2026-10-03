@@ -143,31 +143,31 @@ export function AuthorView({ author }: { author: AuthorData }) {
       )}
 
       {(son || son_photo) && (
-        <section className="w-full">
-          <div className="grid w-full items-stretch lg:grid-cols-4 lg:gap-0">
+        <section className="border-t border-line">
+          <div className="mx-auto grid w-full max-w-[80rem] items-stretch gap-6 px-5 py-8 md:gap-8 md:px-10 md:py-12 lg:grid-cols-[1fr_1.1fr_1fr]">
             <div className="min-h-0 lg:h-full">
               <MediaImage
                 image={son?.image ?? null}
-                sizes="(min-width: 1024px) 25vw, 100vw"
-                className="aspect-[4/5] w-full object-cover lg:h-full lg:min-h-[28rem] lg:aspect-auto"
+                sizes="(min-width: 1024px) 26vw, 100vw"
+                className="aspect-[4/5] w-full object-cover lg:h-full lg:aspect-auto"
               />
             </div>
-            <div className="flex flex-col justify-center bg-ivory px-6 py-10 md:px-8 md:py-12 lg:px-10">
+            <div className="flex flex-col justify-center">
               {son?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{son.eyebrow}</p>}
               {son?.title && <h2 className="mt-3 font-serif text-3xl leading-tight md:text-4xl">{son.title}</h2>}
               {son?.body && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">{son.body}</p>}
             </div>
-            <div className="relative min-h-0 lg:col-span-2 lg:h-full">
+            <div className="relative min-h-0 lg:h-full">
               <MediaImage
                 image={son_photo?.image ?? null}
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="aspect-[16/10] w-full object-cover lg:h-full lg:min-h-[28rem] lg:aspect-auto"
+                sizes="(min-width: 1024px) 26vw, 100vw"
+                className="aspect-[4/3] w-full object-cover lg:h-full lg:aspect-auto"
               />
               {son_quote?.body && (
                 <SiteQuote
                   boxed
                   tone="ivory"
-                  className="absolute inset-y-[12%] right-[6%] flex w-[min(14rem,42%)] flex-col justify-center shadow-sm"
+                  className="absolute right-3 bottom-3 max-w-[14rem] shadow-sm md:right-5 md:bottom-5 md:translate-y-2"
                 >
                   {cleanQuoteText(son_quote.body)}
                 </SiteQuote>
