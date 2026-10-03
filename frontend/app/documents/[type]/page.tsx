@@ -18,7 +18,7 @@ export default async function DocumentPage({ params }: Props) {
   if (!document) notFound()
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
+    <section className="mx-auto w-full max-w-6xl px-5 pt-24 pb-16 md:pt-32 md:pb-24">
       <h1 className="font-serif text-5xl leading-tight md:text-6xl">{document.label}</h1>
       {document.available ? (
         <div className="mt-8">

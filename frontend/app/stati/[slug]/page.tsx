@@ -28,7 +28,7 @@ export default async function ArticlePage({ params }: Props) {
   const date = formatDate(page.article.published_at)
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-5 py-16 md:py-24">
+    <article className="mx-auto w-full max-w-3xl px-5 pt-24 pb-16 md:pt-32 md:pb-24">
       {date && <p className="text-sm text-muted">{date}</p>}
       <h1 className="mt-3 font-serif text-5xl leading-tight md:text-6xl">{page.article.title}</h1>
       <MediaImage image={page.article.image} className="mt-8 w-full object-cover" />

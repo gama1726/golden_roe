@@ -15,16 +15,39 @@ const links = [
   { href: '/kontakty', label: 'Контакты' },
 ]
 
+const darkHero = new Set(['/', '/uslugi', '/ob-avtore', '/stati', '/kontakty'])
+const lightHero = new Set(['/otzyvy'])
+
 export function SiteHeader() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const onDark = darkHero.has(pathname) && !scrolled
+  const onLight = lightHero.has(pathname) && !scrolled
 
   useEffect(() => {
     setOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-ivory">
+    <header
+      className={`fixed inset-x-0 top-0 z-30 ${
+        onDark
+          ? open
+            ? 'bg-ink text-ivory'
+            : 'bg-transparent text-ivory'
+          : onLight && !open
+            ? 'bg-transparent text-ink'
+            : 'border-b border-line bg-ivory text-ink'
+      }`}
+    >
       <div className="mx-auto flex w-full max-w-[80rem] items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4">
         <Link href="/" className="min-w-0 shrink" aria-label="Golden Roe" onClick={() => setOpen(false)}>
           <Logo />
@@ -35,7 +58,13 @@ export function SiteHeader() {
               key={link.href}
               href={link.href}
               aria-current={pathname === link.href ? 'page' : undefined}
-              className={pathname === link.href ? 'border-b border-gold pb-0.5 text-sm text-ink' : 'text-sm text-muted hover:text-ink'}
+              className={
+                pathname === link.href
+                  ? 'border-b border-gold pb-0.5 text-sm'
+                  : onDark
+                    ? 'text-sm text-ivory/80 hover:text-ivory'
+                    : 'text-sm text-muted hover:text-ink'
+              }
             >
               {link.label}
             </Link>
@@ -56,7 +85,7 @@ export function SiteHeader() {
         </button>
       </div>
       {open && (
-        <nav id="mobile-nav" className="flex flex-col gap-1 border-t border-line px-4 py-3 sm:px-5 lg:hidden" aria-label="Разделы сайта">
+        <nav id="mobile-nav" className={`flex flex-col gap-1 border-t px-4 py-3 sm:px-5 lg:hidden ${onDark ? 'border-white/15' : 'border-line'}`} aria-label="Разделы сайта">
           {links.map((link) => (
             <Link
               key={link.href}
