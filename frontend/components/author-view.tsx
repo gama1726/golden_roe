@@ -59,9 +59,9 @@ export function AuthorView({ author }: { author: AuthorData }) {
       </section>
 
       {(path || path_photo) && (
-        <section className="mx-auto grid w-full max-w-[80rem] items-stretch gap-6 px-5 py-8 md:px-10 md:py-12 lg:grid-cols-[1fr_1.05fr_1fr] lg:gap-8">
+        <section className="mx-auto grid w-full max-w-[80rem] items-start gap-5 px-5 py-8 md:px-10 md:py-10 lg:grid-cols-[0.95fr_1.1fr_0.95fr] lg:gap-6">
           <Portrait image={path?.image ?? null} caption={path?.title && !path.body ? path.title : null} />
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center self-stretch">
             {path?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{path.eyebrow}</p>}
             {path?.title && <h2 className="mt-3 font-serif text-3xl leading-[1.05] md:text-4xl">{path.title}</h2>}
             {path?.body && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">{path.body}</p>}
@@ -144,30 +144,30 @@ export function AuthorView({ author }: { author: AuthorData }) {
 
       {(son || son_photo) && (
         <section className="border-t border-line">
-          <div className="mx-auto grid w-full max-w-[80rem] items-stretch gap-6 px-5 py-8 md:gap-8 md:px-10 md:py-12 lg:grid-cols-[1fr_1.1fr_1fr]">
-            <div className="min-h-0 lg:h-full">
+          <div className="mx-auto grid w-full max-w-[80rem] items-start gap-5 px-5 py-8 md:gap-6 md:px-10 md:py-10 lg:grid-cols-[0.9fr_1.1fr_1.5fr]">
+            <div>
               <MediaImage
                 image={son?.image ?? null}
-                sizes="(min-width: 1024px) 26vw, 100vw"
-                className="aspect-[4/5] w-full object-cover lg:h-full lg:aspect-auto"
+                sizes="(min-width: 1024px) 22vw, 100vw"
+                className="aspect-[4/5] w-full object-cover object-[center_28%]"
               />
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col justify-center self-stretch py-2">
               {son?.eyebrow && <p className="text-xs tracking-[0.22em] text-gold uppercase">{son.eyebrow}</p>}
               {son?.title && <h2 className="mt-3 font-serif text-3xl leading-tight md:text-4xl">{son.title}</h2>}
               {son?.body && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted md:text-base">{son.body}</p>}
             </div>
-            <div className="relative min-h-0 lg:h-full">
+            <div className="relative">
               <MediaImage
                 image={son_photo?.image ?? null}
-                sizes="(min-width: 1024px) 26vw, 100vw"
-                className="aspect-[4/3] w-full object-cover lg:h-full lg:aspect-auto"
+                sizes="(min-width: 1024px) 36vw, 100vw"
+                className="aspect-[4/3] w-full object-cover object-[center_40%]"
               />
               {son_quote?.body && (
                 <SiteQuote
                   boxed
                   tone="ivory"
-                  className="absolute right-3 bottom-3 max-w-[14rem] shadow-sm md:right-5 md:bottom-5 md:translate-y-2"
+                  className="absolute right-3 bottom-3 max-w-[13rem] shadow-sm md:right-5 md:bottom-4 md:translate-y-3"
                 >
                   {cleanQuoteText(son_quote.body)}
                 </SiteQuote>
@@ -238,11 +238,11 @@ function Portrait({
   if (!image) return null
 
   return (
-    <div className="relative min-h-0 lg:h-full">
+    <div className="relative">
       <MediaImage
         image={image}
-        sizes="(min-width: 1024px) 28rem, 100vw"
-        className="aspect-[4/5] w-full object-cover lg:h-full lg:aspect-auto"
+        sizes="(min-width: 1024px) 24rem, 100vw"
+        className="aspect-[4/5] w-full object-cover object-[center_22%]"
       />
       {caption && (
         <p
