@@ -1,13 +1,16 @@
 import type { Metadata } from 'next'
 import { ReviewsView } from '@/components/reviews-view'
 import { getReviews, getServices, safe } from '@/lib/api'
+import { pageMetadata } from '@/lib/seo'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await safe(() => getReviews())
-  return {
-    title: page?.seo.title || 'Отзывы',
-    description: page?.seo.description || undefined,
-  }
+  return pageMetadata({
+    pageKey: 'reviews',
+    path: '/otzyvy',
+    seo: page?.seo,
+    image: page?.banner?.image ?? null,
+  })
 }
 
 export default async function ReviewsPage() {

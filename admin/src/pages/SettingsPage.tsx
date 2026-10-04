@@ -48,6 +48,9 @@ export function SettingsPage() {
   return (
     <section className="space-y-6">
       <PageTitle title="Настройки" />
+      <p className="text-sm text-muted">
+        SEO-заголовки и описания попадают в выдачу Google/Яндекса. Держите в тексте «Golden Roe» и «Эльвира Вартанова».
+      </p>
       <Notice text={error} />
       <label className="flex items-center gap-2 rounded-3xl bg-white p-5 text-sm">
         <input

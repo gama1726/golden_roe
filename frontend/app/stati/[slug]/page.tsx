@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { MediaImage } from '@/components/media-image'
 import { getArticle } from '@/lib/api'
 import { formatDate } from '@/lib/format'
+import { PERSON_NAME, SITE_NAME, pageMetadata } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -10,13 +11,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   try {
     const page = await getArticle(slug)
-    if (!page) return { title: 'Статья' }
-    return {
-      title: page.seo.title || page.article.title,
-      description: page.seo.description || undefined,
-    }
+    if (!page) return pageMetadata({ pageKey: 'articles', path: '/stati' })
+    const title = page.seo.title || `${page.article.title} — ${SITE_NAME}`
+    const description =
+      page.seo.description ||
+      page.article.excerpt ||
+      `${page.article.title}. Статья Эльвиры Вартановой на сайте ${SITE_NAME}.`
+    return pageMetadata({
+      pageKey: 'articles',
+      path: `/stati/${slug}`,
+      title,
+      description,
+      image: page.article.image,
+      type: 'article',
+    })
   } catch {
-    return { title: 'Статья' }
+    return { title: `Статья — ${SITE_NAME}`, authors: [{ name: PERSON_NAME }] }
   }
 }
 

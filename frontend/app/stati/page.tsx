@@ -4,13 +4,16 @@ import { HeroOverlay, HeroShell, heroPad } from '@/components/hero'
 import { MediaImage } from '@/components/media-image'
 import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
 import { getArticles, safe } from '@/lib/api'
+import { pageMetadata } from '@/lib/seo'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await safe(() => getArticles())
-  return {
-    title: page?.seo.title || 'Статьи',
-    description: page?.seo.description || undefined,
-  }
+  return pageMetadata({
+    pageKey: 'articles',
+    path: '/stati',
+    seo: page?.seo,
+    image: page?.banner?.image ?? null,
+  })
 }
 
 export default async function ArticlesPage() {

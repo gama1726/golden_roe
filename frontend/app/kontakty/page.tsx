@@ -1,13 +1,16 @@
 import type { Metadata } from 'next'
 import { ContactsView } from '@/components/contacts-view'
 import { getContacts, getService, safe } from '@/lib/api'
+import { pageMetadata } from '@/lib/seo'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await safe(() => getContacts())
-  return {
-    title: page?.seo.title || 'Контакты',
-    description: page?.seo.description || undefined,
-  }
+  return pageMetadata({
+    pageKey: 'contacts',
+    path: '/kontakty',
+    seo: page?.seo,
+    image: page?.banner?.image ?? null,
+  })
 }
 
 export default async function ContactsPage({ searchParams }: { searchParams: Promise<{ service?: string }> }) {

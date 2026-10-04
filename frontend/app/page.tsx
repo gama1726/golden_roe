@@ -1,13 +1,16 @@
 import type { Metadata } from 'next'
 import { HomeView } from '@/components/home-view'
 import { getContacts, getHome, safe } from '@/lib/api'
+import { pageMetadata } from '@/lib/seo'
 
 export async function generateMetadata(): Promise<Metadata> {
   const home = await safe(() => getHome())
-  return {
-    title: home?.data.seo.title || 'Golden Roe',
-    description: home?.data.seo.description || undefined,
-  }
+  return pageMetadata({
+    pageKey: 'home',
+    path: '/',
+    seo: home?.data.seo,
+    image: home?.data.banner?.image ?? null,
+  })
 }
 
 export default async function HomePage() {

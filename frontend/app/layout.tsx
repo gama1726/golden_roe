@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Manrope } from 'next/font/google'
+import { SeoJsonLd } from '@/components/seo-json-ld'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { getContacts, getDocuments, getFooter, safe } from '@/lib/api'
+import { PERSON_NAME, SITE_NAME, siteUrl } from '@/lib/seo'
 import './globals.css'
 
 const serif = Cormorant_Garamond({
@@ -20,10 +22,19 @@ const sans = Manrope({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.SITE_URL ?? 'http://127.0.0.1:3000'),
+  metadataBase: new URL(siteUrl()),
   title: {
-    default: 'Golden Roe',
+    default: `${SITE_NAME} — ${PERSON_NAME}`,
     template: '%s',
+  },
+  description:
+    'Golden Roe — практика Эльвиры Вартановой: системные расстановки, индивидуальные консультации и сопровождение изменений в жизни, семье и бизнесе.',
+  applicationName: SITE_NAME,
+  referrer: 'origin-when-cross-origin',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
   },
 }
 
@@ -37,6 +48,7 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ru" className={`${serif.variable} ${sans.variable} h-full`}>
       <body className="flex min-h-full flex-col bg-ivory font-sans text-ink antialiased">
+        <SeoJsonLd contacts={contacts?.data ?? []} />
         <a href="#content" className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:bg-white focus:px-3 focus:py-2">
           К содержанию
         </a>

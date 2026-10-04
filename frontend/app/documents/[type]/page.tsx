@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getDocument } from '@/lib/api'
+import { SITE_NAME, documentMetadata } from '@/lib/seo'
 
 type Props = { params: Promise<{ type: string }> }
 
@@ -8,9 +9,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { type } = await params
   try {
     const page = await getDocument(type)
-    return { title: page.data.label || 'Документ' }
+    return documentMetadata(page.data.label || 'Документ', type)
   } catch {
-    return { title: 'Документ' }
+    return { title: `Документ — ${SITE_NAME}` }
   }
 }
 

@@ -1,10 +1,18 @@
 import type { MetadataRoute } from 'next'
+import { siteUrl } from '@/lib/seo'
 
 export default function robots(): MetadataRoute.Robots {
-  const site = process.env.SITE_URL ?? 'http://127.0.0.1:3000'
+  const site = siteUrl()
 
   return {
-    rules: { userAgent: '*', allow: '/' },
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/api/', '/admin/'],
+      },
+    ],
     sitemap: `${site}/sitemap.xml`,
+    host: site.replace(/^https?:\/\//, ''),
   }
 }

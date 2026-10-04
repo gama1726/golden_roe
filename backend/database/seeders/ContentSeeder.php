@@ -10,6 +10,7 @@ use App\Models\Document;
 use App\Models\PageContent;
 use App\Models\Service;
 use App\Models\Setting;
+use App\Support\SeoDefaults;
 use App\Support\ServicesPoints;
 use Illuminate\Database\Seeder;
 
@@ -137,14 +138,7 @@ class ContentSeeder extends Seeder
 
         Setting::query()->firstOrCreate(
             ['key' => 'seo'],
-            ['value' => [
-                'home' => ['title' => 'Golden Roe', 'description' => null],
-                'services' => ['title' => 'Услуги', 'description' => null],
-                'author' => ['title' => 'Об авторе', 'description' => null],
-                'articles' => ['title' => 'Статьи', 'description' => null],
-                'reviews' => ['title' => 'Отзывы', 'description' => null],
-                'contacts' => ['title' => 'Контакты', 'description' => null],
-            ]],
+            ['value' => SeoDefaults::pages()],
         );
 
         Setting::query()->firstOrCreate(
