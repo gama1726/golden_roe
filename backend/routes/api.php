@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\ArticleController;
 use App\Http\Controllers\Api\V1\AuthorController;
 use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\DocumentController;
+use App\Http\Controllers\Api\V1\FooterController;
 use App\Http\Controllers\Api\V1\HomeController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SeoController;
@@ -35,6 +36,7 @@ Route::prefix('v1')->group(function (): void {
     Route::get('documents', [DocumentController::class, 'index']);
     Route::get('documents/{type}', [DocumentController::class, 'show']);
     Route::get('documents/{type}/file', [DocumentController::class, 'file']);
+    Route::get('footer', [FooterController::class, 'show']);
     Route::get('seo', [SeoController::class, 'show']);
 
     Route::prefix('admin')->group(function (): void {

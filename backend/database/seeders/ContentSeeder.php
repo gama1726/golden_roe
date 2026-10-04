@@ -146,6 +146,14 @@ class ContentSeeder extends Seeder
                 'contacts' => ['title' => 'Контакты', 'description' => null],
             ]],
         );
+
+        Setting::query()->firstOrCreate(
+            ['key' => 'footer'],
+            ['value' => [
+                'legal_name' => 'Вартанова Эльвира Борисовна',
+                'inn' => '050023384299',
+            ]],
+        );
     }
 
     private function page(string $page, string $key, string $title, int $sort): void

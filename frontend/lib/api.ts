@@ -7,6 +7,7 @@ import type {
   Block,
   ContactChannel,
   DocumentItem,
+  FooterData,
   HomeData,
   PageContent,
   PageMeta,
@@ -105,6 +106,10 @@ export function getContacts() {
 
 export function getDocuments() {
   return getJson<{ data: DocumentItem[] }>('/api/v1/documents')
+}
+
+export function getFooter() {
+  return getJson<{ data: FooterData }>('/api/v1/footer')
 }
 
 export function getDocument(type: string) {

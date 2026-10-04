@@ -7,6 +7,7 @@ import { ContactsPage } from './pages/ContactsPage'
 import { ContentPage } from './pages/ContentPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { DocumentsPage } from './pages/DocumentsPage'
+import { FooterPage } from './pages/FooterPage'
 import { LoginPage } from './pages/LoginPage'
 import { ReviewsPage } from './pages/ReviewsPage'
 import { ServicesPage } from './pages/ServicesPage'
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="reviews" element={<ReviewsPage />} />
         <Route path="contacts" element={<ContactsPage />} />
         <Route path="documents" element={<DocumentsPage />} />
+        <Route path="footer" element={<FooterPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>

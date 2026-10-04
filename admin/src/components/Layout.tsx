@@ -4,6 +4,7 @@ import {
   House,
   LogOut,
   MessageSquare,
+  PanelBottom,
   Phone,
   Settings,
   SquareUser,
@@ -26,6 +27,7 @@ const links = [
   { to: '/reviews', label: 'Отзывы', icon: MessageSquare },
   { to: '/contacts', label: 'Контакты', icon: Phone },
   { to: '/documents', label: 'Документы', icon: TextQuote },
+  { to: '/footer', label: 'Футер', icon: PanelBottom },
   { to: '/settings', label: 'Настройки', icon: Settings },
 ]
 

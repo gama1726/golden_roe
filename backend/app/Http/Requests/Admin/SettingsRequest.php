@@ -25,6 +25,9 @@ class SettingsRequest extends FormRequest
             'seo.*.title' => ['nullable', 'string', 'max:255'],
             'seo.*.description' => ['nullable', 'string', 'max:500'],
             'seo.*.page' => ['sometimes', 'string', Rule::in(['home', 'services', 'author', 'articles', 'reviews', 'contacts'])],
+            'footer' => ['sometimes', 'array'],
+            'footer.legal_name' => ['nullable', 'string', 'max:255'],
+            'footer.inn' => ['nullable', 'string', 'max:32'],
         ];
     }
 }

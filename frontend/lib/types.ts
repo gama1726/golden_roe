@@ -140,6 +140,11 @@ export type DocumentItem = {
   updated_at: string | null
 }
 
+export type FooterData = {
+  legal_name: string | null
+  inn: string | null
+}
+
 export type ReviewItem = {
   id: number
   full_name: string

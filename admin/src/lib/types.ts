@@ -113,9 +113,15 @@ export type SeoEntry = {
   description: string | null
 }
 
+export type FooterSettings = {
+  legal_name: string | null
+  inn: string | null
+}
+
 export type Settings = {
   reviews_enabled: boolean
   seo: Record<string, SeoEntry>
+  footer: FooterSettings
 }
 
 export type Dashboard = {

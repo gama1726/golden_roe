@@ -43,4 +43,28 @@ class Setting extends Model
     {
         return (bool) static::getValue('reviews_enabled', false);
     }
+
+    /**
+     * @return array{legal_name: string|null, inn: string|null}
+     */
+    public static function footer(): array
+    {
+        $defaults = [
+            'legal_name' => 'Вартанова Эльвира Борисовна',
+            'inn' => '050023384299',
+        ];
+
+        $value = static::getValue('footer', null);
+        if (! is_array($value)) {
+            return $defaults;
+        }
+
+        $legalName = array_key_exists('legal_name', $value) ? $value['legal_name'] : $defaults['legal_name'];
+        $inn = array_key_exists('inn', $value) ? $value['inn'] : $defaults['inn'];
+
+        return [
+            'legal_name' => is_string($legalName) && trim($legalName) !== '' ? trim($legalName) : null,
+            'inn' => is_string($inn) && trim($inn) !== '' ? trim($inn) : null,
+        ];
+    }
 }

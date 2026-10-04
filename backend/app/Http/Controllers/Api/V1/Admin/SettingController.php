@@ -48,6 +48,26 @@ class SettingController extends Controller
             Setting::putValue('seo', $current);
         }
 
+        if ($request->exists('footer')) {
+            $current = Setting::footer();
+            $incoming = $request->input('footer', []);
+            if (! is_array($incoming)) {
+                $incoming = [];
+            }
+
+            $legalName = array_key_exists('legal_name', $incoming)
+                ? (is_string($incoming['legal_name']) ? trim($incoming['legal_name']) : null)
+                : $current['legal_name'];
+            $inn = array_key_exists('inn', $incoming)
+                ? (is_string($incoming['inn']) ? trim($incoming['inn']) : null)
+                : $current['inn'];
+
+            Setting::putValue('footer', [
+                'legal_name' => $legalName === '' ? null : $legalName,
+                'inn' => $inn === '' ? null : $inn,
+            ]);
+        }
+
         return response()->json(['data' => $this->payload()]);
     }
 
@@ -59,6 +79,7 @@ class SettingController extends Controller
         return [
             'reviews_enabled' => Setting::reviewsEnabled(),
             'seo' => Setting::getValue('seo', []),
+            'footer' => Setting::footer(),
         ];
     }
 }

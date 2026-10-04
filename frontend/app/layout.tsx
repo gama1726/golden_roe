@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Cormorant_Garamond, Manrope } from 'next/font/google'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
-import { getContacts, getDocuments, safe } from '@/lib/api'
+import { getContacts, getDocuments, getFooter, safe } from '@/lib/api'
 import './globals.css'
 
 const serif = Cormorant_Garamond({
@@ -28,9 +28,10 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
-  const [contacts, documents] = await Promise.all([
+  const [contacts, documents, footer] = await Promise.all([
     safe(() => getContacts()),
     safe(() => getDocuments()),
+    safe(() => getFooter()),
   ])
 
   return (
@@ -43,7 +44,11 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
         <main id="content" className="flex-1">
           {children}
         </main>
-        <SiteFooter contacts={contacts?.data ?? []} documents={documents?.data ?? []} />
+        <SiteFooter
+          contacts={contacts?.data ?? []}
+          documents={documents?.data ?? []}
+          footer={footer?.data ?? null}
+        />
       </body>
     </html>
   )
