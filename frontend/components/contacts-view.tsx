@@ -2,23 +2,17 @@ import { MarbleBand, marbleStyle } from '@/components/marble-band'
 import { MediaImage } from '@/components/media-image'
 import { HeroOverlay, HeroShell, ctaPrimary, ctaSecondaryOnLight, heroPad } from '@/components/hero'
 import { SiteQuote, cleanQuoteText } from '@/components/site-quote'
+import { channelIcons } from '@/lib/channel-icons'
 import type { Banner, Block, ContactChannel, PageContent, Service } from '@/lib/types'
 import { TelegramIcon } from '@/components/telegram-icon'
 import { WhatsAppIcon } from '@/components/whatsapp-icon'
-import { Calendar, Clock, Heart, Mail, MessageCircle, Phone, Shield, type LucideIcon } from 'lucide-react'
+import { Calendar, Clock, Heart, MessageCircle, Shield, type LucideIcon } from 'lucide-react'
 
 const pointIcons: Record<string, LucideIcon> = {
   'point.reply': Clock,
   'point.booking': Calendar,
   'point.personal': Heart,
   'point.privacy': Shield,
-}
-
-const channelIcons: Record<string, LucideIcon | typeof WhatsAppIcon | typeof TelegramIcon> = {
-  telegram: TelegramIcon,
-  whatsapp: WhatsAppIcon,
-  email: Mail,
-  phone: Phone,
 }
 
 export function ContactsView({

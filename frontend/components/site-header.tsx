@@ -1,19 +1,11 @@
 'use client'
 
 import { Logo } from '@/components/logo'
+import { siteNav } from '@/lib/site-nav'
 import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-
-const links = [
-  { href: '/', label: 'Главная' },
-  { href: '/uslugi', label: 'Услуги' },
-  { href: '/ob-avtore', label: 'Об авторе' },
-  { href: '/stati', label: 'Статьи' },
-  { href: '/otzyvy', label: 'Отзывы' },
-  { href: '/kontakty', label: 'Контакты' },
-]
 
 const darkHero = new Set(['/', '/uslugi', '/ob-avtore', '/stati', '/kontakty'])
 const lightHero = new Set(['/otzyvy'])
@@ -53,7 +45,7 @@ export function SiteHeader() {
           <Logo />
         </Link>
         <nav className="hidden items-center gap-4 whitespace-nowrap lg:flex xl:gap-6" aria-label="Разделы сайта">
-          {links.map((link) => (
+          {siteNav.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -86,13 +78,13 @@ export function SiteHeader() {
       </div>
       {open && (
         <nav id="mobile-nav" className={`flex flex-col gap-1 border-t px-4 py-3 sm:px-5 lg:hidden ${onDark ? 'border-white/15' : 'border-line'}`} aria-label="Разделы сайта">
-          {links.map((link) => (
+          {siteNav.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
               aria-current={pathname === link.href ? 'page' : undefined}
-              className="rounded-xl px-2 py-3 text-base"
+              className={`rounded-xl px-2 py-3 text-base ${pathname === link.href ? 'text-gold' : ''}`}
             >
               {link.label}
             </Link>

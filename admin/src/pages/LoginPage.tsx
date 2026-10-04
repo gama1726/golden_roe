@@ -8,7 +8,7 @@ import type { User } from '../lib/types'
 export function LoginPage() {
   const { user, ready, setUser } = useAuth()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('admin@goldenroe.local')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)

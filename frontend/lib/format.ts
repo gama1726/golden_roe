@@ -20,8 +20,3 @@ export function formatDate(value: string | null): string | null {
 
   return `${date.getUTCDate()} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`
 }
-
-export function hasCopy(value: { title?: string | null; body?: string | null; text?: string | null; image?: { original: string | null } | null } | null): boolean {
-  if (!value) return false
-  return Boolean(value.title || value.body || value.text || value.image?.original)
-}

@@ -56,6 +56,65 @@ const blockLabel: Record<string, string> = {
   consult: 'Записаться на консультацию',
 }
 
+/** Only fields the public site actually reads for each block key. */
+function visibleFields(key: string, page: Props['page']): {
+  eyebrow: boolean
+  title: boolean
+  body: boolean
+  image: boolean
+  eyebrowLabel?: string
+  titleLabel?: string
+  bodyLabel?: string
+} {
+  if (key === 'path.photo' || key === 'son.photo') {
+    return { eyebrow: false, title: false, body: false, image: true }
+  }
+  if (key === 'pillar.quote' || key === 'son.quote' || key === 'cta.note') {
+    return { eyebrow: false, title: false, body: true, image: false, bodyLabel: 'Текст цитаты' }
+  }
+  if (key === 'quote' || key === 'manifesto.quote') {
+    return {
+      eyebrow: true,
+      title: true,
+      body: false,
+      image: false,
+      titleLabel: 'Цитата',
+      eyebrowLabel: 'Подпись',
+    }
+  }
+  if (key === 'promise' || key === 'greeting') {
+    return { eyebrow: false, title: true, body: false, image: false, titleLabel: key === 'promise' ? 'Цитата' : 'Приветствие' }
+  }
+  if (key === 'pillars') {
+    return { eyebrow: false, title: true, body: false, image: false }
+  }
+  if (key === 'results') {
+    return { eyebrow: true, title: true, body: false, image: false }
+  }
+  if (key.startsWith('result.') || (key.startsWith('pillar.') && key !== 'pillar.quote') || key.startsWith('guide.')) {
+    return { eyebrow: false, title: true, body: false, image: false }
+  }
+  if (key === 'cta' && (page === 'services' || page === 'reviews')) {
+    return { eyebrow: false, title: true, body: true, image: true }
+  }
+  if (key === 'consult' || key === 'reach' || key === 'guide') {
+    return { eyebrow: false, title: true, body: true, image: false }
+  }
+  if (key === 'intro') {
+    return { eyebrow: true, title: true, body: true, image: false }
+  }
+  if (key === 'approach') {
+    return {
+      eyebrow: true,
+      title: true,
+      body: true,
+      image: true,
+      eyebrowLabel: 'Цитата справа',
+    }
+  }
+  return { eyebrow: true, title: true, body: true, image: true }
+}
+
 export function ContentPage({ page, title }: Props) {
   const [banners, setBanners] = useState<Banner[]>([])
   const [blocks, setBlocks] = useState<PageContent[]>([])
@@ -251,6 +310,7 @@ export function ContentPage({ page, title }: Props) {
         </div>
       ))}
       {page === 'services' && <ServiceStrip blocks={blocks} onChange={setBlocks} />}
+      {page === 'contacts' && <ContactPointsStrip blocks={blocks} onChange={setBlocks} />}
       {page === 'author' && (
         <AuthorClosingBanner
           blocks={blocks}
@@ -261,56 +321,97 @@ export function ContentPage({ page, title }: Props) {
           onRemove={removeImage}
         />
       )}
-      {page === 'author' && stats.map((stat) => (
-        <div key={stat.id} className="grid items-end gap-5 rounded-3xl bg-white p-5 sm:grid-cols-2">
-          <Field label="Основная часть">
-            <input className={controlClass} placeholder="34 года" value={stat.value ?? ''} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, value: event.target.value } : item))} />
-          </Field>
-          <Field label="Подпись">
-            <input className={controlClass} value={stat.label} onChange={(event) => setStats(stats.map((item) => item.id === stat.id ? { ...item, label: event.target.value } : item))} />
-          </Field>
-        </div>
-      ))}
-      {blocks.filter((block) => {
-        if (page === 'services' && block.key.startsWith('point.')) return false
-        if (page === 'author' && block.key.startsWith('anchor.')) return false
-        if (page === 'author' && (block.key === 'manifesto' || block.key === 'manifesto.quote')) return false
-        return true
-      }).map((block) => {
-        const imageOnly = block.key === 'path.photo'
-
-        return (
-        <div key={block.id} className={cardClass}>
-          <h2 className={cardHeadingClass}>{blockLabel[block.key] ?? block.key}</h2>
-          {!imageOnly && (
-            <>
-              <Field label={block.key === 'approach' ? 'Цитата справа' : 'Надзаголовок'}>
-                <input className={controlClass} value={block.eyebrow ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, eyebrow: event.target.value } : item))} placeholder={block.key === 'approach' ? 'Текст цитаты справа от блока «Обо мне»' : undefined} />
-              </Field>
-              <Field label="Заголовок">
-                <input className={controlClass} value={block.title ?? ''} onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, title: event.target.value } : item))} />
-              </Field>
-              <Field label="Текст">
-                <TextArea
-                  value={block.body ?? ''}
-                  placeholder="Текст будет предоставлен заказчиком"
-                  onChange={(event) => setBlocks(blocks.map((item) => item.id === block.id ? { ...item, body: event.target.value } : item))}
+      {page === 'author' && stats.length > 0 && (
+        <div className={cardClass}>
+          <h2 className={cardHeadingClass}>Цифры на полосе</h2>
+          <p className="text-sm text-muted">Четыре значения между «Мой путь» и «Точки опоры».</p>
+          {stats.map((stat) => (
+            <div key={stat.id} className="grid items-end gap-5 border-t border-line pt-5 sm:grid-cols-2">
+              <Field label="Основная часть">
+                <input
+                  className={controlClass}
+                  placeholder="34 года"
+                  value={stat.value ?? ''}
+                  onChange={(event) =>
+                    setStats(stats.map((item) => (item.id === stat.id ? { ...item, value: event.target.value } : item)))
+                  }
                 />
               </Field>
-            </>
-          )}
-          <ImageEditor
-            label="Изображение блока"
-            inputKey={`block-${block.id}`}
-            current={block.image?.original ?? null}
-            preview={previews[`block-${block.id}`] ?? null}
-            removed={removed[`block-${block.id}`] ?? false}
-            onPick={onFile}
-            onRemove={removeImage}
-          />
+              <Field label="Подпись">
+                <input
+                  className={controlClass}
+                  value={stat.label}
+                  onChange={(event) =>
+                    setStats(stats.map((item) => (item.id === stat.id ? { ...item, label: event.target.value } : item)))
+                  }
+                />
+              </Field>
+            </div>
+          ))}
         </div>
-        )
-      })}
+      )}
+      {blocks
+        .filter((block) => {
+          if (page === 'services' && block.key.startsWith('point.')) return false
+          if (page === 'contacts' && block.key.startsWith('point.')) return false
+          if (page === 'author' && block.key.startsWith('anchor.')) return false
+          if (page === 'author' && (block.key === 'manifesto' || block.key === 'manifesto.quote')) return false
+          return true
+        })
+        .map((block) => {
+          const fields = visibleFields(block.key, page)
+
+          return (
+            <div key={block.id} className={cardClass}>
+              <h2 className={cardHeadingClass}>{blockLabel[block.key] ?? block.key}</h2>
+              {fields.eyebrow && (
+                <Field label={fields.eyebrowLabel ?? 'Надзаголовок'}>
+                  <input
+                    className={controlClass}
+                    value={block.eyebrow ?? ''}
+                    onChange={(event) =>
+                      setBlocks(blocks.map((item) => (item.id === block.id ? { ...item, eyebrow: event.target.value } : item)))
+                    }
+                    placeholder={block.key === 'approach' ? 'Текст цитаты справа от блока «Обо мне»' : undefined}
+                  />
+                </Field>
+              )}
+              {fields.title && (
+                <Field label={fields.titleLabel ?? 'Заголовок'}>
+                  <input
+                    className={controlClass}
+                    value={block.title ?? ''}
+                    onChange={(event) =>
+                      setBlocks(blocks.map((item) => (item.id === block.id ? { ...item, title: event.target.value } : item)))
+                    }
+                  />
+                </Field>
+              )}
+              {fields.body && (
+                <Field label={fields.bodyLabel ?? 'Текст'}>
+                  <TextArea
+                    value={block.body ?? ''}
+                    placeholder="Текст будет предоставлен заказчиком"
+                    onChange={(event) =>
+                      setBlocks(blocks.map((item) => (item.id === block.id ? { ...item, body: event.target.value } : item)))
+                    }
+                  />
+                </Field>
+              )}
+              {fields.image && (
+                <ImageEditor
+                  label="Изображение блока"
+                  inputKey={`block-${block.id}`}
+                  current={block.image?.original ?? null}
+                  preview={previews[`block-${block.id}`] ?? null}
+                  removed={removed[`block-${block.id}`] ?? false}
+                  onPick={onFile}
+                  onRemove={removeImage}
+                />
+              )}
+            </div>
+          )
+        })}
     </section>
   )
 }
@@ -331,6 +432,36 @@ function ServiceStrip({ blocks, onChange }: { blocks: PageContent[]; onChange: (
             onChange={(event) => onChange(blocks.map((item) => (item.id === block.id ? { ...item, title: event.target.value } : item)))}
           />
         </Field>
+      ))}
+    </div>
+  )
+}
+
+function ContactPointsStrip({ blocks, onChange }: { blocks: PageContent[]; onChange: (blocks: PageContent[]) => void }) {
+  const points = blocks.filter((block) => block.key.startsWith('point.')).sort((a, b) => a.sort_order - b.sort_order)
+  if (points.length === 0) return null
+
+  return (
+    <div className={cardClass}>
+      <h2 className={cardHeadingClass}>Четыре преимущества</h2>
+      <p className="text-sm text-muted">Заголовок и короткий текст под иконкой. Лишние поля на сайте не используются.</p>
+      {points.map((block) => (
+        <div key={block.id} className="space-y-3 border-t border-line pt-5">
+          <p className="text-sm font-medium">{blockLabel[block.key] ?? block.key}</p>
+          <Field label="Заголовок">
+            <input
+              className={controlClass}
+              value={block.title ?? ''}
+              onChange={(event) => onChange(blocks.map((item) => (item.id === block.id ? { ...item, title: event.target.value } : item)))}
+            />
+          </Field>
+          <Field label="Текст">
+            <TextArea
+              value={block.body ?? ''}
+              onChange={(event) => onChange(blocks.map((item) => (item.id === block.id ? { ...item, body: event.target.value } : item)))}
+            />
+          </Field>
+        </div>
       ))}
     </div>
   )

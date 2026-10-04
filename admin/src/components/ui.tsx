@@ -1,5 +1,4 @@
-import { Check } from 'lucide-react'
-import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react'
+import { useRef, type ButtonHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react'
 
 export function Button({
   variant = 'primary',
@@ -97,60 +96,6 @@ export function FilePicker({
 
 export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea className={`${controlClass} min-h-28`} {...props} />
-}
-
-export function SaveButton({
-  pending = false,
-  saved = false,
-  idle = 'Сохранить',
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { pending?: boolean; saved?: boolean; idle?: string }) {
-  return (
-    <Button {...props} type={props.type ?? 'submit'} disabled={pending || props.disabled} aria-live="polite">
-      {pending ? (
-        <>
-          <span className="size-3.5 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden="true" />
-          Сохраняю…
-        </>
-      ) : saved ? (
-        <>
-          <Check aria-hidden="true" size={16} />
-          Сохранено
-        </>
-      ) : (
-        idle
-      )}
-    </Button>
-  )
-}
-
-export function useSaveFeedback() {
-  const [pendingId, setPendingId] = useState<string | null>(null)
-  const [savedId, setSavedId] = useState<string | null>(null)
-  const timer = useRef<number | undefined>(undefined)
-
-  useEffect(() => () => window.clearTimeout(timer.current), [])
-
-  async function run(id: string, action: () => Promise<void>) {
-    setPendingId(id)
-    setSavedId((current) => (current === id ? null : current))
-    try {
-      await action()
-      setSavedId(id)
-      window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => {
-        setSavedId((current) => (current === id ? null : current))
-      }, 2000)
-    } finally {
-      setPendingId((current) => (current === id ? null : current))
-    }
-  }
-
-  return {
-    run,
-    pending: (id: string) => pendingId === id,
-    saved: (id: string) => savedId === id && pendingId !== id,
-  }
 }
 
 export function Notice({ text }: { text: string | null }) {

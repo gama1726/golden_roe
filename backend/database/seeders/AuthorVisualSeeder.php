@@ -132,7 +132,6 @@ class AuthorVisualSeeder extends Seeder
             'sort_order' => 29,
         ], force: true);
 
-        Setting::putValue('author_visual_v1', true);
         Setting::putValue(self::VERSION_KEY, true);
     }
 

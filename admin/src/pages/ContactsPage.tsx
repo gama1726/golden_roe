@@ -85,7 +85,7 @@ export function ContactsPage() {
     <div className="space-y-12">
     <ContentPage page="contacts" title="Контакты" />
     <section className="space-y-4">
-      <h2 className="font-serif text-4xl leading-none">Каналы связи</h2>
+      <h2 className="font-serif text-2xl leading-none">Каналы связи</h2>
       <Notice text={notice} />
       <Notice text={error} />
       {items.map((channel) => (

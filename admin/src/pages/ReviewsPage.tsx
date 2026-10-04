@@ -66,7 +66,7 @@ export function ReviewsPage() {
     <ContentPage page="reviews" title="Отзывы" />
     <section className="space-y-4">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <h2 className="font-serif text-4xl leading-none">Модерация</h2>
+        <h2 className="font-serif text-2xl leading-none">Модерация</h2>
         <span className="text-sm text-muted">На проверке: {pendingCount}</span>
       </div>
       <div className="flex gap-2">

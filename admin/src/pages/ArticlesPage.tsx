@@ -32,7 +32,7 @@ export function ArticlesPage() {
     <ContentPage page="articles" title="Статьи" />
     <section>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <h2 className="font-serif text-4xl leading-none">Материалы</h2>
+        <h2 className="font-serif text-2xl leading-none">Материалы</h2>
         <Link to="/articles/new" className="rounded-full bg-ink px-4 py-2 text-sm text-ivory">
           Новая статья
         </Link>

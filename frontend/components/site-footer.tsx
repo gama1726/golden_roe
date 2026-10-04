@@ -1,26 +1,8 @@
 import { Logo } from '@/components/logo'
+import { channelIcons } from '@/lib/channel-icons'
+import { siteNav } from '@/lib/site-nav'
 import type { ContactChannel, DocumentItem } from '@/lib/types'
-import { TelegramIcon } from '@/components/telegram-icon'
-import { WhatsAppIcon } from '@/components/whatsapp-icon'
-import { Mail, Phone } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
-
-const links = [
-  { href: '/', label: 'Главная' },
-  { href: '/uslugi', label: 'Услуги' },
-  { href: '/ob-avtore', label: 'Об авторе' },
-  { href: '/stati', label: 'Статьи' },
-  { href: '/otzyvy', label: 'Отзывы' },
-  { href: '/kontakty', label: 'Контакты' },
-]
-
-const channelIcons: Record<string, LucideIcon | typeof WhatsAppIcon | typeof TelegramIcon> = {
-  telegram: TelegramIcon,
-  whatsapp: WhatsAppIcon,
-  email: Mail,
-  phone: Phone,
-}
 
 export function SiteFooter({ contacts, documents }: { contacts: ContactChannel[]; documents: DocumentItem[] }) {
   return (
@@ -30,7 +12,7 @@ export function SiteFooter({ contacts, documents }: { contacts: ContactChannel[]
           <Logo markClassName="h-8" wordmarkClassName="h-4 w-auto" />
         </Link>
         <nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm" aria-label="Разделы сайта">
-          {links.map((link) => (
+          {siteNav.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-gold">
               {link.label}
             </Link>

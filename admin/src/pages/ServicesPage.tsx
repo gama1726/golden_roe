@@ -131,7 +131,7 @@ export function ServicesPage() {
     <div className="space-y-12">
     <ContentPage page="services" title="Услуги" />
     <section className="space-y-6">
-      <h2 className="font-serif text-4xl leading-none">Карточки услуг</h2>
+      <h2 className="font-serif text-2xl leading-none">Карточки услуг</h2>
       <Notice text={notice} />
       <Notice text={error} />
       <div className="space-y-3">
