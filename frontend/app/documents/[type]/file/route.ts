@@ -16,6 +16,9 @@ export async function GET(_request: Request, context: Context) {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `inline; filename="${type}.pdf"`,
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Content-Security-Policy': "frame-ancestors 'self'",
+      'X-Content-Type-Options': 'nosniff',
     },
   })
 }

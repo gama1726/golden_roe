@@ -70,6 +70,7 @@ Route::prefix('v1')->group(function (): void {
             Route::get('documents', [AdminDocumentController::class, 'index']);
             Route::patch('documents/{type}', [AdminDocumentController::class, 'updateBody']);
             Route::post('documents/{type}', [AdminDocumentController::class, 'update']);
+            Route::post('documents/{type}/extract', [AdminDocumentController::class, 'extract']);
 
             Route::get('settings', [SettingController::class, 'show']);
             Route::patch('settings', [SettingController::class, 'update']);

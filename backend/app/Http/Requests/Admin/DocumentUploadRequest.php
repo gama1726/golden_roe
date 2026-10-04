@@ -21,6 +21,7 @@ class DocumentUploadRequest extends FormRequest
     {
         return [
             'file' => ['required', 'file', 'extensions:pdf', 'max:10240', new PdfDocument],
+            'replace_body' => ['sometimes', 'boolean'],
         ];
     }
 }

@@ -11,7 +11,9 @@ use App\Http\Requests\Admin\DocumentUploadRequest;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use App\Services\HtmlSanitizer;
+use App\Services\PdfTextExtractor;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -46,8 +48,12 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function update(DocumentUploadRequest $request, string $type): JsonResponse
-    {
+    public function update(
+        DocumentUploadRequest $request,
+        string $type,
+        PdfTextExtractor $extractor,
+        HtmlSanitizer $sanitizer,
+    ): JsonResponse {
         $this->authorize('update', Document::query()->first() ?? new Document);
 
         $documentType = DocumentType::tryFrom($type);
@@ -55,15 +61,24 @@ class DocumentController extends Controller
 
         $document = Document::query()->firstOrCreate(['type' => $documentType]);
         $file = $request->file('file');
+        assert($file instanceof UploadedFile);
         $path = $file->storeAs($documentType->value, (string) Str::uuid().'.pdf', 'documents');
         $previous = $document->file;
+        $replaceBody = $request->boolean('replace_body') || ! $document->hasBody();
 
         try {
-            DB::transaction(function () use ($document, $path, $file): void {
-                $document->update([
-                    'file' => $path,
-                    'original_name' => $file->getClientOriginalName(),
-                ]);
+            DB::transaction(function () use ($document, $path, $file, $replaceBody, $extractor, $sanitizer): void {
+                $document->file = $path;
+                $document->original_name = $file->getClientOriginalName();
+
+                if ($replaceBody) {
+                    $html = $this->extractedBody($path, $extractor, $sanitizer);
+                    if ($html !== null) {
+                        $document->body = $html;
+                    }
+                }
+
+                $document->save();
             });
         } catch (Throwable $exception) {
             Storage::disk('documents')->delete($path);
@@ -76,6 +91,44 @@ class DocumentController extends Controller
 
         return response()->json([
             'data' => (new DocumentResource($document->refresh()))->resolve(),
+            'meta' => [
+                'body_replaced' => $replaceBody && $document->hasBody(),
+                'extracted' => $document->hasBody(),
+            ],
         ]);
+    }
+
+    public function extract(string $type, PdfTextExtractor $extractor, HtmlSanitizer $sanitizer): JsonResponse
+    {
+        $this->authorize('update', Document::query()->first() ?? new Document);
+
+        $documentType = DocumentType::tryFrom($type);
+        abort_unless($documentType instanceof DocumentType, 404);
+
+        $document = Document::query()->where('type', $documentType)->firstOrFail();
+        abort_unless($document->hasFile(), 422, 'Сначала загрузите PDF.');
+
+        $html = $this->extractedBody((string) $document->file, $extractor, $sanitizer);
+        abort_if($html === null, 422, 'Не удалось извлечь текст из PDF. Вставьте текст вручную или проверьте, что PDF не скан.');
+
+        $document->update(['body' => $html]);
+
+        return response()->json([
+            'data' => (new DocumentResource($document->refresh()))->resolve(),
+            'meta' => ['body_replaced' => true, 'extracted' => true],
+        ]);
+    }
+
+    private function extractedBody(string $diskPath, PdfTextExtractor $extractor, HtmlSanitizer $sanitizer): ?string
+    {
+        $absolute = Storage::disk('documents')->path($diskPath);
+        $html = $extractor->extractHtmlFromPath($absolute);
+        if ($html === null || trim($html) === '') {
+            return null;
+        }
+
+        $clean = $sanitizer->clean($html);
+
+        return trim($clean) === '' ? null : $clean;
     }
 }

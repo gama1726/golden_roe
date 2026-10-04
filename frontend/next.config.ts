@@ -8,6 +8,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: http: https:",
   "font-src 'self' data:",
   "connect-src 'self' http://127.0.0.1:8000 http://localhost:8000",
+  "frame-src 'self'",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -22,6 +23,17 @@ const securityHeaders = [
   { key: "Content-Security-Policy", value: contentSecurityPolicy },
 ];
 
+/** PDF file responses must be embeddable in our document page iframe. */
+const pdfFileHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  {
+    key: "Content-Security-Policy",
+    value: "frame-ancestors 'self'",
+  },
+];
+
 const nextConfig: NextConfig = {
   // Needed when `next dev` is reached via nginx / public host instead of localhost.
   allowedDevOrigins: [
@@ -33,15 +45,13 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/documents/:type/file",
-        headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-        ],
-      },
-      {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      // Listed after the catch-all so these keys win for the PDF proxy route.
+      {
+        source: "/documents/:type/file",
+        headers: pdfFileHeaders,
       },
     ];
   },

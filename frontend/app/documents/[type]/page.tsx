@@ -21,6 +21,7 @@ export default async function DocumentPage({ params }: Props) {
 
   const document = page.data
   const hasBody = Boolean(document.body && document.body.replace(/<[^>]+>/g, '').trim())
+  const fileHref = `/documents/${document.type}/file`
 
   return (
     <section className="mx-auto w-full max-w-3xl px-5 pt-24 pb-16 md:pt-32 md:pb-24">
@@ -32,18 +33,45 @@ export default async function DocumentPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: document.body ?? '' }}
         />
       ) : document.has_file ? (
-        <p className="mt-8 text-muted">Текст документа на сайте пока не загружен. Можно скачать PDF ниже.</p>
+        <>
+          <p className="mt-8 text-muted">
+            Текст на сайте пока не извлечён. Откройте PDF ниже — на телефоне удобнее кнопка «Открыть PDF».
+          </p>
+          <div className="mt-6 flex flex-wrap gap-4">
+            <a
+              href={fileHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex text-sm underline decoration-gold underline-offset-4"
+            >
+              Открыть PDF
+            </a>
+            <a href={fileHref} download={`${document.type}.pdf`} className="inline-flex text-sm underline decoration-gold underline-offset-4">
+              Скачать PDF
+            </a>
+          </div>
+          <iframe
+            title={document.label}
+            src={fileHref}
+            className="mt-6 hidden h-[75vh] w-full border border-line bg-white md:block"
+          />
+        </>
       ) : (
         <p className="mt-8 text-muted">Документ будет предоставлен заказчиком</p>
       )}
 
-      {document.has_file && (
+      {hasBody && document.has_file && (
         <p className="mt-12 border-t border-line pt-8">
           <a
-            href={`/documents/${document.type}/file`}
+            href={fileHref}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex text-sm underline decoration-gold underline-offset-4"
-            download={`${document.type}.pdf`}
           >
+            Открыть PDF
+          </a>
+          <span className="mx-3 text-muted">·</span>
+          <a href={fileHref} download={`${document.type}.pdf`} className="inline-flex text-sm underline decoration-gold underline-offset-4">
             Скачать PDF
           </a>
         </p>
