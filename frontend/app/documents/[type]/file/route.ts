@@ -5,7 +5,7 @@ type Context = { params: Promise<{ type: string }> }
 
 export async function GET(_request: Request, context: Context) {
   const { type } = await context.params
-  const upstream = await fetch(`${apiBase()}/api/v1/documents/${type}`, { cache: 'no-store' })
+  const upstream = await fetch(`${apiBase()}/api/v1/documents/${type}/file`, { cache: 'no-store' })
   const contentType = upstream.headers.get('content-type') ?? ''
 
   if (!upstream.ok || !contentType.includes('pdf')) {

@@ -34,6 +34,7 @@ Route::prefix('v1')->group(function (): void {
     Route::get('contacts', [ContactController::class, 'index']);
     Route::get('documents', [DocumentController::class, 'index']);
     Route::get('documents/{type}', [DocumentController::class, 'show']);
+    Route::get('documents/{type}/file', [DocumentController::class, 'file']);
     Route::get('seo', [SeoController::class, 'show']);
 
     Route::prefix('admin')->group(function (): void {
@@ -67,6 +68,7 @@ Route::prefix('v1')->group(function (): void {
                 ->parameters(['contacts' => 'contactChannel']);
 
             Route::get('documents', [AdminDocumentController::class, 'index']);
+            Route::patch('documents/{type}', [AdminDocumentController::class, 'updateBody']);
             Route::post('documents/{type}', [AdminDocumentController::class, 'update']);
 
             Route::get('settings', [SettingController::class, 'show']);

@@ -107,6 +107,10 @@ export function getDocuments() {
   return getJson<{ data: DocumentItem[] }>('/api/v1/documents')
 }
 
+export function getDocument(type: string) {
+  return getJson<{ data: DocumentItem }>(`/api/v1/documents/${type}`)
+}
+
 export async function safe<T>(load: () => Promise<T>): Promise<T | null> {
   try {
     return await load()

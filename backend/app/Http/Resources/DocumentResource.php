@@ -19,8 +19,10 @@ class DocumentResource extends JsonResource
         return [
             'type' => $this->type->value,
             'label' => $this->type->label(),
-            'available' => $this->file !== null,
-            'url' => url('/api/v1/documents/'.$this->type->value),
+            'body' => $this->body,
+            'available' => $this->isAvailable(),
+            'has_file' => $this->hasFile(),
+            'url' => url('/api/v1/documents/'.$this->type->value.'/file'),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }

@@ -26,14 +26,28 @@ class DocumentController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function show(string $type): JsonResponse|StreamedResponse
+    public function show(string $type, PublicContentCache $cache): JsonResponse
+    {
+        $documentType = DocumentType::tryFrom($type);
+        abort_unless($documentType instanceof DocumentType, 404);
+
+        $payload = $cache->remember('document.'.$documentType->value, function () use ($documentType): array {
+            $document = Document::query()->where('type', $documentType)->firstOrFail();
+
+            return (new DocumentResource($document))->resolve();
+        });
+
+        return response()->json(['data' => $payload]);
+    }
+
+    public function file(string $type): JsonResponse|StreamedResponse
     {
         $documentType = DocumentType::tryFrom($type);
         abort_unless($documentType instanceof DocumentType, 404);
 
         $document = Document::query()->where('type', $documentType)->firstOrFail();
 
-        if ($document->file === null || ! Storage::disk('documents')->exists($document->file)) {
+        if (! $document->hasFile()) {
             return response()->json([
                 'message' => 'Документ будет предоставлен заказчиком',
                 'type' => $documentType->value,

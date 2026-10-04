@@ -33,6 +33,13 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/documents/:type/file",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
+      },
+      {
         source: "/:path*",
         headers: securityHeaders,
       },

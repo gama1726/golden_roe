@@ -101,7 +101,9 @@ export type ContactChannel = {
 export type DocumentItem = {
   type: string
   label: string
+  body: string | null
   available: boolean
+  has_file: boolean
   url: string
   updated_at: string | null
 }

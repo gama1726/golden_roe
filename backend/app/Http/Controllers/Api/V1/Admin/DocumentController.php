@@ -6,9 +6,11 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Enums\DocumentType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\DocumentBodyRequest;
 use App\Http\Requests\Admin\DocumentUploadRequest;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
+use App\Services\HtmlSanitizer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -23,6 +25,24 @@ class DocumentController extends Controller
 
         return response()->json([
             'data' => DocumentResource::collection(Document::query()->orderBy('id')->get())->resolve(),
+        ]);
+    }
+
+    public function updateBody(DocumentBodyRequest $request, string $type, HtmlSanitizer $sanitizer): JsonResponse
+    {
+        $this->authorize('update', Document::query()->first() ?? new Document);
+
+        $documentType = DocumentType::tryFrom($type);
+        abort_unless($documentType instanceof DocumentType, 404);
+
+        $document = Document::query()->firstOrCreate(['type' => $documentType]);
+        $raw = $request->string('body')->toString();
+        $document->update([
+            'body' => $raw === '' ? null : $sanitizer->clean($raw),
+        ]);
+
+        return response()->json([
+            'data' => (new DocumentResource($document->refresh()))->resolve(),
         ]);
     }
 
