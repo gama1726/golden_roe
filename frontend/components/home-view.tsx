@@ -86,21 +86,43 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
       )}
 
       {(results.title || results.items.length > 0) && (
-        <MarbleBand seed="home-results" className="border-y border-line">
-          <div className="mx-auto w-full max-w-[80rem] px-4 py-12 sm:px-5 sm:py-16 md:py-20">
+        <MarbleBand seed="home-results" className="relative border-y border-line">
+          <div className="pointer-events-none absolute inset-0 bg-earth/12" aria-hidden="true" />
+          <div className="relative mx-auto w-full max-w-[80rem] px-4 pt-12 sm:px-5 sm:pt-16 md:pt-20">
             {results.eyebrow && <p className="text-center text-xs tracking-[0.22em] text-gold uppercase">{results.eyebrow}</p>}
             {results.title && <h2 className="mt-4 text-center font-serif text-3xl sm:text-4xl md:text-5xl">{results.title}</h2>}
-            {results.items.length > 0 && (
-              <ul className="mt-10 grid grid-cols-3 gap-x-3 gap-y-8 sm:gap-8 lg:mt-12 lg:grid-cols-6">
-                {results.items.map((item) => (
-                  <li key={item.id} className="text-center">
-                    <ResultIcon item={item} />
-                    <p className="mt-3 text-xs leading-snug sm:text-sm">{item.title}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
+          {results.items.length > 0 && (
+            <ul className="relative mt-8 grid w-full grid-cols-3 lg:mt-10 lg:grid-cols-6">
+              {results.items.map((item, index) => {
+                const mobileColDivider = index % 3 !== 0
+                const desktopDivider = index > 0
+                const mobileRowDivider = index >= 3
+
+                return (
+                  <li
+                    key={item.id}
+                    className={[
+                      'relative px-3 py-10 text-center text-earth sm:px-5 sm:py-12 lg:px-6 xl:px-8',
+                      mobileColDivider || desktopDivider
+                        ? 'before:absolute before:top-[22%] before:bottom-[22%] before:left-0 before:w-px before:bg-earth/25'
+                        : '',
+                      !mobileColDivider && desktopDivider ? 'before:hidden lg:before:block' : '',
+                      mobileColDivider && !desktopDivider ? 'lg:before:hidden' : '',
+                      mobileRowDivider
+                        ? 'after:absolute after:top-0 after:right-[18%] after:left-[18%] after:h-px after:bg-earth/25 lg:after:hidden'
+                        : '',
+                    ].join(' ')}
+                  >
+                    <ResultIcon item={item} />
+                    {item.title && (
+                      <p className="mx-auto mt-5 max-w-[12rem] text-base leading-relaxed md:text-lg xl:max-w-none">{item.title}</p>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          )}
         </MarbleBand>
       )}
 
@@ -182,5 +204,5 @@ export function HomeView({ home, contacts }: { home: HomeData; contacts: Contact
 
 function ResultIcon({ item }: { item: PageContent }) {
   const Icon = resultIcons[item.key] ?? Heart
-  return <Icon aria-hidden="true" className="mx-auto text-gold" size={28} strokeWidth={1.25} />
+  return <Icon aria-hidden="true" className="mx-auto text-earth" size={40} strokeWidth={1.25} />
 }
