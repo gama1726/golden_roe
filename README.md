@@ -228,9 +228,11 @@ OpenAPI: `http://127.0.0.1:8000/docs/api`
 
 - `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL` — адрес API, как его видит браузер админки через прокси
 - `SESSION_SECURE_COOKIE=true`
+- `TRUSTED_PROXIES=*` (или IP nginx), чтобы `Secure` cookie и `X-Forwarded-Proto` работали за прокси
 - `SANCTUM_STATEFUL_DOMAINS` — только домен админки, без публичного сайта
 - `CORS_ALLOWED_ORIGINS` — адрес публичного сайта, с него уходит форма отзыва
 - `FRONTEND_REVALIDATE_URL` и `FRONTEND_REVALIDATE_SECRET` совпадают с `REVALIDATE_SECRET` сайта
+- API/`php artisan serve` не публиковать в интернет; Scramble docs закрыты вне local+admin
 - `php artisan migrate --force`, `php artisan storage:link`, `php artisan config:cache`
 - `npm run build` в `frontend`, затем `npm run start`
 - `npm run build` в `admin`

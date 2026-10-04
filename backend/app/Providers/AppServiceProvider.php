@@ -35,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('admin', fn ($user): bool => $user->isAdmin());
+        // Scramble docs stay closed unless explicitly granted (never open on public hosts).
+        Gate::define('viewApiDocs', fn ($user = null): bool => app()->environment('local') && $user?->isAdmin());
 
         foreach ([
             Service::class,

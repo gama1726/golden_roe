@@ -1,0 +1,7 @@
+# Agent skills / local tool caches — never commit
+.agents/
+**/.agents/
+.cursor/skills/
+**/.cursor/skills/
+skills-lock.json
+**/skills-lock.json

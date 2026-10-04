@@ -37,9 +37,31 @@ class ReviewTest extends TestCase
             'title' => 'Заголовок',
             'text' => 'Текст отзыва',
             'consent' => true,
+        ])->assertForbidden();
+
+        $this->assertSame(0, Review::query()->count());
+
+        $this->getJson('/api/v1/reviews')
+            ->assertOk()
+            ->assertJsonPath('meta.enabled', false)
+            ->assertJsonCount(0, 'data');
+
+        Setting::putValue('reviews_enabled', true);
+
+        $this->postJson('/api/v1/reviews', [
+            'full_name' => 'Анна',
+            'phone' => '89884560555',
+            'email' => 'anna@example.test',
+            'service_id' => $service->id,
+            'rating' => 5,
+            'title' => 'Заголовок',
+            'text' => 'Текст отзыва',
+            'consent' => true,
         ])->assertCreated()->assertJsonPath('data.status', 'pending');
 
         $this->assertSame(ReviewStatus::Pending, Review::query()->first()->status);
+
+        Setting::putValue('reviews_enabled', false);
 
         $this->getJson('/api/v1/reviews')
             ->assertOk()
@@ -67,6 +89,8 @@ class ReviewTest extends TestCase
 
     public function test_honeypot_does_not_store_a_review(): void
     {
+        Setting::putValue('reviews_enabled', true);
+
         $service = Service::query()->create([
             'title' => 'Услуга',
             'price' => 1,

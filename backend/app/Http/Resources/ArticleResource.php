@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Models\Article;
+use App\Services\HtmlSanitizer;
 use App\Support\Media;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -22,7 +23,7 @@ class ArticleResource extends JsonResource
             'slug' => $this->slug,
             'title' => $this->title,
             'excerpt' => $this->excerpt,
-            'content' => $this->content,
+            'content' => app(HtmlSanitizer::class)->clean((string) $this->content),
             'image' => Media::urls($this->image),
             'is_published' => $this->is_published,
             'published_at' => $this->published_at?->toIso8601String(),

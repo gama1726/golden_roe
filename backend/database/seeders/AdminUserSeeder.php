@@ -17,13 +17,11 @@ class AdminUserSeeder extends Seeder
             return;
         }
 
-        User::query()->updateOrCreate(
-            ['email' => $email],
-            [
-                'name' => env('ADMIN_NAME', 'Administrator'),
-                'password' => $password,
-                'role' => UserRole::Admin,
-            ],
-        );
+        $user = User::query()->firstOrNew(['email' => $email]);
+        $user->fill([
+            'name' => env('ADMIN_NAME', 'Administrator'),
+            'password' => $password,
+        ]);
+        $user->forceFill(['role' => UserRole::Admin])->save();
     }
 }

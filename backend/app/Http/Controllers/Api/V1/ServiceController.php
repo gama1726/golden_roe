@@ -13,15 +13,12 @@ use App\Models\PageContent;
 use App\Models\Service;
 use App\Services\PublicContentCache;
 use App\Services\SeoSettings;
-use App\Support\ServicesPoints;
 use Illuminate\Http\JsonResponse;
 
 class ServiceController extends Controller
 {
     public function index(PublicContentCache $cache, SeoSettings $seo): JsonResponse
     {
-        ServicesPoints::ensure();
-
         $payload = $cache->remember('services', function () use ($seo): array {
             $banner = Banner::query()->where('page', 'services')->orderBy('sort_order')->first();
             $contents = PageContent::query()->where('page', 'services')->orderBy('sort_order')->orderBy('id')->get();

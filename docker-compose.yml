@@ -21,7 +21,8 @@ services:
     build:
       context: ./backend
     ports:
-      - "8000:8000"
+      # Bind to loopback so Scramble/API are not exposed on the LAN.
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./backend:/var/www/html
       - backend_vendor:/var/www/html/vendor

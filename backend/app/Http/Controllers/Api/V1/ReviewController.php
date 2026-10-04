@@ -47,6 +47,10 @@ class ReviewController extends Controller
 
     public function store(StoreReviewRequest $request): JsonResponse
     {
+        if (! Setting::reviewsEnabled()) {
+            abort(403, 'Приём отзывов временно отключён.');
+        }
+
         if (filled($request->input('website'))) {
             return response()->json(['data' => ['status' => ReviewStatus::Pending->value]], 201);
         }
@@ -54,18 +58,20 @@ class ReviewController extends Controller
         $service = Service::query()->active()->findOrFail($request->integer('service_id'));
 
         DB::transaction(function () use ($request, $service): void {
-            Review::query()->create([
+            $review = new Review([
                 'full_name' => $request->string('full_name')->toString(),
                 'phone' => $request->string('phone')->toString(),
                 'email' => $request->string('email')->toString(),
                 'service_id' => $service->id,
                 'service_title_snapshot' => $service->title,
                 'rating' => $request->integer('rating'),
-                'title' => $request->string('title')->toString(),
-                'text' => $request->string('text')->toString(),
+                'title' => strip_tags($request->string('title')->toString()),
+                'text' => strip_tags($request->string('text')->toString()),
+            ]);
+            $review->forceFill([
                 'status' => ReviewStatus::Pending,
                 'consent' => true,
-            ]);
+            ])->save();
         });
 
         return response()->json(['data' => ['status' => ReviewStatus::Pending->value]], 201);

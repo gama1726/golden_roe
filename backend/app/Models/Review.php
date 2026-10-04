@@ -20,9 +20,6 @@ class Review extends Model
         'rating',
         'title',
         'text',
-        'image',
-        'status',
-        'consent',
     ];
 
     protected function casts(): array

@@ -39,7 +39,7 @@ class ReviewController extends Controller
     public function approve(Review $review): JsonResponse
     {
         $this->authorize('update', $review);
-        $review->update(['status' => ReviewStatus::Approved]);
+        $review->forceFill(['status' => ReviewStatus::Approved])->save();
 
         return response()->json([
             'data' => (new ReviewAdminResource($review->refresh()))->resolve(),
@@ -49,7 +49,7 @@ class ReviewController extends Controller
     public function pending(Review $review): JsonResponse
     {
         $this->authorize('update', $review);
-        $review->update(['status' => ReviewStatus::Pending]);
+        $review->forceFill(['status' => ReviewStatus::Pending])->save();
 
         return response()->json([
             'data' => (new ReviewAdminResource($review->refresh()))->resolve(),
@@ -69,9 +69,9 @@ class ReviewController extends Controller
     {
         $this->authorize('update', $review);
         $stored = $images->store($request->file('image'));
-        $review->update([
+        $review->forceFill([
             'image' => $images->sync($review->image, $stored),
-        ]);
+        ])->save();
 
         return response()->json([
             'data' => (new ReviewAdminResource($review->refresh()))->resolve(),

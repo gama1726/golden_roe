@@ -21,6 +21,15 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => EnsureUserIsAdmin::class,
         ]);
         $middleware->append(SecurityHeaders::class);
+
+        $trustedProxies = env('TRUSTED_PROXIES');
+        if (is_string($trustedProxies) && $trustedProxies !== '') {
+            $middleware->trustProxies(
+                at: $trustedProxies === '*'
+                    ? '*'
+                    : array_values(array_filter(array_map(trim(...), explode(',', $trustedProxies)))),
+            );
+        }
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
